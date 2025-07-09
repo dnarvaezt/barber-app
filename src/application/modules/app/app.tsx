@@ -1,9 +1,9 @@
-import './app.scss'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Icon, Layout, LayoutProvider } from '../../components'
 import DocumentationPage from '../pages/DocumentationPage'
 import ExamplesPage from '../pages/ExamplesPage'
 import HomePage from '../pages/HomePage'
+import './app.scss'
 
 // Definir las páginas disponibles
 const pages = [
