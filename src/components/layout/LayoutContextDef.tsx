@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 import type { ReactNode } from 'react'
-import type { SidebarItem } from './side-bar'
+import type { SidebarItem } from '../side-bar'
 
 // Tipos para el contexto
 interface LayoutState {
@@ -24,7 +24,6 @@ interface LayoutState {
 export interface LayoutContextType extends LayoutState {
   // Header actions
   setHeaderTitle: (title: string) => void
-  setHeaderSubtitle: (subtitle: string) => void
   setHeaderActions: (actions: ReactNode) => void
   setHeaderVisible: (visible: boolean) => void
 

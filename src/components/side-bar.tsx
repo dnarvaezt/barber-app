@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Icon } from './icons'
-import { useLayout } from './useLayout'
+import { useLayout } from './layout/useLayout'
 
 import type { ReactNode } from 'react'
 export interface SidebarItem {
@@ -15,6 +15,7 @@ export interface SidebarItem {
 export const Sidebar = () => {
   const location = useLocation()
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  const version = __APP_VERSION__
 
   const { sidebarItems, sidebarOpen, sidebarVisible, closeSidebar } =
     useLayout()
@@ -34,10 +35,7 @@ export const Sidebar = () => {
   }
 
   const handleItemClick = (item: SidebarItem) => {
-    // En mobile, cerrar el sidebar al hacer clic en un enlace
-    if (item.path && window.innerWidth < 1024) {
-      closeSidebar()
-    }
+    if (item.path && window.innerWidth < 1024) closeSidebar()
   }
 
   const renderItem = (item: SidebarItem, level: number = 0) => {
@@ -109,9 +107,8 @@ export const Sidebar = () => {
       `}
     >
       <div className='h-full flex flex-col'>
-        {/* Sidebar header con botón de cerrar en mobile */}
         <div className='p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between'>
-          <h2 className='text-lg font-semibold text-gray-900'>Navegación</h2>
+          <h2 className='text-lg font-semibold text-gray-900'>Filter Docs</h2>
           <button
             onClick={closeSidebar}
             className='lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100'
@@ -120,17 +117,15 @@ export const Sidebar = () => {
           </button>
         </div>
 
-        {/* Sidebar navigation - Scrollable */}
         <div className='flex-1 overflow-y-auto py-4'>
           <nav className='space-y-1'>
             {sidebarItems.map(item => renderItem(item))}
           </nav>
         </div>
 
-        {/* Sidebar footer */}
         <div className='p-4 border-t border-gray-200 flex-shrink-0'>
           <div className='text-xs text-gray-500 text-center'>
-            Filter Docs v1.0.0
+            Versión: {version}
           </div>
         </div>
       </div>

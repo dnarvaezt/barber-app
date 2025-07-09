@@ -1,42 +1,16 @@
 import { useEffect } from 'react'
-import { Icon } from '../../components/icons'
-import { useLayout } from '../../components/useLayout'
+import { Icon, useLayout } from '../components'
 
 const HomePage = () => {
-  const {
-    setHeaderTitle,
-    setHeaderSubtitle,
-    setHeaderActions,
-    setOverlayVisible,
-  } = useLayout()
+  const { setHeaderTitle, setHeaderActions, setOverlayVisible } = useLayout()
 
   useEffect(() => {
-    // Configurar el header para esta página
-    setHeaderTitle('Filter Docs')
-    setHeaderSubtitle('Documentación completa y ejemplos')
+    setHeaderTitle('Información')
 
-    // Agregar acciones personalizadas al header
-    setHeaderActions(
-      <div className='flex items-center space-x-2'>
-        <button
-          onClick={() =>
-            setOverlayVisible(true, <div>¡Hola desde el overlay!</div>)
-          }
-          className='px-3 py-1 bg-white bg-opacity-20 text-white rounded-md hover:bg-opacity-30 transition-all'
-        >
-          Mostrar Overlay
-        </button>
-        <button className='px-3 py-1 bg-white bg-opacity-20 text-white rounded-md hover:bg-opacity-30 transition-all'>
-          Acción
-        </button>
-      </div>
-    )
-
-    // Cleanup al desmontar el componente
     return () => {
       setHeaderActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions, setOverlayVisible])
+  }, [setHeaderTitle, setOverlayVisible])
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -46,8 +20,8 @@ const HomePage = () => {
             Bienvenido a Filter Docs
           </h1>
           <p className='text-xl text-gray-600 mb-8'>
-            Documentación completa y ejemplos para el componente Filter de Andes
-            Project
+            Documentación completa y ejemplos para implementar la librería de
+            filtrado avanzado
           </p>
           <div className='flex justify-center space-x-4'>
             <button className='bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors'>

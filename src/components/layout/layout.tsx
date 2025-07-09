@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { Footer } from './footer'
-import { Header } from './header'
-import { Sidebar } from './side-bar'
+import { Footer } from '../footer'
+import { Header } from '../header'
+import { Sidebar } from '../side-bar'
 import { useLayout } from './useLayout'
 
 interface LayoutProps {

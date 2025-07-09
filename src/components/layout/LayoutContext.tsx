@@ -4,7 +4,7 @@ import { LayoutContext } from './LayoutContextDef'
 import type { LayoutContextType } from './LayoutContextDef'
 
 import type { ReactNode } from 'react'
-import type { SidebarItem } from './side-bar'
+import type { SidebarItem } from '../side-bar'
 
 // Tipos para el contexto
 interface LayoutState {

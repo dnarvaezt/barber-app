@@ -1,14 +1,9 @@
 import { Icon } from './icons'
-import { useLayout } from './useLayout'
+import { useLayout } from './layout/useLayout'
 
 export const Header = () => {
-  const {
-    headerTitle,
-    headerSubtitle,
-    headerVisible,
-    headerActions,
-    toggleSidebar,
-  } = useLayout()
+  const { headerTitle, headerVisible, headerActions, toggleSidebar } =
+    useLayout()
 
   if (!headerVisible) {
     return null
@@ -19,7 +14,6 @@ export const Header = () => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16'>
           <div className='flex items-center'>
-            {/* Botón hamburguesa para mobile */}
             <button
               onClick={toggleSidebar}
               className='lg:hidden p-2 rounded-md text-gray-100 hover:text-white hover:bg-white hover:bg-opacity-20 mr-3'
@@ -30,21 +24,10 @@ export const Header = () => {
               <h1 className='text-white text-xl font-bold tracking-tight'>
                 {headerTitle}
               </h1>
-              {headerSubtitle && (
-                <p className='text-gray-200 text-sm'>{headerSubtitle}</p>
-              )}
             </div>
           </div>
 
-          <div className='flex items-center space-x-4'>
-            {/* Acciones personalizadas del header */}
-            {headerActions}
-
-            {/* Botón de acción por defecto */}
-            <button className='p-2 rounded-md text-gray-100 hover:text-white hover:bg-white hover:bg-opacity-20'>
-              <Icon name='search' size='lg' />
-            </button>
-          </div>
+          <div className='flex items-center space-x-4'>{headerActions}</div>
         </div>
       </div>
     </header>
