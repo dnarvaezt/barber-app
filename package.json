@@ -2,9 +2,12 @@
   "name": "filter-docs",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://andesproject.github.io/filter-docs",
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
+    "build:gh-pages": "NODE_ENV=production tsc -b && vite build",
+    "deploy": "npm run build:gh-pages && gh-pages -d dist",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

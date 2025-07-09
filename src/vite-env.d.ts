@@ -1,3 +1,8 @@
 /// <reference types="vite/client" />
 
-declare const __APP_VERSION__: string
+declare global {
+  const __APP_VERSION__: string
+  const __BASE_PATH__: string
+}
+
+export {}
