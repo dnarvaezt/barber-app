@@ -14,6 +14,8 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(version),
   },
+  // Base path for GitHub Pages
+  base: '/filter-docs/',
   // Server configuration
   server: {
     port: 3000,
