@@ -32,6 +32,18 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1"
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{scss,css}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@types/node": "^24.0.12",
