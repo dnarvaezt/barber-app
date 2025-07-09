@@ -15,12 +15,27 @@ const getBasePath = (mode: string) => {
   return '/filter-docs/'
 }
 
+// Plugin para manejar archivos markdown
+const markdownPlugin = () => {
+  return {
+    name: 'markdown-loader',
+    transform(code: string, id: string) {
+      if (id.endsWith('.md')) {
+        return {
+          code: `export default ${JSON.stringify(code)}`,
+          map: null,
+        }
+      }
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const basePath = getBasePath(mode)
 
   return {
-    plugins: [react()],
+    plugins: [react(), markdownPlugin()],
     // Ensure environment variables are loaded
     envDir: '.',
     // Define environment variables that should be exposed to the client

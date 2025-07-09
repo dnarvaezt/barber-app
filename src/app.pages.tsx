@@ -1,5 +1,4 @@
-import { getAbsolutePath } from './config/environment'
-import HomePage from './modules/HomePage'
+import HomePage from './modules/home/home.page'
 
 export const appPageList = [
   {
@@ -8,8 +7,3 @@ export const appPageList = [
     component: HomePage,
   },
 ]
-
-// Función helper para obtener rutas absolutas
-export const getPageAbsolutePath = (relativePath: string) => {
-  return getAbsolutePath(relativePath)
-}

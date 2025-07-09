@@ -3,7 +3,7 @@ import { Icon } from './components'
 export const appMenuItems = [
   {
     id: 'home',
-    title: 'Inicio',
+    title: 'Información',
     path: '/',
     icon: <Icon name='home' />,
     children: [],
