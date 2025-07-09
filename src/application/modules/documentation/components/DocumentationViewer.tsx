@@ -47,16 +47,31 @@ const DocumentationViewer: React.FC<DocumentationViewerProps> = ({ className = '
 
   return (
     <div className={`documentation-viewer ${className}`}>
-      {/* Mobile menu button */}
-      <button
-        className="mobile-menu-btn"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        aria-label="Toggle navigation menu"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      {/* Mobile Header */}
+      <header className="mobile-header">
+        <div className="mobile-header-content">
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <div className="mobile-title">
+            <h1>@andes-project/filter</h1>
+            <span className="mobile-version">v1.0.1</span>
+          </div>
+
+          <div className="mobile-actions">
+
+          </div>
+        </div>
+
+
+      </header>
 
       {/* Sidebar */}
       <aside className={`documentation-sidebar ${sidebarOpen ? 'open' : ''}`}>

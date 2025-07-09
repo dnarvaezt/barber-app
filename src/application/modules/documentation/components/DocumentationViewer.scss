@@ -6,40 +6,90 @@
   min-height: 100vh;
   background: linear-gradient(135deg, v.$light-color, #f1f5f9);
   position: relative;
+  align-items: flex-start;
 
-  // Mobile menu button
-  .mobile-menu-btn {
+  // Mobile Header
+  .mobile-header {
     display: none;
     position: fixed;
-    top: 1rem;
-    left: 1rem;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
-    background: v.$primary-color;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(v.$primary-color, 0.3);
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: rgba(v.$primary-color, 0.8);
-      transform: translateY(-1px);
-    }
-
-    span {
-      display: block;
-      width: 20px;
-      height: 2px;
-      background: white;
-      margin: 4px 0;
-      transition: all 0.3s ease;
-      border-radius: 1px;
-    }
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(v.$primary-color, 0.1);
 
     @include m.mobile {
       display: block;
     }
+
+    .mobile-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, rgba(v.$primary-color, 0.05), rgba(v.$info-color, 0.05));
+      height: 4rem; // Fixed height for consistent spacing
+
+      .mobile-menu-btn {
+        background: v.$primary-color;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(v.$primary-color, 0.3);
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+
+        &:hover {
+          background: rgba(v.$primary-color, 0.8);
+          transform: translateY(-1px);
+        }
+
+        span {
+          display: block;
+          width: 18px;
+          height: 2px;
+          background: white;
+          margin: 3px 0;
+          transition: all 0.3s ease;
+          border-radius: 1px;
+        }
+      }
+
+      .mobile-title {
+        flex: 1;
+        text-align: center;
+        margin: 0 1rem;
+
+        h1 {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: v.$primary-color;
+          background: linear-gradient(135deg, v.$primary-color, v.$info-color);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .mobile-version {
+          display: block;
+          font-size: 0.75rem;
+          color: v.$secondary-color;
+          font-weight: 500;
+        }
+      }
+
+      .mobile-actions {
+        flex-shrink: 0;
+
+
+      }
+    }
+
+
   }
 
   // Sidebar
@@ -51,6 +101,11 @@
     flex-direction: column;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     z-index: 100;
+    max-height: 100vh;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 
     @include m.mobile {
       position: fixed;
@@ -72,6 +127,7 @@
       justify-content: space-between;
       align-items: center;
       background: linear-gradient(135deg, rgba(v.$primary-color, 0.05), rgba(v.$info-color, 0.05));
+      flex-shrink: 0;
 
       h2 {
         margin: 0;
@@ -105,6 +161,27 @@
     .sidebar-nav {
       flex: 1;
       padding: v.$spacing-unit;
+      overflow-y: auto;
+      min-height: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(v.$primary-color, 0.3) transparent;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(v.$primary-color, 0.3);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(v.$primary-color, 0.5);
+      }
 
       ul {
         list-style: none;
@@ -174,6 +251,7 @@
       padding: v.$spacing-unit * 1.5;
       border-top: 1px solid rgba(v.$primary-color, 0.1);
       background: rgba(v.$primary-color, 0.02);
+      flex-shrink: 0;
 
       .version-info {
         display: flex;
@@ -207,12 +285,17 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 100vh;
 
     .content-header {
       background: white;
       padding: v.$spacing-unit * 2;
       border-bottom: 1px solid rgba(v.$primary-color, 0.1);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      @include m.mobile {
+        display: none;
+      }
 
       h1 {
         color: v.$primary-color;
@@ -298,9 +381,11 @@
 @include m.mobile {
   .documentation-viewer {
     .documentation-main {
+      padding-top: 4rem; // Space for mobile header
+
       .content-header {
         padding: v.$spacing-unit;
-        margin-top: 4rem; // Space for mobile menu button
+        margin-top: 0; // Remove margin since we have padding-top on parent
       }
 
       .content-body {
