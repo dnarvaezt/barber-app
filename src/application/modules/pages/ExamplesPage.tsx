@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import Icon from '../../components/header/icons';
-import { useLayout } from '../../components/header/useLayout';
+import { useEffect } from 'react'
+import { Icon } from '../../components/icons'
+import { useLayout } from '../../components/useLayout'
 
-const ExamplesPage: React.FC = () => {
-  const { setHeaderTitle, setHeaderSubtitle, setHeaderActions } = useLayout();
+const ExamplesPage = () => {
+  const { setHeaderTitle, setHeaderSubtitle, setHeaderActions } = useLayout()
 
   useEffect(() => {
-    setHeaderTitle('Ejemplos');
-    setHeaderSubtitle('Casos de uso prácticos');
+    setHeaderTitle('Ejemplos')
+    setHeaderSubtitle('Casos de uso prácticos')
 
     setHeaderActions(
       <div className='flex items-center space-x-2'>
@@ -16,12 +16,12 @@ const ExamplesPage: React.FC = () => {
           Ver Código
         </button>
       </div>
-    );
+    )
 
     return () => {
-      setHeaderActions(undefined);
-    };
-  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions]);
+      setHeaderActions(undefined)
+    }
+  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions])
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -158,7 +158,7 @@ const customFilters = [
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ExamplesPage;
+export default ExamplesPage

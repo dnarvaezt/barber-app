@@ -1,48 +1,49 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import Icon from './icons';
-import { useLayout } from './useLayout';
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { Icon } from './icons'
+import { useLayout } from './useLayout'
 
+import type { ReactNode } from 'react'
 export interface SidebarItem {
-  id: string;
-  title: string;
-  path?: string;
-  icon?: React.ReactNode;
-  children?: SidebarItem[];
+  id: string
+  title: string
+  path?: string
+  icon?: ReactNode
+  children?: SidebarItem[]
 }
 
-const Sidebar: React.FC = () => {
-  const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+export const Sidebar = () => {
+  const location = useLocation()
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
 
   const { sidebarItems, sidebarOpen, sidebarVisible, closeSidebar } =
-    useLayout();
+    useLayout()
 
   if (!sidebarVisible) {
-    return null;
+    return null
   }
 
   const toggleItem = (itemId: string) => {
-    const newExpanded = new Set(expandedItems);
+    const newExpanded = new Set(expandedItems)
     if (newExpanded.has(itemId)) {
-      newExpanded.delete(itemId);
+      newExpanded.delete(itemId)
     } else {
-      newExpanded.add(itemId);
+      newExpanded.add(itemId)
     }
-    setExpandedItems(newExpanded);
-  };
+    setExpandedItems(newExpanded)
+  }
 
   const handleItemClick = (item: SidebarItem) => {
     // En mobile, cerrar el sidebar al hacer clic en un enlace
     if (item.path && window.innerWidth < 1024) {
-      closeSidebar();
+      closeSidebar()
     }
-  };
+  }
 
   const renderItem = (item: SidebarItem, level: number = 0) => {
-    const isExpanded = expandedItems.has(item.id);
-    const isActive = item.path && location.pathname === item.path;
-    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedItems.has(item.id)
+    const isActive = item.path && location.pathname === item.path
+    const hasChildren = item.children && item.children.length > 0
 
     return (
       <div key={item.id}>
@@ -58,9 +59,9 @@ const Sidebar: React.FC = () => {
           `}
           onClick={() => {
             if (hasChildren) {
-              toggleItem(item.id);
+              toggleItem(item.id)
             }
-            handleItemClick(item);
+            handleItemClick(item)
           }}
         >
           <div className='flex items-center space-x-3'>
@@ -96,8 +97,8 @@ const Sidebar: React.FC = () => {
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <aside
@@ -134,7 +135,5 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
     </aside>
-  );
-};
-
-export default Sidebar;
+  )
+}

@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import Icon from '../../components/header/icons';
-import { useLayout } from '../../components/header/useLayout';
+import { useEffect } from 'react'
+import { Icon } from '../../components/icons'
+import { useLayout } from '../../components/useLayout'
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   const {
     setHeaderTitle,
     setHeaderSubtitle,
     setHeaderActions,
     setOverlayVisible,
-  } = useLayout();
+  } = useLayout()
 
   useEffect(() => {
     // Configurar el header para esta página
-    setHeaderTitle('Filter Docs');
-    setHeaderSubtitle('Documentación completa y ejemplos');
+    setHeaderTitle('Filter Docs')
+    setHeaderSubtitle('Documentación completa y ejemplos')
 
     // Agregar acciones personalizadas al header
     setHeaderActions(
@@ -30,13 +30,13 @@ const HomePage: React.FC = () => {
           Acción
         </button>
       </div>
-    );
+    )
 
     // Cleanup al desmontar el componente
     return () => {
-      setHeaderActions(undefined);
-    };
-  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions, setOverlayVisible]);
+      setHeaderActions(undefined)
+    }
+  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions, setOverlayVisible])
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -116,7 +116,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage

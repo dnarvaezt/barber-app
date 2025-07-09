@@ -1,7 +1,6 @@
-import React from 'react';
-import Icon from './icons';
+import { Icon } from './icons'
 
-const Footer: React.FC = () => {
+export const Footer = () => {
   return (
     <footer className='bg-gray-800 text-white'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
@@ -97,7 +96,5 @@ const Footer: React.FC = () => {
         </div>
       </div>
     </footer>
-  );
-};
-
-export default Footer;
+  )
+}

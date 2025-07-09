@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import Icon from '../../components/header/icons';
-import { useLayout } from '../../components/header/useLayout';
+import { useEffect } from 'react'
+import { Icon } from '../../components/icons'
+import { useLayout } from '../../components/useLayout'
 
-const DocumentationPage: React.FC = () => {
-  const { setHeaderTitle, setHeaderSubtitle, setHeaderActions } = useLayout();
+const DocumentationPage = () => {
+  const { setHeaderTitle, setHeaderSubtitle, setHeaderActions } = useLayout()
 
   useEffect(() => {
-    setHeaderTitle('Documentación');
-    setHeaderSubtitle('Guías y referencias de API');
+    setHeaderTitle('Documentación')
+    setHeaderSubtitle('Guías y referencias de API')
 
     setHeaderActions(
       <div className='flex items-center space-x-2'>
@@ -16,12 +16,12 @@ const DocumentationPage: React.FC = () => {
           Descargar PDF
         </button>
       </div>
-    );
+    )
 
     return () => {
-      setHeaderActions(undefined);
-    };
-  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions]);
+      setHeaderActions(undefined)
+    }
+  }, [setHeaderTitle, setHeaderSubtitle, setHeaderActions])
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -135,7 +135,7 @@ const DocumentationPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DocumentationPage;
+export default DocumentationPage

@@ -1,16 +1,16 @@
-import React from 'react';
-import Footer from './footer';
-import Header from './header';
-import Sidebar from './side-bar';
-import { useLayout } from './useLayout';
+import type { ReactNode } from 'react'
+import { Footer } from './footer'
+import { Header } from './header'
+import { Sidebar } from './side-bar'
+import { useLayout } from './useLayout'
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+export const Layout = ({ children }: LayoutProps) => {
   const { sidebarOpen, overlayVisible, overlayContent, hideOverlay } =
-    useLayout();
+    useLayout()
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -52,7 +52,5 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Footer />
       </div>
     </div>
-  );
-};
-
-export default Layout;
+  )
+}

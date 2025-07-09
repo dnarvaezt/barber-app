@@ -1,18 +1,17 @@
-import React from 'react';
-import Icon from './icons';
-import { useLayout } from './useLayout';
+import { Icon } from './icons'
+import { useLayout } from './useLayout'
 
-const Header: React.FC = () => {
+export const Header = () => {
   const {
     headerTitle,
     headerSubtitle,
     headerVisible,
     headerActions,
     toggleSidebar,
-  } = useLayout();
+  } = useLayout()
 
   if (!headerVisible) {
-    return null;
+    return null
   }
 
   return (
@@ -49,7 +48,5 @@ const Header: React.FC = () => {
         </div>
       </div>
     </header>
-  );
-};
-
-export default Header;
+  )
+}

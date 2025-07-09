@@ -1,10 +1,9 @@
-import './app.scss';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { Layout, LayoutProvider } from '../../components';
-import Icon from '../../components/header/icons';
-import DocumentationPage from '../pages/DocumentationPage';
-import ExamplesPage from '../pages/ExamplesPage';
-import HomePage from '../pages/HomePage';
+import './app.scss'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { Icon, Layout, LayoutProvider } from '../../components'
+import DocumentationPage from '../pages/DocumentationPage'
+import ExamplesPage from '../pages/ExamplesPage'
+import HomePage from '../pages/HomePage'
 
 // Definir las páginas disponibles
 const pages = [
@@ -23,7 +22,7 @@ const pages = [
     name: 'Ejemplos',
     component: ExamplesPage,
   },
-];
+]
 
 // Definir elementos del sidebar
 const sidebarItems = [
@@ -133,7 +132,7 @@ const sidebarItems = [
     icon: <Icon name='cog' />,
     path: '/settings',
   },
-];
+]
 
 function App() {
   return (
@@ -152,7 +151,7 @@ function App() {
         </Routes>
       </Layout>
     </LayoutProvider>
-  );
+  )
 }
 
-export default App;
+export default App
