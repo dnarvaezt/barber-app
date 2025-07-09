@@ -1,0 +1,7 @@
+@use '../../assets/styles/variables' as v;
+@use '../../assets/styles/mixins' as m;
+
+.documentation {
+  min-height: 100vh;
+  background: linear-gradient(135deg, v.$light-color, #f1f5f9);
+}

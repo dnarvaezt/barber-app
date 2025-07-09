@@ -1,0 +1,68 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Base styles
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: v.$font-family-base;
+  font-size: v.$font-size-base;
+  line-height: v.$line-height-base;
+  color: v.$dark-color;
+  background-color: v.$light-color;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Custom component styles
+.btn {
+  @include m.button-base;
+
+  &--primary {
+    background-color: v.$primary-color;
+    color: white;
+  }
+
+  &--success {
+    background-color: v.$success-color;
+    color: white;
+  }
+
+  &--danger {
+    background-color: v.$danger-color;
+    color: white;
+  }
+
+  &--warning {
+    background-color: v.$warning-color;
+    color: white;
+  }
+
+  &--info {
+    background-color: v.$info-color;
+    color: white;
+  }
+}
+
+.card {
+  @include m.card;
+}
+
+// Utility classes
+.flex-center {
+  @include m.flex-center;
+}
+
+.flex-between {
+  @include m.flex-between;
+}
+
+.flex-column {
+  @include m.flex-column;
+}

@@ -1,0 +1,363 @@
+@use '../../../assets/styles/variables' as v;
+@use '../../../assets/styles/mixins' as m;
+
+.documentation-viewer {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, v.$light-color, #f1f5f9);
+  position: relative;
+
+  // Mobile menu button
+  .mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    background: v.$primary-color;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(v.$primary-color, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(v.$primary-color, 0.8);
+      transform: translateY(-1px);
+    }
+
+    span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: white;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+      border-radius: 1px;
+    }
+
+    @include m.mobile {
+      display: block;
+    }
+  }
+
+  // Sidebar
+  .documentation-sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid rgba(v.$primary-color, 0.1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+
+    @include m.mobile {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      height: 100vh;
+      transition: left 0.3s ease;
+      z-index: 1000;
+
+      &.open {
+        left: 0;
+      }
+    }
+
+    .sidebar-header {
+      padding: v.$spacing-unit * 1.5;
+      border-bottom: 1px solid rgba(v.$primary-color, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(v.$primary-color, 0.05), rgba(v.$info-color, 0.05));
+
+      h2 {
+        margin: 0;
+        color: v.$primary-color;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .close-sidebar-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: v.$secondary-color;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(v.$primary-color, 0.1);
+          color: v.$primary-color;
+        }
+
+        @include m.mobile {
+          display: block;
+        }
+      }
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: v.$spacing-unit;
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+
+          .nav-item {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: v.$spacing-unit;
+            border-radius: 0.5rem;
+            color: v.$secondary-color;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              height: 100%;
+              width: 0;
+              background: linear-gradient(90deg, v.$primary-color, v.$info-color);
+              transition: width 0.3s ease;
+              z-index: -1;
+            }
+
+            &:hover {
+              color: v.$primary-color;
+              background: rgba(v.$primary-color, 0.05);
+              transform: translateX(4px);
+
+              &::before {
+                width: 4px;
+              }
+            }
+
+            &.active {
+              color: white;
+              background: linear-gradient(135deg, v.$primary-color, v.$info-color);
+              box-shadow: 0 4px 12px rgba(v.$primary-color, 0.3);
+              transform: translateX(4px);
+
+              &::before {
+                width: 4px;
+              }
+            }
+
+            &:focus {
+              outline: none;
+              box-shadow: 0 0 0 3px rgba(v.$primary-color, 0.2);
+            }
+          }
+        }
+      }
+    }
+
+    .sidebar-footer {
+      padding: v.$spacing-unit * 1.5;
+      border-top: 1px solid rgba(v.$primary-color, 0.1);
+      background: rgba(v.$primary-color, 0.02);
+
+      .version-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+
+        .version-badge {
+          background: linear-gradient(135deg, v.$success-color, #059669);
+          color: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: 1rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .version-text {
+          color: v.$secondary-color;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // Main content
+  .documentation-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .content-header {
+      background: white;
+      padding: v.$spacing-unit * 2;
+      border-bottom: 1px solid rgba(v.$primary-color, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      h1 {
+        color: v.$primary-color;
+        margin: 0 0 v.$spacing-unit 0;
+        background: linear-gradient(135deg, v.$primary-color, v.$info-color);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        @include m.heading-1;
+
+        @include m.mobile {
+          font-size: 1.75rem;
+        }
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: v.$secondary-color;
+        font-size: 0.9rem;
+
+        .separator {
+          color: rgba(v.$secondary-color, 0.5);
+        }
+
+        span:last-child {
+          color: v.$primary-color;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .content-body {
+      flex: 1;
+      padding: v.$spacing-unit * 2;
+      overflow-y: auto;
+
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: v.$spacing-unit * 4;
+        color: v.$secondary-color;
+
+        .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid rgba(v.$primary-color, 0.2);
+          border-top: 3px solid v.$primary-color;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-bottom: v.$spacing-unit;
+        }
+
+        p {
+          margin: 0;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+
+  // Overlay for mobile
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+
+    @include m.mobile {
+      display: block;
+    }
+  }
+}
+
+// Responsive design
+@include m.mobile {
+  .documentation-viewer {
+    .documentation-main {
+      .content-header {
+        padding: v.$spacing-unit;
+        margin-top: 4rem; // Space for mobile menu button
+      }
+
+      .content-body {
+        padding: v.$spacing-unit;
+      }
+    }
+  }
+}
+
+@include m.tablet {
+  .documentation-viewer {
+    .documentation-sidebar {
+      width: 250px;
+    }
+
+    .documentation-main {
+      .content-header {
+        padding: v.$spacing-unit * 1.5;
+      }
+
+      .content-body {
+        padding: v.$spacing-unit * 1.5;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Focus styles for accessibility
+.documentation-viewer {
+  .nav-item:focus,
+  .mobile-menu-btn:focus,
+  .close-sidebar-btn:focus {
+    outline: 2px solid v.$primary-color;
+    outline-offset: 2px;
+  }
+}
+
+// Print styles
+@media print {
+  .documentation-viewer {
+    .mobile-menu-btn,
+    .documentation-sidebar,
+    .sidebar-overlay {
+      display: none !important;
+    }
+
+    .documentation-main {
+      .content-header {
+        box-shadow: none;
+        border-bottom: 1px solid #ccc;
+      }
+    }
+  }
+}
