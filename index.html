@@ -5,6 +5,24 @@
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@andes-project/filter - Documentación</title>
+    <script type="text/javascript">
+      // Script para manejar rutas directas en GitHub Pages
+      ;(function () {
+        var l = window.location
+        var basePath = '/filter-docs'
+
+        // Si venimos de una redirección del 404.html, restaurar la URL original
+        if (document.referrer && document.referrer.includes(l.hostname)) {
+          var referrerPath = new URL(document.referrer).pathname
+          var relativePath = referrerPath.replace(basePath, '')
+
+          if (relativePath && relativePath !== '/') {
+            // Restaurar la URL original
+            window.history.replaceState(null, null, basePath + relativePath)
+          }
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
