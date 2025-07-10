@@ -1,16 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Icon } from './icons'
 import { useLayout } from './layout/useLayout'
 
-import type { ReactNode } from 'react'
-export interface SidebarItem {
-  id: string
-  title: string
-  path?: string
-  icon?: ReactNode
-  children?: SidebarItem[]
-}
+import type { RouteItem } from '../routes'
+
+// Usar RouteItem directamente en lugar de duplicar la interfaz
+export type SidebarItem = RouteItem
 
 export const Sidebar = () => {
   const location = useLocation()
@@ -19,6 +15,78 @@ export const Sidebar = () => {
 
   const { sidebarItems, sidebarOpen, sidebarVisible, closeSidebar } =
     useLayout()
+
+  // Función helper para calcular el path completo de un item
+  const getFullPath = (item: RouteItem, parentPath: string = ''): string => {
+    if (!item.path) return parentPath
+
+    if (item.inheritPath && parentPath) {
+      return parentPath + item.path
+    }
+
+    return item.path
+  }
+
+  // Función para verificar si un item o sus hijos están activos
+  const isItemActive = (item: RouteItem, parentPath: string = ''): boolean => {
+    const fullPath = getFullPath(item, parentPath)
+
+    if (fullPath && location.pathname === fullPath) {
+      return true
+    }
+
+    if (item.children) {
+      return item.children.some(child => isItemActive(child, fullPath))
+    }
+
+    return false
+  }
+
+  // Función para obtener todos los IDs de padres de un path activo
+  const getParentIds = (
+    path: string,
+    items: RouteItem[],
+    parentPath: string = ''
+  ): string[] => {
+    const parentIds: string[] = []
+
+    const findParents = (
+      items: RouteItem[],
+      targetPath: string,
+      currentParentPath: string = ''
+    ): boolean => {
+      for (const item of items) {
+        const fullPath = getFullPath(item, currentParentPath)
+
+        if (fullPath === targetPath) {
+          return true
+        }
+
+        if (item.children && item.children.length > 0) {
+          if (findParents(item.children, targetPath, fullPath)) {
+            parentIds.unshift(item.id)
+            return true
+          }
+        }
+      }
+      return false
+    }
+
+    findParents(items, path, parentPath)
+    return parentIds
+  }
+
+  // Expandir automáticamente los padres del item activo
+  useEffect(() => {
+    const parentIds = getParentIds(location.pathname, sidebarItems)
+    if (parentIds.length > 0) {
+      setExpandedItems(prev => {
+        const newExpanded = new Set(prev)
+        parentIds.forEach(id => newExpanded.add(id))
+        return newExpanded
+      })
+    }
+  }, [location.pathname, sidebarItems])
 
   if (!sidebarVisible) {
     return null
@@ -34,14 +102,43 @@ export const Sidebar = () => {
     setExpandedItems(newExpanded)
   }
 
-  const handleItemClick = (item: SidebarItem) => {
-    if (item.path && window.innerWidth < 1024) closeSidebar()
+  // Función para determinar el tipo de item y manejar el click
+  const handleItemClick = (item: RouteItem, event: React.MouseEvent) => {
+    const hasPath = !!item.path
+    const hasChildren = item.children && item.children.length > 0
+
+    if (hasPath && hasChildren) {
+      // Item con path y children: el click principal navega
+      if (event.button === 0 && !event.ctrlKey && !event.metaKey) {
+        // Click principal: navegar
+        if (window.innerWidth < 1024) closeSidebar()
+      }
+    } else if (hasPath && !hasChildren) {
+      // Item solo con path: navegar
+      if (window.innerWidth < 1024) closeSidebar()
+    } else if (!hasPath && hasChildren) {
+      // Item sin path pero con children: expandir/contraer
+      toggleItem(item.id)
+    }
+    // Si no tiene path ni children, no hace nada
   }
 
-  const renderItem = (item: SidebarItem, level: number = 0) => {
+  // Función para manejar el click en el botón de expandir
+  const handleExpandClick = (item: RouteItem, event: React.MouseEvent) => {
+    event.stopPropagation()
+    toggleItem(item.id)
+  }
+
+  const renderItem = (
+    item: RouteItem,
+    level: number = 0,
+    parentPath: string = ''
+  ) => {
     const isExpanded = expandedItems.has(item.id)
-    const isActive = item.path && location.pathname === item.path
+    const isActive = isItemActive(item, parentPath)
     const hasChildren = item.children && item.children.length > 0
+    const hasPath = !!item.path
+    const fullPath = getFullPath(item, parentPath)
 
     return (
       <div key={item.id}>
@@ -55,43 +152,53 @@ export const Sidebar = () => {
                 : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
             }
           `}
-          onClick={() => {
-            if (hasChildren) {
-              toggleItem(item.id)
-            }
-            handleItemClick(item)
-          }}
+          onClick={e => handleItemClick(item, e)}
         >
-          <div className='flex items-center space-x-3'>
+          <div className='flex items-center space-x-3 flex-1 min-w-0'>
             {item.icon && (
               <div className='flex-shrink-0 w-5 h-5'>{item.icon}</div>
             )}
-            {item.path ? (
+            {hasPath ? (
               <Link
-                to={item.path}
-                className='flex-1'
+                to={fullPath}
+                className='flex-1 truncate'
                 onClick={e => e.stopPropagation()}
               >
                 {item.title}
               </Link>
             ) : (
-              <span className='flex-1'>{item.title}</span>
+              <span className='flex-1 truncate'>{item.title}</span>
             )}
           </div>
+
+          {/* Botón de expandir/contraer con indicador visual integrado */}
           {hasChildren && (
-            <Icon
-              name='chevronRight'
-              className={`transition-transform duration-200 ${
-                isExpanded ? 'rotate-90' : ''
-              }`}
-              size='sm'
-            />
+            <button
+              onClick={e => handleExpandClick(item, e)}
+              className={`
+                flex-shrink-0 ml-2 p-2 rounded-md transition-all duration-200 hover:scale-110
+                ${
+                  isActive
+                    ? 'text-blue-600 hover:bg-blue-200 hover:text-blue-700'
+                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                }
+              `}
+              title={isExpanded ? 'Contraer' : 'Expandir'}
+            >
+              <Icon
+                name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                className='transition-transform duration-200'
+                size='sm'
+              />
+            </button>
           )}
         </div>
 
         {hasChildren && isExpanded && (
           <div className='mt-1'>
-            {item.children!.map(child => renderItem(child, level + 1))}
+            {item.children!.map(child =>
+              renderItem(child, level + 1, fullPath)
+            )}
           </div>
         )}
       </div>

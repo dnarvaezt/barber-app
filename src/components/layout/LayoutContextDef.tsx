@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 import type { ReactNode } from 'react'
-import type { SidebarItem } from '../side-bar'
+import type { RouteItem } from '../../routes'
 
 // Tipos para el contexto
 interface LayoutState {
@@ -13,7 +13,7 @@ interface LayoutState {
 
   // Sidebar
   sidebarOpen: boolean
-  sidebarItems: SidebarItem[]
+  sidebarItems: RouteItem[]
   sidebarVisible: boolean
 
   // Overlay
@@ -31,7 +31,7 @@ export interface LayoutContextType extends LayoutState {
   toggleSidebar: () => void
   openSidebar: () => void
   closeSidebar: () => void
-  setSidebarItems: (items: SidebarItem[]) => void
+  setSidebarItems: (items: RouteItem[]) => void
   setSidebarVisible: (visible: boolean) => void
 
   // Overlay actions

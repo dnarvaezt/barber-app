@@ -1,17 +1,15 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { appMenuItems } from './app.menu'
-import { appPageList } from './app.pages'
 import { Layout, LayoutProvider } from './components'
-import { useBasePath } from './hooks'
+import { appRoutes, getPages } from './routes'
 
 function App() {
-  const basePath = useBasePath()
+  const pages = getPages(appRoutes)
 
   return (
-    <LayoutProvider initialSidebarItems={appMenuItems}>
+    <LayoutProvider initialSidebarItems={appRoutes}>
       <Layout>
         <Routes>
-          {appPageList.map(page => (
+          {pages.map(page => (
             <Route
               key={page.path}
               path={page.path}
@@ -19,7 +17,7 @@ function App() {
             />
           ))}
           {/* Redirigir rutas no encontradas a la página de inicio */}
-          <Route path='*' element={<Navigate to={basePath} replace />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
       </Layout>
     </LayoutProvider>

@@ -4,7 +4,7 @@ import { LayoutContext } from './LayoutContextDef'
 import type { LayoutContextType } from './LayoutContextDef'
 
 import type { ReactNode } from 'react'
-import type { SidebarItem } from '../side-bar'
+import type { RouteItem } from '../../routes'
 
 // Tipos para el contexto
 interface LayoutState {
@@ -16,7 +16,7 @@ interface LayoutState {
 
   // Sidebar
   sidebarOpen: boolean
-  sidebarItems: SidebarItem[]
+  sidebarItems: RouteItem[]
   sidebarVisible: boolean
 
   // Overlay
@@ -40,7 +40,7 @@ const initialState: LayoutState = {
 // Provider del contexto
 export const LayoutProvider: React.FC<{
   children: ReactNode
-  initialSidebarItems?: SidebarItem[]
+  initialSidebarItems?: RouteItem[]
 }> = ({ children, initialSidebarItems = [] }) => {
   const [state, setState] = useState<LayoutState>({
     ...initialState,
@@ -77,7 +77,7 @@ export const LayoutProvider: React.FC<{
     setState(prev => ({ ...prev, sidebarOpen: false }))
   }, [])
 
-  const setSidebarItems = useCallback((items: SidebarItem[]) => {
+  const setSidebarItems = useCallback((items: RouteItem[]) => {
     setState(prev => ({ ...prev, sidebarItems: items }))
   }, [])
 

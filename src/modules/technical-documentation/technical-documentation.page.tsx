@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import { MarkdownViewer, useLayout } from '../../components'
 import homeInfo from './home.info.md'
 
-export const HomePage = () => {
+export const TechnicalDocumentation = () => {
   const { setHeaderTitle, setHeaderActions, setOverlayVisible } = useLayout()
 
   useEffect(() => {
-    setHeaderTitle('Información')
+    setHeaderTitle('Documentación Técnica')
 
     return () => {
       setHeaderActions(undefined)

@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
       __BASE_PATH__: JSON.stringify(basePath),
     },
     // Base path dinámico para GitHub Pages
-    base: basePath,
+    base: mode === 'development' ? '/' : basePath,
     // Server configuration
     server: {
       port: 3000,
