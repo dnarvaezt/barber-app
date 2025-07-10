@@ -3,11 +3,12 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './app.tsx'
 import './assets/styles/main.scss'
+import { config } from './config/environment'
 
 const children: React.ReactNode = (() => {
   return (
     <StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename={config.basePath}>
         <App />
       </BrowserRouter>
     </StrictMode>
