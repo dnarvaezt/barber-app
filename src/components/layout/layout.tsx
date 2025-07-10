@@ -2,42 +2,14 @@ import type { ReactNode } from 'react'
 import { Footer } from '../footer'
 import { Header } from '../header'
 import { Sidebar } from '../side-bar'
-import { useLayout } from './useLayout'
 
 interface LayoutProps {
   children: ReactNode
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const { sidebarOpen, overlayVisible, overlayContent, hideOverlay } =
-    useLayout()
-
   return (
-    <div className='min-h-screen bg-gray-50'>
-      {/* Overlay para cerrar sidebar en mobile */}
-      {sidebarOpen && (
-        <div
-          className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
-          onClick={hideOverlay}
-        />
-      )}
-
-      {/* Overlay personalizado */}
-      {overlayVisible && (
-        <div
-          className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4'
-          onClick={hideOverlay}
-        >
-          <div
-            className='bg-white rounded-lg shadow-xl max-w-md w-full p-6'
-            onClick={e => e.stopPropagation()}
-          >
-            {overlayContent}
-          </div>
-        </div>
-      )}
-
-      {/* Sidebar */}
+    <div className='min-h-screen bg-gray-100'>
       <Sidebar />
 
       {/* Contenido principal - Con margen izquierdo para el sidebar */}
@@ -46,7 +18,7 @@ export const Layout = ({ children }: LayoutProps) => {
         <Header />
 
         {/* Body - Se adapta al 100% del alto disponible */}
-        <main className='min-h-screen'>{children}</main>
+        <main className='min-h-screen bg-gray-50'>{children}</main>
 
         {/* Footer */}
         <Footer />

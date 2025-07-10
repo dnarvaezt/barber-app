@@ -144,19 +144,25 @@ export const Sidebar = () => {
       <div key={item.id}>
         <div
           className={`
-            flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg mx-2 mb-1 transition-all duration-200 cursor-pointer
+            flex items-center justify-between px-3 py-2 text-sm font-normal transition-colors duration-150 cursor-pointer
             ${level > 0 ? 'ml-6' : ''}
             ${
               isActive
-                ? 'bg-blue-100 text-blue-700 border-l-4 border-blue-500'
-                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-blue-100 text-blue-800 border-r-2 border-blue-500'
+                : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
             }
           `}
           onClick={e => handleItemClick(item, e)}
         >
           <div className='flex items-center space-x-3 flex-1 min-w-0'>
             {item.icon && (
-              <div className='flex-shrink-0 w-5 h-5'>{item.icon}</div>
+              <div
+                className={`flex-shrink-0 w-4 h-4 ${
+                  isActive ? 'text-blue-600' : 'text-gray-600'
+                }`}
+              >
+                {item.icon}
+              </div>
             )}
             {hasPath ? (
               <Link
@@ -171,23 +177,23 @@ export const Sidebar = () => {
             )}
           </div>
 
-          {/* Botón de expandir/contraer con indicador visual integrado */}
+          {/* Botón de expandir/contraer */}
           {hasChildren && (
             <button
               onClick={e => handleExpandClick(item, e)}
               className={`
-                flex-shrink-0 ml-2 p-2 rounded-md transition-all duration-200 hover:scale-110
+                flex-shrink-0 ml-2 p-1 rounded transition-colors duration-150
                 ${
                   isActive
-                    ? 'text-blue-600 hover:bg-blue-200 hover:text-blue-700'
-                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                    ? 'text-blue-600 hover:bg-blue-200'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
                 }
               `}
               title={isExpanded ? 'Contraer' : 'Expandir'}
             >
               <Icon
                 name={isExpanded ? 'chevron-up' : 'chevron-down'}
-                className='transition-transform duration-200'
+                className='transition-transform duration-150'
                 size='sm'
               />
             </button>
@@ -195,7 +201,7 @@ export const Sidebar = () => {
         </div>
 
         {hasChildren && isExpanded && (
-          <div className='mt-1'>
+          <div className='mt-1 border-l border-gray-200 ml-3'>
             {item.children!.map(child =>
               renderItem(child, level + 1, fullPath)
             )}
@@ -206,36 +212,55 @@ export const Sidebar = () => {
   }
 
   return (
-    <aside
-      className={`
-        fixed left-0 top-0 w-64 h-screen bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:z-40
-      `}
-    >
-      <div className='h-full flex flex-col'>
-        <div className='p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between'>
-          <h2 className='text-lg font-semibold text-gray-900'>Filter Docs</h2>
+    <>
+      {/* Overlay para móvil */}
+      {sidebarOpen && (
+        <div
+          className='fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden transition-opacity duration-300'
+          onClick={closeSidebar}
+        />
+      )}
+
+      <aside
+        className={`
+          fixed top-0 left-0 z-30 h-full w-64 bg-white border-r border-gray-300 shadow-sm transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        {/* Header del sidebar */}
+        <div className='flex items-center h-14 px-4 border-b border-gray-300 bg-gray-50'>
+          <div className='flex items-center space-x-3 flex-1 min-w-0'>
+            <div className='w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm'>
+              <Icon name='book' className='text-white' size='sm' />
+            </div>
+            <span className='text-gray-900 font-semibold text-sm truncate'>
+              Filter Docs
+            </span>
+          </div>
           <button
             onClick={closeSidebar}
-            className='lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+            className='lg:hidden ml-2 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center h-9 w-9'
+            style={{ minHeight: 0 }}
           >
-            <Icon name='times' size='lg' />
+            <Icon name='times' size='sm' />
           </button>
         </div>
 
-        <div className='flex-1 overflow-y-auto py-4'>
-          <nav className='space-y-1'>
+        {/* Contenido del sidebar */}
+        <div className='flex flex-col h-full'>
+          {/* Navegación */}
+          <nav className='flex-1 px-3 py-4 space-y-1 overflow-y-auto'>
             {sidebarItems.map(item => renderItem(item))}
           </nav>
-        </div>
 
-        <div className='p-4 border-t border-gray-200 flex-shrink-0'>
-          <div className='text-xs text-gray-500 text-center'>
-            Versión: {version}
+          {/* Footer del sidebar */}
+          <div className='px-4 py-3 border-t border-gray-300 bg-gray-50'>
+            <div className='text-xs text-gray-500 text-center font-medium'>
+              v{version}
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }

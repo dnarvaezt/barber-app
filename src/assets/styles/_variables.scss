@@ -2,14 +2,32 @@
 // Note: For Tailwind, use the theme configuration in tailwind.config.js
 
 // Colors (keeping for SCSS compatibility)
-$primary-color: #3b82f6; // primary-500
-$secondary-color: #64748b; // secondary-500
+$primary-color: #3b82f6; // blue-500
+$secondary-color: #6b7280; // gray-500
 $success-color: #10b981; // green-500
 $danger-color: #ef4444; // red-500
 $warning-color: #f59e0b; // amber-500
 $info-color: #06b6d4; // cyan-500
-$light-color: #f8fafc; // slate-50
-$dark-color: #0f172a; // slate-900
+$light-color: #ffffff; // white
+$dark-color: #111827; // gray-900
+
+// Notion-inspired colors with better contrast
+$notion-bg: #ffffff;
+$notion-sidebar: #f7f6f3;
+$notion-sidebar-dark: #2f3437;
+$notion-text: #1f2937; // gray-800 for better contrast
+$notion-text-secondary: #4b5563; // gray-600 for better contrast
+$notion-border: #d1d5db; // gray-300 for better contrast
+
+// Enhanced contrast colors
+$border-primary: #d1d5db; // gray-300
+$border-secondary: #e5e7eb; // gray-200
+$text-primary: #1f2937; // gray-800
+$text-secondary: #4b5563; // gray-600
+$text-muted: #6b7280; // gray-500
+$bg-primary: #ffffff;
+$bg-secondary: #f9fafb; // gray-50
+$bg-tertiary: #f3f4f6; // gray-100
 
 // Breakpoints (matching Tailwind defaults)
 $breakpoint-sm: 640px;
@@ -20,8 +38,8 @@ $breakpoint-2xl: 1536px;
 
 // Typography
 $font-family-base:
-  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-  Arial, sans-serif;
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
+  sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 $font-size-base: 1rem;
 $line-height-base: 1.5;
 

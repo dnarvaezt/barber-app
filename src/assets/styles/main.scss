@@ -13,10 +13,51 @@ body {
   font-family: v.$font-family-base;
   font-size: v.$font-size-base;
   line-height: v.$line-height-base;
-  color: v.$dark-color;
-  background-color: v.$light-color;
+  color: v.$text-primary;
+  background-color: v.$bg-tertiary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
+}
+
+// Notion-inspired component styles with better contrast
+@layer components {
+  .notion-card {
+    @apply bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .notion-button {
+    @apply px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+  }
+
+  .notion-button-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 shadow-sm;
+  }
+
+  .notion-button-secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300;
+  }
+
+  .notion-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm;
+  }
+
+  .notion-section {
+    @apply bg-white border border-gray-300 rounded-lg shadow-sm p-6;
+  }
+
+  .notion-text-primary {
+    @apply text-gray-800;
+  }
+
+  .notion-text-secondary {
+    @apply text-gray-600;
+  }
+
+  .notion-border {
+    @apply border-gray-300;
+  }
 }

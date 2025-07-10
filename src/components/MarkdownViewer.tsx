@@ -81,8 +81,8 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
     return (
       <div className={`markdown-viewer loading ${className}`}>
         <div className='flex items-center justify-center p-8'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500'></div>
-          <span className='ml-3 text-gray-600'>Cargando...</span>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500'></div>
+          <span className='ml-3 text-gray-600 font-medium'>Cargando...</span>
         </div>
       </div>
     )
@@ -92,7 +92,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   if (error) {
     return (
       <div className={`markdown-viewer error ${className}`}>
-        <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+        <div className='bg-red-50 border border-red-200 rounded-lg p-6'>
           <div className='flex'>
             <div className='flex-shrink-0'>
               <svg
@@ -122,7 +122,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   // Mostrar contenido Markdown
   return (
     <article
-      className={`markdown-body bg-white text-[#24292e] p-8 rounded-lg shadow ${className}`}
+      className={`markdown-body bg-white text-gray-900 p-8 ${className}`}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
