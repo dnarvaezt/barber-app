@@ -1,0 +1,113 @@
+.markdown-viewer {
+  &__container {
+    // Contenedor principal - solo estructura, no estilos de contenido
+    @apply w-full;
+  }
+
+  &__content {
+    @apply p-8;
+  }
+
+  &__loading {
+    @apply bg-gray-50 border border-gray-200 rounded-lg p-6 dark:bg-gray-800 dark:border-gray-600;
+  }
+
+  &__loading-content {
+    @apply flex items-center justify-center;
+  }
+
+  &__spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+  }
+
+  &__loading-text {
+    @apply ml-3 text-gray-600 dark:text-gray-400;
+  }
+
+  &__error {
+    @apply bg-red-50 border border-red-200 rounded-lg p-6 dark:bg-red-900/20 dark:border-red-800;
+  }
+
+  &__error-content {
+    @apply flex;
+  }
+
+  &__error-icon {
+    @apply flex-shrink-0;
+  }
+
+  &__error-icon-svg {
+    @apply h-5 w-5 text-red-400;
+  }
+
+  &__error-message {
+    @apply ml-3;
+  }
+
+  &__error-title {
+    @apply text-sm font-medium text-red-800 dark:text-red-200;
+  }
+
+  &__error-description {
+    @apply mt-2 text-sm text-red-700 dark:text-red-300;
+  }
+
+  // Contenedor del markdown - ajustado para GitHub Markdown
+  &__markdown-body {
+    // Fondo del contenedor
+    @apply bg-white dark:bg-gray-900;
+
+    // Asegurar que el markdown-body tenga el espacio correcto
+    .markdown-body {
+      // Resetear el padding del markdown-body para que use el del contenedor
+      padding: 2rem;
+      margin: 0;
+      max-width: none;
+      min-width: auto;
+
+      // Asegurar que el contenido tenga el padding correcto
+      > *:first-child {
+        margin-top: 0;
+      }
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Estilos para el botón de copiar código
+.copy-button {
+  @apply absolute top-2 right-2 p-2 rounded-md transition-all duration-200 opacity-0;
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800;
+  @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-gray-100;
+  @apply border border-gray-200 dark:border-gray-600;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  @apply dark:focus:ring-offset-gray-900;
+
+  .copy-icon {
+    @apply w-4 h-4;
+  }
+
+  // Estado copiado
+  &.copied {
+    @apply bg-green-100 text-green-700 border-green-300;
+    @apply dark:bg-green-900/30 dark:text-green-400 dark:border-green-600;
+  }
+}
+
+// Wrapper para bloques de código con botón de copiar
+.code-block-wrapper {
+  @apply relative;
+
+  // Mostrar botón de copiar al hacer hover
+  &:hover .copy-button {
+    opacity: 1;
+  }
+
+  // Asegurar que el pre tenga posición relativa
+  pre {
+    @apply relative;
+  }
+}

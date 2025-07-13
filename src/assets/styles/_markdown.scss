@@ -1,0 +1,380 @@
+// Estilos específicos para Markdown
+// Importar estilos de GitHub Markdown y Highlight.js
+@use 'github-markdown-css';
+@use 'highlight.js/styles/atom-one-dark.css';
+
+// Estilos base para markdown-body (modo light)
+.markdown-body {
+  // Asegurar que los estilos base de GitHub Markdown se mantengan
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+
+  // Ajustes para modo light
+  color: #24292f;
+  background-color: #ffffff;
+
+  // Ajustar colores de enlaces en modo light
+  a {
+    color: #0969da;
+
+    &:hover {
+      color: #1a7f37;
+    }
+  }
+
+  // Ajustar colores de código inline en modo light
+  code {
+    background-color: rgba(175, 184, 193, 0.2);
+    color: #24292f;
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-size: 85%;
+    font-family:
+      'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  }
+
+  // Ajustar colores de bloques de código en modo light
+  pre {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    padding: 16px;
+    overflow: auto;
+    margin: 16px 0;
+    position: relative;
+
+    // Mejorar la apariencia del scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+
+    code {
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: #24292f;
+    }
+  }
+
+  // Ajustar colores de tablas en modo light
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    overflow: auto;
+    break-inside: auto;
+    text-align: left;
+    border: 1px solid #d0d7de;
+
+    th,
+    td {
+      padding: 6px 13px;
+      border: 1px solid #d0d7de;
+    }
+
+    th {
+      background-color: #f6f8fa;
+      font-weight: 600;
+    }
+  }
+
+  // Ajustar colores de bloques de cita en modo light
+  blockquote {
+    padding: 0 1em;
+    color: #656d76;
+    border-left: 0.25em solid #d0d7de;
+    margin: 0 0 16px 0;
+  }
+
+  // Ajustar colores de listas en modo light
+  ul,
+  ol {
+    color: #24292f;
+  }
+
+  // Ajustar colores de encabezados en modo light
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #24292f;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 2em;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.3em;
+  }
+
+  h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.3em;
+  }
+
+  h3 {
+    font-size: 1.25em;
+  }
+
+  h4 {
+    font-size: 1em;
+  }
+
+  h5 {
+    font-size: 0.875em;
+  }
+
+  h6 {
+    font-size: 0.85em;
+    color: #656d76;
+  }
+}
+
+// Ajustes para el tema dark mode
+.dark {
+  .markdown-body {
+    color-scheme: dark;
+    color: #e6edf3;
+    background-color: #0d1117;
+
+    // Ajustar colores de enlaces en dark mode
+    a {
+      color: #58a6ff;
+
+      &:hover {
+        color: #79c0ff;
+      }
+    }
+
+    // Ajustar colores de código inline en dark mode
+    code {
+      background-color: rgba(110, 118, 129, 0.4);
+      color: #e6edf3;
+    }
+
+    // Ajustar colores de bloques de código en dark mode
+    pre {
+      background-color: #161b22;
+      border-color: #30363d;
+
+      // Mejorar la apariencia del scrollbar en dark mode
+      &::-webkit-scrollbar-track {
+        background: #21262d;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #484f58;
+
+        &:hover {
+          background: #5a6169;
+        }
+      }
+
+      code {
+        background-color: transparent;
+        color: #e6edf3;
+      }
+    }
+
+    // Ajustar colores de tablas en dark mode
+    table {
+      border-color: #30363d;
+
+      th,
+      td {
+        border-color: #30363d;
+      }
+
+      th {
+        background-color: #161b22;
+      }
+    }
+
+    // Ajustar colores de bloques de cita en dark mode
+    blockquote {
+      color: #8b949e;
+      border-left-color: #30363d;
+    }
+
+    // Ajustar colores de listas en dark mode
+    ul,
+    ol {
+      color: #e6edf3;
+    }
+
+    // Ajustar colores de encabezados en dark mode
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #f0f6fc;
+      border-bottom-color: #30363d;
+    }
+
+    h6 {
+      color: #8b949e;
+    }
+  }
+}
+
+// Ajustes específicos para highlight.js
+.hljs {
+  // Asegurar que highlight.js funcione bien en ambos modos
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-family:
+    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 1.45;
+
+  // Ajustes para modo light
+  .markdown-body:not(.dark) & {
+    color: #24292f;
+  }
+
+  // Ajustes para modo dark
+  .dark .markdown-body & {
+    color: #e6edf3;
+  }
+}
+
+// Estilos específicos para diferentes tipos de código basados en clases de lenguaje
+.markdown-body {
+  // Estilos para bloques de código bash/shell
+  pre.language-bash,
+  pre.language-shell,
+  pre[class*='language-bash'],
+  pre[class*='language-shell'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #28a745;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #3fb950;
+    }
+  }
+
+  // Estilos para bloques de código TypeScript/JavaScript
+  pre.language-typescript,
+  pre.language-javascript,
+  pre.language-js,
+  pre.language-ts,
+  pre[class*='language-typescript'],
+  pre[class*='language-javascript'],
+  pre[class*='language-js'],
+  pre[class*='language-ts'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #007acc;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #58a6ff;
+    }
+  }
+
+  // Estilos para bloques de código JSON
+  pre.language-json,
+  pre[class*='language-json'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #f39c12;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #fbb040;
+    }
+  }
+
+  // Estilos para bloques de código CSS/SCSS
+  pre.language-css,
+  pre.language-scss,
+  pre[class*='language-css'],
+  pre[class*='language-scss'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #e74c3c;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #ff7b72;
+    }
+  }
+
+  // Estilos para bloques de código HTML
+  pre.language-html,
+  pre[class*='language-html'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #e67e22;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #ffa657;
+    }
+  }
+
+  // Estilos para bloques de código Python
+  pre.language-python,
+  pre[class*='language-python'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #3776ab;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #4a9eff;
+    }
+  }
+
+  // Estilos para bloques de código SQL
+  pre.language-sql,
+  pre[class*='language-sql'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #336791;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #4a9eff;
+    }
+  }
+
+  // Estilos para bloques de código YAML
+  pre.language-yaml,
+  pre.language-yml,
+  pre[class*='language-yaml'],
+  pre[class*='language-yml'] {
+    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+    border-left: 4px solid #cb171e;
+
+    .dark & {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-left-color: #ff6b6b;
+    }
+  }
+}
