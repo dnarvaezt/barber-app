@@ -10,11 +10,22 @@
   min-width: 200px;
   max-width: 980px;
   margin: 0 auto;
-  padding: 45px;
-
-  // Ajustes para modo light
+  padding: 1rem;
   color: #24292f;
   background-color: #ffffff;
+
+  // Responsive padding para mobile
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 2rem;
+  }
+
+  @media (min-width: 1280px) {
+    padding: 2.8125rem; // 45px
+  }
 
   // Ajustar colores de enlaces en modo light
   a {
