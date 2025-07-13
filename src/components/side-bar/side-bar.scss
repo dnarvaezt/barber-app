@@ -5,6 +5,10 @@
 
   &__container {
     @apply fixed top-0 left-0 z-30 h-full w-64 bg-white border-r border-gray-300 shadow-sm transform transition-transform duration-300 ease-in-out;
+
+    .dark & {
+      @apply bg-gray-900 border-gray-600;
+    }
   }
 
   &__container--open {
@@ -17,6 +21,10 @@
 
   &__header {
     @apply flex items-center h-14 px-4 border-b border-gray-300 bg-gray-50;
+
+    .dark & {
+      @apply border-gray-600 bg-gray-800;
+    }
   }
 
   &__header-content {
@@ -29,11 +37,19 @@
 
   &__title {
     @apply text-gray-900 font-semibold text-sm truncate;
+
+    .dark & {
+      @apply text-gray-200;
+    }
   }
 
   &__close-button {
     @apply lg:hidden ml-2 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center h-9 w-9;
     min-height: 0;
+
+    .dark & {
+      @apply text-gray-400 hover:text-gray-200 hover:bg-gray-700;
+    }
   }
 
   &__content {
@@ -46,10 +62,18 @@
 
   &__footer {
     @apply px-4 py-3 border-t border-gray-300 bg-gray-50;
+
+    .dark & {
+      @apply border-gray-600 bg-gray-800;
+    }
   }
 
   &__version {
     @apply text-xs text-gray-500 text-center font-medium;
+
+    .dark & {
+      @apply text-gray-400;
+    }
   }
 }
 
@@ -64,10 +88,18 @@
 
   &__container--active {
     @apply bg-blue-100 text-blue-800 border-r-2 border-blue-500;
+
+    .dark & {
+      @apply bg-blue-900/30 text-blue-300 border-blue-400;
+    }
   }
 
   &__container--inactive {
     @apply text-gray-800 hover:bg-gray-100 hover:text-gray-900;
+
+    .dark & {
+      @apply text-gray-300 hover:bg-gray-700 hover:text-gray-100;
+    }
   }
 
   &__content {
@@ -80,10 +112,18 @@
 
   &__icon--active {
     @apply text-blue-600;
+
+    .dark & {
+      @apply text-blue-400;
+    }
   }
 
   &__icon--inactive {
     @apply text-gray-600;
+
+    .dark & {
+      @apply text-gray-400;
+    }
   }
 
   &__link {
@@ -100,14 +140,26 @@
 
   &__expand-button--active {
     @apply text-blue-600 hover:bg-blue-200;
+
+    .dark & {
+      @apply text-blue-400 hover:bg-blue-900/30;
+    }
   }
 
   &__expand-button--inactive {
     @apply text-gray-500 hover:text-gray-700 hover:bg-gray-200;
+
+    .dark & {
+      @apply text-gray-400 hover:text-gray-200 hover:bg-gray-700;
+    }
   }
 
   &__children {
     @apply mt-1 border-l border-gray-200 ml-3;
+
+    .dark & {
+      @apply border-gray-600;
+    }
   }
 
   &__link,

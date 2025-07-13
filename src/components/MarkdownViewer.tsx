@@ -21,10 +21,6 @@ interface MarkdownViewerProps {
   showLoading?: boolean
 }
 
-/**
- * Componente para mostrar archivos Markdown en el browser
- * Soporta carga desde URL o contenido directo
- */
 export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   src,
   children,
@@ -37,52 +33,52 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Cargar contenido desde URL
+  // Cargar contenido desde URL si se proporciona
   useEffect(() => {
-    if (!src) return
+    if (!src) {
+      if (children) {
+        setContent(children)
+        onLoad?.(children)
+      }
+      return
+    }
 
-    const fetchMarkdown = async () => {
-      setLoading(true)
-      setError(null)
+    setLoading(true)
+    setError(null)
 
-      try {
-        const response = await fetch(src)
-
+    fetch(src)
+      .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-
-        const markdownContent = await response.text()
-        setContent(markdownContent)
-        onLoad?.(markdownContent)
-      } catch (err) {
+        return response.text()
+      })
+      .then(text => {
+        setContent(text)
+        onLoad?.(text)
+      })
+      .catch(err => {
         const errorMessage =
           err instanceof Error ? err.message : 'Error desconocido'
         setError(errorMessage)
         onError?.(err instanceof Error ? err : new Error(errorMessage))
-      } finally {
+      })
+      .finally(() => {
         setLoading(false)
-      }
-    }
-
-    fetchMarkdown()
-  }, [src, onLoad, onError])
-
-  // Usar contenido directo si se proporciona
-  useEffect(() => {
-    if (children) {
-      setContent(children)
-      onLoad?.(children)
-    }
-  }, [children, onLoad])
+      })
+  }, [src, children, onLoad, onError])
 
   // Mostrar loading
   if (loading && showLoading) {
     return (
       <div className={`markdown-viewer loading ${className}`}>
-        <div className='flex items-center justify-center p-8'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500'></div>
-          <span className='ml-3 text-gray-600 font-medium'>Cargando...</span>
+        <div className='bg-gray-50 border border-gray-200 rounded-lg p-6 dark:bg-gray-800 dark:border-gray-600'>
+          <div className='flex items-center justify-center'>
+            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
+            <span className='ml-3 text-gray-600 dark:text-gray-400'>
+              Cargando...
+            </span>
+          </div>
         </div>
       </div>
     )
@@ -92,7 +88,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   if (error) {
     return (
       <div className={`markdown-viewer error ${className}`}>
-        <div className='bg-red-50 border border-red-200 rounded-lg p-6'>
+        <div className='bg-red-50 border border-red-200 rounded-lg p-6 dark:bg-red-900/20 dark:border-red-800'>
           <div className='flex'>
             <div className='flex-shrink-0'>
               <svg
@@ -108,10 +104,12 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
               </svg>
             </div>
             <div className='ml-3'>
-              <h3 className='text-sm font-medium text-red-800'>
+              <h3 className='text-sm font-medium text-red-800 dark:text-red-200'>
                 Error al cargar el archivo
               </h3>
-              <div className='mt-2 text-sm text-red-700'>{error}</div>
+              <div className='mt-2 text-sm text-red-700 dark:text-red-300'>
+                {error}
+              </div>
             </div>
           </div>
         </div>
@@ -122,7 +120,7 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
   // Mostrar contenido Markdown
   return (
     <article
-      className={`markdown-body bg-white text-gray-900 p-8 ${className}`}
+      className={`markdown-body bg-white text-gray-900 p-8 dark:bg-gray-800 dark:text-gray-200 ${className}`}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}

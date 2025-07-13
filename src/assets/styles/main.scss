@@ -17,6 +17,18 @@ body {
   background-color: v.$bg-tertiary;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+// Dark mode base styles
+.dark {
+  html,
+  body {
+    color: #e5e7eb; // gray-200
+    background-color: #111827; // gray-900
+  }
 }
 
 * {
@@ -27,6 +39,10 @@ body {
 @layer components {
   .notion-card {
     @apply bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+
+    .dark & {
+      @apply bg-gray-800 border-gray-600;
+    }
   }
 
   .notion-button {
@@ -39,25 +55,49 @@ body {
 
   .notion-button-secondary {
     @apply bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300;
+
+    .dark & {
+      @apply bg-gray-700 text-gray-200 hover:bg-gray-600 border-gray-600;
+    }
   }
 
   .notion-input {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm;
+
+    .dark & {
+      @apply bg-gray-800 border-gray-600 text-gray-200 focus:ring-blue-400;
+    }
   }
 
   .notion-section {
     @apply bg-white border border-gray-300 rounded-lg shadow-sm p-6;
+
+    .dark & {
+      @apply bg-gray-800 border-gray-600;
+    }
   }
 
   .notion-text-primary {
     @apply text-gray-800;
+
+    .dark & {
+      @apply text-gray-200;
+    }
   }
 
   .notion-text-secondary {
     @apply text-gray-600;
+
+    .dark & {
+      @apply text-gray-400;
+    }
   }
 
   .notion-border {
     @apply border-gray-300;
+
+    .dark & {
+      @apply border-gray-600;
+    }
   }
 }
