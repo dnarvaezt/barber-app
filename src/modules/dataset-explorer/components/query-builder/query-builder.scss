@@ -1,0 +1,111 @@
+.query-builder {
+  @apply space-y-6;
+
+  &__header {
+    @apply text-center;
+  }
+
+  &__title {
+    @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+  }
+
+  &__description {
+    @apply text-gray-600 dark:text-gray-400 text-sm;
+  }
+
+  &__form {
+    @apply space-y-4;
+  }
+
+  &__input-group {
+    @apply flex gap-3;
+  }
+
+  &__input {
+    @apply flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400;
+  }
+
+  &__submit-button {
+    @apply flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 cursor-pointer disabled:cursor-not-allowed transition-colors duration-200;
+  }
+
+  &__queries {
+    @apply space-y-4;
+  }
+
+  &__queries-title {
+    @apply text-lg font-medium text-gray-900 dark:text-white;
+  }
+
+  &__empty {
+    @apply text-center py-8 text-gray-500 dark:text-gray-400;
+  }
+
+  &__queries-list {
+    @apply space-y-4;
+  }
+
+  &__query-item {
+    @apply border border-gray-200 dark:border-gray-700 rounded-lg p-4;
+  }
+
+  &__query-header {
+    @apply flex items-center justify-between mb-3;
+  }
+
+  &__query-name {
+    @apply text-sm font-medium text-gray-900 dark:text-white;
+  }
+
+  &__query-actions {
+    @apply flex gap-2;
+  }
+
+  &__execute-button {
+    @apply flex items-center gap-1 px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-green-400 cursor-pointer disabled:cursor-not-allowed transition-colors duration-200;
+  }
+
+  &__query-content {
+    @apply space-y-2;
+  }
+
+  &__query-text {
+    @apply text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-2 rounded;
+  }
+
+  &__query-meta {
+    @apply flex gap-4 text-xs text-gray-500 dark:text-gray-400;
+  }
+
+  &__results {
+    @apply mt-4 pt-4 border-t border-gray-200 dark:border-gray-700;
+  }
+
+  &__results-title {
+    @apply text-sm font-medium text-gray-900 dark:text-white mb-2;
+  }
+
+  &__results-table {
+    @apply overflow-x-auto;
+  }
+
+  &__table {
+    @apply w-full text-xs;
+  }
+
+  &__th {
+    @apply px-2 py-1 text-left font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800;
+  }
+
+  &__tr {
+    @apply border-b border-gray-100 dark:border-gray-700;
+  }
+
+  &__td {
+    @apply px-2 py-1 text-gray-900 dark:text-gray-100;
+  }
+
+  &__results-more {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-2 text-center;
+  }
+}
