@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from './components'
-import { HomePage } from './modules'
+import { HomePage, TechnicalDocumentationPage } from './modules'
 
 export interface RouteItem {
   id: string
@@ -21,6 +21,15 @@ export const appRoutes: RouteItem[] = [
     icon: <Icon name='home' />,
     component: HomePage,
     path: '/',
+    children: [],
+  },
+  {
+    id: 'technical-documentation',
+    name: 'Documentación Técnica',
+    title: 'Documentación Técnica',
+    icon: <Icon name='home' />,
+    component: TechnicalDocumentationPage,
+    path: '/technical-documentation',
     children: [],
   },
 ]

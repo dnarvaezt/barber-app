@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { MarkdownViewer, useLayout } from '../../components'
-import info from './home-page.info.md'
-import './home-page.scss'
+import './technical-documentation-page.scss'
+import info from './technical-documentation.info.md'
 
-export const HomePage = () => {
+export const TechnicalDocumentationPage = () => {
   const { setHeaderTitle, setHeaderActions, setOverlayVisible } = useLayout()
 
   useEffect(() => {
@@ -15,9 +15,9 @@ export const HomePage = () => {
   }, [setHeaderTitle, setOverlayVisible])
 
   return (
-    <div className='home-page'>
-      <div className='home-page__content'>
-        <div className='home-page__card'>
+    <div className='technical-documentation-page'>
+      <div className='technical-documentation-page__content'>
+        <div className='technical-documentation-page__card'>
           <MarkdownViewer>{info}</MarkdownViewer>
         </div>
       </div>

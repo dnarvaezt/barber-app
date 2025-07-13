@@ -256,7 +256,8 @@
 }
 
 // Ajustes específicos para highlight.js
-.hljs {
+.hljs,
+pre.hljs {
   // Asegurar que highlight.js funcione bien en ambos modos
   display: block;
   overflow-x: auto;
@@ -277,10 +278,83 @@
   .dark .markdown-body & {
     color: #e6edf3;
   }
+
+  // Mejorar la apariencia del scrollbar para highlight.js
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  // Scrollbar para modo dark
+  .dark & {
+    &::-webkit-scrollbar-track {
+      background: #21262d;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #484f58;
+
+      &:hover {
+        background: #5a6169;
+      }
+    }
+  }
 }
 
 // Estilos específicos para diferentes tipos de código basados en clases de lenguaje
 .markdown-body {
+  // Estilos generales para todos los bloques de código con clases de lenguaje
+  pre[class*='language-'] {
+    overflow-x: auto;
+    position: relative;
+
+    // Mejorar la apariencia del scrollbar para todos los bloques de código
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+
+    // Scrollbar para modo dark
+    .dark & {
+      &::-webkit-scrollbar-track {
+        background: #21262d;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #484f58;
+
+        &:hover {
+          background: #5a6169;
+        }
+      }
+    }
+  }
   // Estilos para bloques de código bash/shell
   pre.language-bash,
   pre.language-shell,
@@ -306,10 +380,42 @@
   pre[class*='language-ts'] {
     background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
     border-left: 4px solid #007acc;
+    overflow-x: auto;
+
+    // Mejorar la apariencia del scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
 
     .dark & {
       background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
       border-left-color: #58a6ff;
+
+      &::-webkit-scrollbar-track {
+        background: #21262d;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #484f58;
+
+        &:hover {
+          background: #5a6169;
+        }
+      }
     }
   }
 
@@ -386,6 +492,48 @@
     .dark & {
       background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
       border-left-color: #ff6b6b;
+    }
+  }
+
+  // Estilos específicos para contenedores de código con scroll
+  .code-container,
+  .code-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+
+    // Mejorar la apariencia del scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+
+    // Scrollbar para modo dark
+    .dark & {
+      &::-webkit-scrollbar-track {
+        background: #21262d;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #484f58;
+
+        &:hover {
+          background: #5a6169;
+        }
+      }
     }
   }
 }
