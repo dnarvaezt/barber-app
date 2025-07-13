@@ -1,7 +1,9 @@
 .markdown-viewer {
+  @apply w-full;
+
   &__container {
-    // Contenedor principal - solo estructura, no estilos de contenido
-    @apply w-full;
+    // Contenedor principal - estructura de card sin borde (ya está dentro de una card)
+    @apply w-full bg-transparent;
   }
 
   &__content {
@@ -52,10 +54,10 @@
     @apply mt-2 text-sm text-red-700 dark:text-red-300;
   }
 
-  // Contenedor del markdown - ajustado para GitHub Markdown
+  // Contenedor del markdown - ajustado para GitHub Markdown con estilo de card
   &__markdown-body {
-    // Fondo del contenedor
-    @apply bg-white dark:bg-gray-900;
+    // Fondo del contenedor - ya aplicado en el container
+    @apply bg-transparent;
 
     // Asegurar que el markdown-body tenga el espacio correcto
     .markdown-body {
@@ -64,6 +66,7 @@
       margin: 0;
       max-width: none;
       min-width: auto;
+      background-color: transparent;
 
       // Responsive padding para mobile
       @media (min-width: 640px) {

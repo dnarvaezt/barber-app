@@ -163,18 +163,20 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
 
   // Mostrar contenido Markdown
   return (
-    <article className={`markdown-viewer__container ${className}`}>
-      <div className='markdown-viewer__markdown-body'>
-        <div className='markdown-body'>
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeHighlight]}
-            components={components}
-          >
-            {content}
-          </ReactMarkdown>
+    <div className={`markdown-viewer ${className}`}>
+      <div className={`markdown-viewer__container`}>
+        <div className='markdown-viewer__markdown-body'>
+          <div className='markdown-body'>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeHighlight]}
+              components={components}
+            >
+              {content}
+            </ReactMarkdown>
+          </div>
         </div>
       </div>
-    </article>
+    </div>
   )
 }
