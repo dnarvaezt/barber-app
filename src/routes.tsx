@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from './components'
-import { ApiDocsPage, HomePage, UserGuidePage } from './modules'
+import { HomePage } from './modules'
 
 export interface RouteItem {
   id: string
@@ -22,111 +22,6 @@ export const appRoutes: RouteItem[] = [
     component: HomePage,
     path: '/',
     children: [],
-  },
-  {
-    id: 'technical-documentation',
-    name: 'Documentación Técnica',
-    title: 'Documentación Técnica',
-    icon: <Icon name='book' />,
-    path: '/technical-documentation',
-    children: [
-      {
-        id: 'api-docs',
-        name: 'API Documentation',
-        title: 'API',
-        icon: <Icon name='code' />,
-        path: '/api',
-        inheritPath: true,
-        component: ApiDocsPage,
-        children: [],
-      },
-      {
-        id: 'user-guide',
-        name: 'User Guide',
-        title: 'Guía de Usuario',
-        icon: <Icon name='user' />,
-        path: '/user-guide',
-        inheritPath: true,
-        component: UserGuidePage,
-        children: [],
-      },
-    ],
-  },
-  {
-    id: 'examples',
-    name: 'Ejemplos',
-    title: 'Ejemplos',
-    icon: <Icon name='folder' />,
-    path: '/examples',
-    children: [
-      {
-        id: 'example-1',
-        name: 'Ejemplo 1',
-        title: 'Ejemplo 1',
-        icon: <Icon name='file' />,
-        component: HomePage,
-        path: '/example-1',
-        inheritPath: true,
-        children: [
-          {
-            id: 'example-1-1',
-            name: 'Ejemplo 1.1',
-            title: 'Ejemplo 1.1',
-            icon: <Icon name='file' />,
-            component: HomePage,
-            path: '/example-1-1',
-            inheritPath: true,
-            children: [],
-          },
-          {
-            id: 'example-1-2',
-            name: 'Ejemplo 1.2',
-            title: 'Ejemplo 1.2',
-            icon: <Icon name='file' />,
-            component: HomePage,
-            path: '/example-1-2',
-            children: [],
-          },
-        ],
-      },
-      {
-        id: 'example-2',
-        name: 'Ejemplo 2',
-        title: 'Ejemplo 2',
-        icon: <Icon name='file' />,
-        component: HomePage,
-        path: '/example-2',
-        children: [],
-      },
-    ],
-  },
-  {
-    id: 'settings',
-    name: 'Configuración',
-    title: 'Configuración',
-    icon: <Icon name='cog' />,
-    component: HomePage,
-    path: '/settings',
-    children: [
-      {
-        id: 'profile',
-        name: 'Perfil',
-        title: 'Perfil',
-        icon: <Icon name='user' />,
-        component: HomePage,
-        path: '/profile',
-        children: [],
-      },
-      {
-        id: 'preferences',
-        name: 'Preferencias',
-        title: 'Preferencias',
-        icon: <Icon name='sliders' />,
-        component: HomePage,
-        path: '/preferences',
-        children: [],
-      },
-    ],
   },
 ]
 
