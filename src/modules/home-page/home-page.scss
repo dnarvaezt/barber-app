@@ -1,0 +1,11 @@
+.home-page {
+  @apply container mx-auto px-6 py-8;
+
+  &__content {
+    @apply max-w-4xl mx-auto;
+  }
+
+  &__card {
+    @apply bg-white rounded-lg border border-gray-300 shadow-sm dark:bg-gray-800 dark:border-gray-600;
+  }
+}
