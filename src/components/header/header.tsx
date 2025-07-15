@@ -27,7 +27,11 @@ export const Header = ({
         <div className='header__content'>
           <div className='header__left-section'>
             {showMenuButton && onMenuToggle && (
-              <button onClick={onMenuToggle} className='header__menu-button'>
+              <button
+                onClick={onMenuToggle}
+                className='header__menu-button'
+                aria-label='Abrir menú lateral'
+              >
                 <Icon name='bars' size='lg' />
               </button>
             )}

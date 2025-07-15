@@ -1,6 +1,5 @@
 import { Icon } from '../components'
-import { HomePage, TechnicalDocumentationPage } from '../modules'
-import { DatasetExplorer } from '../modules/dataset-explorer'
+import { lazyRoute } from './lazy'
 import type { RouteItem } from './routes.types'
 
 export const appRoutes: RouteItem[] = [
@@ -9,7 +8,7 @@ export const appRoutes: RouteItem[] = [
     name: 'Información',
     title: 'Información',
     icon: <Icon name='home' />,
-    component: HomePage,
+    component: lazyRoute('home-page', 'HomePage'),
     path: '/',
     children: [],
   },
@@ -18,7 +17,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Documentación Técnica',
     title: 'Documentación Técnica',
     icon: <Icon name='home' />,
-    component: TechnicalDocumentationPage,
+    component: lazyRoute(
+      'technical-documentation-page',
+      'TechnicalDocumentationPage'
+    ),
     path: '/technical-documentation',
     children: [],
   },
@@ -27,7 +29,7 @@ export const appRoutes: RouteItem[] = [
     name: 'Explorador de Datasets',
     title: 'Explorador de Datasets',
     icon: <Icon name='fa-solid fa-database' />,
-    component: DatasetExplorer,
+    component: lazyRoute('dataset-explorer', 'DatasetExplorer'),
     path: '/dataset-explorer',
     children: [],
   },

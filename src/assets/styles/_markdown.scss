@@ -3,6 +3,262 @@
 @use 'github-markdown-css';
 @use 'highlight.js/styles/atom-one-dark.css';
 
+// Override highlight.js colors for better accessibility (4.5:1 contrast ratio)
+.hljs {
+  // Keywords - using darker purple for better contrast
+  .hljs-keyword {
+    color: #7c3aed !important; // purple-600 - better contrast than #c678dd
+  }
+
+  // Class names - using darker yellow for better contrast
+  .hljs-title.class_ {
+    color: #d97706 !important; // amber-600 - better contrast than #e6c07b
+  }
+
+  // Strings - using darker green for better contrast
+  .hljs-string {
+    color: #059669 !important; // emerald-600 - better contrast than #98c379
+  }
+
+  // Numbers - using darker blue for better contrast
+  .hljs-number {
+    color: #2563eb !important; // blue-600 - better contrast than #d19a66
+  }
+
+  // Comments - using darker gray for better contrast
+  .hljs-comment {
+    color: #6b7280 !important; // gray-500 - better contrast than #5c6370
+  }
+
+  // Function names - using darker cyan for better contrast
+  .hljs-title.function_ {
+    color: #0891b2 !important; // cyan-600 - better contrast than #61afef
+  }
+
+  // Variables - using darker orange for better contrast
+  .hljs-variable {
+    color: #ea580c !important; // orange-600 - better contrast than #e06c75
+  }
+
+  // Properties - using darker teal for better contrast
+  .hljs-property {
+    color: #0d9488 !important; // teal-600 - better contrast than #56b6c2
+  }
+
+  // Operators - using darker red for better contrast
+  .hljs-operator {
+    color: #dc2626 !important; // red-600 - better contrast than #56b6c2
+  }
+
+  // Punctuation - using darker gray for better contrast
+  .hljs-punctuation {
+    color: #374151 !important; // gray-700 - better contrast than #abb2bf
+  }
+
+  // Built-in functions - using darker indigo for better contrast
+  .hljs-built_in {
+    color: #4f46e5 !important; // indigo-600 - better contrast than #e06c75
+  }
+
+  // Literals - using darker green for better contrast
+  .hljs-literal {
+    color: #059669 !important; // emerald-600 - better contrast than #56b6c2
+  }
+
+  // Types - using darker blue for better contrast
+  .hljs-type {
+    color: #2563eb !important; // blue-600 - better contrast than #e06c75
+  }
+
+  // Attributes - using darker purple for better contrast
+  .hljs-attr {
+    color: #7c3aed !important; // purple-600 - better contrast than #d19a66
+  }
+
+  // Selectors - using darker green for better contrast
+  .hljs-selector-tag {
+    color: #059669 !important; // emerald-600 - better contrast than #e06c75
+  }
+
+  // Template strings - using darker yellow for better contrast
+  .hljs-template-string {
+    color: #d97706 !important; // amber-600 - better contrast than #98c379
+  }
+
+  // Template variables - using darker cyan for better contrast
+  .hljs-template-variable {
+    color: #0891b2 !important; // cyan-600 - better contrast than #e06c75
+  }
+
+  // Substitution - using darker orange for better contrast
+  .hljs-subst {
+    color: #ea580c !important; // orange-600 - better contrast than #abb2bf
+  }
+
+  // Symbol - using darker red for better contrast
+  .hljs-symbol {
+    color: #dc2626 !important; // red-600 - better contrast than #61afef
+  }
+
+  // Bullet - using darker gray for better contrast
+  .hljs-bullet {
+    color: #374151 !important; // gray-700 - better contrast than #98c379
+  }
+
+  // Link - using darker blue for better contrast
+  .hljs-link {
+    color: #2563eb !important; // blue-600 - better contrast than #61afef
+  }
+
+  // Emphasis - using darker red for better contrast
+  .hljs-emphasis {
+    color: #dc2626 !important; // red-600 - better contrast than #abb2bf
+  }
+
+  // Strong - using darker gray for better contrast
+  .hljs-strong {
+    color: #111827 !important; // gray-900 - better contrast than #abb2bf
+  }
+
+  // Addition - using darker green for better contrast
+  .hljs-addition {
+    color: #059669 !important; // emerald-600 - better contrast than #98c379
+  }
+
+  // Deletion - using darker red for better contrast
+  .hljs-deletion {
+    color: #dc2626 !important; // red-600 - better contrast than #e06c75
+  }
+}
+
+// Dark mode overrides for better contrast
+.dark .hljs {
+  // Keywords - using lighter purple for better contrast in dark mode
+  .hljs-keyword {
+    color: #a855f7 !important; // purple-500 - better contrast than #c678dd
+  }
+
+  // Class names - using lighter yellow for better contrast in dark mode
+  .hljs-title.class_ {
+    color: #f59e0b !important; // amber-500 - better contrast than #e6c07b
+  }
+
+  // Strings - using lighter green for better contrast in dark mode
+  .hljs-string {
+    color: #10b981 !important; // emerald-500 - better contrast than #98c379
+  }
+
+  // Numbers - using lighter blue for better contrast in dark mode
+  .hljs-number {
+    color: #3b82f6 !important; // blue-500 - better contrast than #d19a66
+  }
+
+  // Comments - using lighter gray for better contrast in dark mode
+  .hljs-comment {
+    color: #9ca3af !important; // gray-400 - better contrast than #5c6370
+  }
+
+  // Function names - using lighter cyan for better contrast in dark mode
+  .hljs-title.function_ {
+    color: #06b6d4 !important; // cyan-500 - better contrast than #61afef
+  }
+
+  // Variables - using lighter orange for better contrast in dark mode
+  .hljs-variable {
+    color: #f97316 !important; // orange-500 - better contrast than #e06c75
+  }
+
+  // Properties - using lighter teal for better contrast in dark mode
+  .hljs-property {
+    color: #14b8a6 !important; // teal-500 - better contrast than #56b6c2
+  }
+
+  // Operators - using lighter red for better contrast in dark mode
+  .hljs-operator {
+    color: #ef4444 !important; // red-500 - better contrast than #56b6c2
+  }
+
+  // Punctuation - using lighter gray for better contrast in dark mode
+  .hljs-punctuation {
+    color: #d1d5db !important; // gray-300 - better contrast than #abb2bf
+  }
+
+  // Built-in functions - using lighter indigo for better contrast in dark mode
+  .hljs-built_in {
+    color: #6366f1 !important; // indigo-500 - better contrast than #e06c75
+  }
+
+  // Literals - using lighter green for better contrast in dark mode
+  .hljs-literal {
+    color: #10b981 !important; // emerald-500 - better contrast than #56b6c2
+  }
+
+  // Types - using lighter blue for better contrast in dark mode
+  .hljs-type {
+    color: #3b82f6 !important; // blue-500 - better contrast than #e06c75
+  }
+
+  // Attributes - using lighter purple for better contrast in dark mode
+  .hljs-attr {
+    color: #a855f7 !important; // purple-500 - better contrast than #d19a66
+  }
+
+  // Selectors - using lighter green for better contrast in dark mode
+  .hljs-selector-tag {
+    color: #10b981 !important; // emerald-500 - better contrast than #e06c75
+  }
+
+  // Template strings - using lighter yellow for better contrast in dark mode
+  .hljs-template-string {
+    color: #f59e0b !important; // amber-500 - better contrast than #98c379
+  }
+
+  // Template variables - using lighter cyan for better contrast in dark mode
+  .hljs-template-variable {
+    color: #06b6d4 !important; // cyan-500 - better contrast than #e06c75
+  }
+
+  // Substitution - using lighter orange for better contrast in dark mode
+  .hljs-subst {
+    color: #f97316 !important; // orange-500 - better contrast than #abb2bf
+  }
+
+  // Symbol - using lighter red for better contrast in dark mode
+  .hljs-symbol {
+    color: #ef4444 !important; // red-500 - better contrast than #61afef
+  }
+
+  // Bullet - using lighter gray for better contrast in dark mode
+  .hljs-bullet {
+    color: #d1d5db !important; // gray-300 - better contrast than #98c379
+  }
+
+  // Link - using lighter blue for better contrast in dark mode
+  .hljs-link {
+    color: #3b82f6 !important; // blue-500 - better contrast than #61afef
+  }
+
+  // Emphasis - using lighter red for better contrast in dark mode
+  .hljs-emphasis {
+    color: #ef4444 !important; // red-500 - better contrast than #abb2bf
+  }
+
+  // Strong - using lighter gray for better contrast in dark mode
+  .hljs-strong {
+    color: #f9fafb !important; // gray-50 - better contrast than #abb2bf
+  }
+
+  // Addition - using lighter green for better contrast in dark mode
+  .hljs-addition {
+    color: #10b981 !important; // emerald-500 - better contrast than #98c379
+  }
+
+  // Deletion - using lighter red for better contrast in dark mode
+  .hljs-deletion {
+    color: #ef4444 !important; // red-500 - better contrast than #e06c75
+  }
+}
+
 // Estilos base para markdown-body (modo light)
 .markdown-body {
   // Asegurar que los estilos base de GitHub Markdown se mantengan

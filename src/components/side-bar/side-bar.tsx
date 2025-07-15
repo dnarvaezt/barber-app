@@ -110,7 +110,11 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
             </div>
             <span className='side-bar__title'>{title}</span>
           </div>
-          <button onClick={handleClose} className='side-bar__close-button'>
+          <button
+            onClick={handleClose}
+            className='side-bar__close-button'
+            aria-label='Cerrar menú lateral'
+          >
             <Icon name='times' size='sm' />
           </button>
         </div>

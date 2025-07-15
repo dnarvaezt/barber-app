@@ -29,3 +29,12 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Lighthouse reports
+lighthouse-report.*
+lighthouse-accessibility.*
+lighthouse-seo.*
+lighthouse-comparison-*.json
+lighthouse-reports/
+lighthouse-build-report.*
+reports/

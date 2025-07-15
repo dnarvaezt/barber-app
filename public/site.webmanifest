@@ -1,0 +1,16 @@
+{
+  "name": "@andes-project/filter - Documentación",
+  "short_name": "Filter Docs",
+  "description": "Documentación técnica y explorador de datasets para @andes-project/filter",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
