@@ -10,21 +10,40 @@ interface LayoutProps {
 
 export const Layout = (props: LayoutProps) => {
   const { children } = props
-  const { sidebarVisible, overlayVisible, overlayContent } = useLayout()
+  const {
+    title,
+    visible,
+    actions,
+    sidebarVisible,
+    open,
+    items,
+    closeSidebar,
+    toggleSidebar,
+  } = useLayout()
 
   return (
     <div className='layout'>
-      {sidebarVisible && <Sidebar />}
+      {sidebarVisible && (
+        <Sidebar
+          items={items}
+          isOpen={open}
+          isVisible={sidebarVisible}
+          onClose={closeSidebar}
+          onToggle={toggleSidebar}
+        />
+      )}
 
       <div className='layout__container'>
-        <Header />
+        <Header
+          title={title}
+          visible={visible}
+          actions={actions}
+          onMenuToggle={toggleSidebar}
+          showMenuButton={sidebarVisible}
+        />
         <main className='layout__main'>{children}</main>
         <Footer />
       </div>
-
-      {overlayVisible && (
-        <div className='layout__overlay'>{overlayContent}</div>
-      )}
     </div>
   )
 }

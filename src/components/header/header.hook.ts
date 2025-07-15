@@ -1,13 +1,2 @@
-import { useLayout } from '../layout/layout.hook'
-
-export const useHeader = () => {
-  const { headerTitle, headerVisible, headerActions, toggleSidebar } =
-    useLayout()
-
-  return {
-    headerTitle,
-    headerVisible,
-    headerActions,
-    toggleSidebar,
-  }
-}
+// Este hook ya no es necesario ya que el componente Header es ahora autónomo
+// y recibe todas las props necesarias desde el componente padre

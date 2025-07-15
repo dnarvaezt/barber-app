@@ -7,15 +7,17 @@ import type { ReactNode } from 'react'
 import type { RouteItem } from '../../routes'
 
 const initialState: LayoutState = {
-  headerTitle: 'Filter Docs',
-  headerSubtitle: undefined,
-  headerVisible: true,
-  headerActions: undefined,
-  sidebarOpen: false,
-  sidebarItems: [],
-  sidebarVisible: true,
-  overlayVisible: false,
-  overlayContent: undefined,
+  header: {
+    title: 'Filter Docs',
+    subtitle: undefined,
+    visible: true,
+    actions: undefined,
+  },
+  sidebar: {
+    open: false,
+    items: [],
+    sidebarVisible: true,
+  },
 }
 
 export const LayoutProvider: React.FC<{
@@ -24,61 +26,72 @@ export const LayoutProvider: React.FC<{
 }> = ({ children, initialSidebarItems = [] }) => {
   const [state, setState] = useState<LayoutState>({
     ...initialState,
-    sidebarItems: initialSidebarItems,
+    sidebar: {
+      ...initialState.sidebar,
+      items: initialSidebarItems,
+    },
   })
 
   const setHeaderTitle = useCallback((title: string) => {
-    setState(prev => ({ ...prev, headerTitle: title }))
+    setState(prev => ({
+      ...prev,
+      header: { ...prev.header, title },
+    }))
   }, [])
 
   const setHeaderSubtitle = useCallback((subtitle: string) => {
-    setState(prev => ({ ...prev, headerSubtitle: subtitle }))
+    setState(prev => ({
+      ...prev,
+      header: { ...prev.header, subtitle },
+    }))
   }, [])
 
   const setHeaderActions = useCallback((actions: ReactNode) => {
-    setState(prev => ({ ...prev, headerActions: actions }))
+    setState(prev => ({
+      ...prev,
+      header: { ...prev.header, actions },
+    }))
   }, [])
 
   const setHeaderVisible = useCallback((visible: boolean) => {
-    setState(prev => ({ ...prev, headerVisible: visible }))
+    setState(prev => ({
+      ...prev,
+      header: { ...prev.header, visible },
+    }))
   }, [])
 
   const toggleSidebar = useCallback(() => {
-    setState(prev => ({ ...prev, sidebarOpen: !prev.sidebarOpen }))
+    setState(prev => ({
+      ...prev,
+      sidebar: { ...prev.sidebar, open: !prev.sidebar.open },
+    }))
   }, [])
 
   const openSidebar = useCallback(() => {
-    setState(prev => ({ ...prev, sidebarOpen: true }))
+    setState(prev => ({
+      ...prev,
+      sidebar: { ...prev.sidebar, open: true },
+    }))
   }, [])
 
   const closeSidebar = useCallback(() => {
-    setState(prev => ({ ...prev, sidebarOpen: false }))
+    setState(prev => ({
+      ...prev,
+      sidebar: { ...prev.sidebar, open: false },
+    }))
   }, [])
 
   const setSidebarItems = useCallback((items: RouteItem[]) => {
-    setState(prev => ({ ...prev, sidebarItems: items }))
+    setState(prev => ({
+      ...prev,
+      sidebar: { ...prev.sidebar, items },
+    }))
   }, [])
 
   const setSidebarVisible = useCallback((visible: boolean) => {
-    setState(prev => ({ ...prev, sidebarVisible: visible }))
-  }, [])
-
-  const setOverlayVisible = useCallback(
-    (visible: boolean, content?: ReactNode) => {
-      setState(prev => ({
-        ...prev,
-        overlayVisible: visible,
-        overlayContent: content,
-      }))
-    },
-    []
-  )
-
-  const hideOverlay = useCallback(() => {
     setState(prev => ({
       ...prev,
-      overlayVisible: false,
-      overlayContent: undefined,
+      sidebar: { ...prev.sidebar, sidebarVisible: visible },
     }))
   }, [])
 
@@ -88,7 +101,16 @@ export const LayoutProvider: React.FC<{
 
   const contextValue: LayoutContextType = useMemo(
     () => ({
-      ...state,
+      // Header state
+      title: state.header.title,
+      subtitle: state.header.subtitle,
+      visible: state.header.visible,
+      actions: state.header.actions,
+      // Sidebar state
+      open: state.sidebar.open,
+      items: state.sidebar.items,
+      sidebarVisible: state.sidebar.sidebarVisible,
+      // Methods
       setHeaderTitle,
       setHeaderSubtitle,
       setHeaderActions,
@@ -98,8 +120,6 @@ export const LayoutProvider: React.FC<{
       closeSidebar,
       setSidebarItems,
       setSidebarVisible,
-      setOverlayVisible,
-      hideOverlay,
       resetLayout,
     }),
     [
@@ -113,8 +133,6 @@ export const LayoutProvider: React.FC<{
       closeSidebar,
       setSidebarItems,
       setSidebarVisible,
-      setOverlayVisible,
-      hideOverlay,
       resetLayout,
     ]
   )

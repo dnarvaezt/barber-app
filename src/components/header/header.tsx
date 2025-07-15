@@ -1,13 +1,23 @@
 import { Icon } from '../icons'
 import { ThemeToggle } from '../theme'
-import { useHeader } from './header.hook'
 import './header.scss'
 
-export const Header = () => {
-  const { headerTitle, headerVisible, headerActions, toggleSidebar } =
-    useHeader()
+export interface HeaderProps {
+  title: string
+  visible?: boolean
+  actions?: React.ReactNode
+  onMenuToggle?: () => void
+  showMenuButton?: boolean
+}
 
-  if (!headerVisible) {
+export const Header = ({
+  title,
+  visible = true,
+  actions,
+  onMenuToggle,
+  showMenuButton = true,
+}: HeaderProps) => {
+  if (!visible) {
     return null
   }
 
@@ -16,16 +26,18 @@ export const Header = () => {
       <div className='header__container'>
         <div className='header__content'>
           <div className='header__left-section'>
-            <button onClick={toggleSidebar} className='header__menu-button'>
-              <Icon name='bars' size='lg' />
-            </button>
+            {showMenuButton && onMenuToggle && (
+              <button onClick={onMenuToggle} className='header__menu-button'>
+                <Icon name='bars' size='lg' />
+              </button>
+            )}
             <div className='header__title-container'>
-              <h1 className='header__title'>{headerTitle}</h1>
+              <h1 className='header__title'>{title}</h1>
             </div>
           </div>
 
           <div className='header__right-section'>
-            {headerActions}
+            {actions}
             <ThemeToggle />
           </div>
         </div>

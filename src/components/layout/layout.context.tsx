@@ -3,32 +3,56 @@ import { createContext } from 'react'
 import type { ReactNode } from 'react'
 import type { RouteItem } from '../../routes'
 
-export interface LayoutState {
-  headerTitle: string
-  headerSubtitle?: string
-  headerVisible: boolean
-  headerActions?: ReactNode
-  sidebarOpen: boolean
-  sidebarItems: RouteItem[]
-  sidebarVisible: boolean
-  overlayVisible: boolean
-  overlayContent?: ReactNode
+// Header related state
+export interface HeaderState {
+  title: string
+  subtitle?: string
+  visible: boolean
+  actions?: ReactNode
 }
 
-export interface LayoutContextType extends LayoutState {
+// Sidebar related state
+export interface SidebarState {
+  open: boolean
+  items: RouteItem[]
+  sidebarVisible: boolean
+}
+
+// Main layout state combining all sections
+export interface LayoutState {
+  header: HeaderState
+  sidebar: SidebarState
+}
+
+// Header related methods
+export interface HeaderMethods {
   setHeaderTitle: (title: string) => void
   setHeaderSubtitle: (subtitle: string) => void
   setHeaderActions: (actions: ReactNode) => void
   setHeaderVisible: (visible: boolean) => void
+}
+
+// Sidebar related methods
+export interface SidebarMethods {
   toggleSidebar: () => void
   openSidebar: () => void
   closeSidebar: () => void
   setSidebarItems: (items: RouteItem[]) => void
   setSidebarVisible: (visible: boolean) => void
-  setOverlayVisible: (visible: boolean, content?: ReactNode) => void
-  hideOverlay: () => void
+}
+
+// Layout general methods
+export interface LayoutMethods {
   resetLayout: () => void
 }
+
+// Complete context type inheriting directly from state interfaces
+export interface LayoutContextType
+  extends HeaderState,
+    SidebarState,
+    HeaderMethods,
+    SidebarMethods,
+    LayoutMethods {}
 
 export const LayoutContext = createContext<LayoutContextType | undefined>(
   undefined

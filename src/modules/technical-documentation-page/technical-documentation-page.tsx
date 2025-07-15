@@ -4,7 +4,7 @@ import './technical-documentation-page.scss'
 import info from './technical-documentation.info.md'
 
 export const TechnicalDocumentationPage = () => {
-  const { setHeaderTitle, setHeaderActions, setOverlayVisible } = useLayout()
+  const { setHeaderTitle, setHeaderActions } = useLayout()
 
   useEffect(() => {
     setHeaderTitle('Información')
@@ -12,7 +12,7 @@ export const TechnicalDocumentationPage = () => {
     return () => {
       setHeaderActions(undefined)
     }
-  }, [setHeaderTitle, setOverlayVisible])
+  }, [setHeaderTitle, setHeaderActions])
 
   return (
     <div className='technical-documentation-page'>

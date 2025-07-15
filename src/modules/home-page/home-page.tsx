@@ -4,7 +4,7 @@ import info from './home-page.info.md'
 import './home-page.scss'
 
 export const HomePage = () => {
-  const { setHeaderTitle, setHeaderActions, setOverlayVisible } = useLayout()
+  const { setHeaderTitle, setHeaderActions } = useLayout()
 
   useEffect(() => {
     setHeaderTitle('Información')
@@ -12,7 +12,7 @@ export const HomePage = () => {
     return () => {
       setHeaderActions(undefined)
     }
-  }, [setHeaderTitle, setOverlayVisible])
+  }, [setHeaderTitle, setHeaderActions])
 
   return (
     <div className='home-page'>
