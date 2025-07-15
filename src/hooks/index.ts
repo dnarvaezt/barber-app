@@ -1,1 +1,2 @@
-export { useAbsolutePath, useBasePath } from './useBasePath'
+export { useAbsolutePath } from './use-absolute-path'
+export { useBasePath } from './use-base-path'

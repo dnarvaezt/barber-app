@@ -1,10 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout, LayoutProvider } from './components'
 import { ThemeProvider } from './components/theme'
-import { appRoutes, getPages } from './routes'
+import { appRoutes, useRoutes } from './routes'
 
-function App() {
-  const pages = getPages(appRoutes)
+export const App = () => {
+  const { getPages } = useRoutes()
+  const pages = getPages()
 
   return (
     <ThemeProvider>
@@ -26,5 +27,3 @@ function App() {
     </ThemeProvider>
   )
 }
-
-export default App

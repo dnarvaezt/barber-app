@@ -1,21 +1,13 @@
-import { config } from '../config/environment'
+import { useBasePath } from './use-base-path'
 
 /**
- * Hook para obtener el base path de la aplicación
- * En desarrollo: '/'
- * En producción (GitHub Pages): '/filter-docs/'
- */
-export const useBasePath = () => {
-  return config.basePath
-}
-
-/**
- * Función para construir rutas absolutas considerando el base path
+ * Hook para construir rutas absolutas considerando el base path
+ * Retorna una función que normaliza y construye rutas absolutas
  */
 export const useAbsolutePath = () => {
   const basePath = useBasePath()
 
-  return (path: string) => {
+  return (path: string): string => {
     // Asegurar que el path comience con '/'
     const normalizedPath = path.startsWith('/') ? path : `/${path}`
 

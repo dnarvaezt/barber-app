@@ -22,7 +22,8 @@ export const config = {
 }
 
 /**
- * Función para obtener rutas absolutas
+ * Función utilitaria para obtener rutas absolutas (sin hooks)
+ * Para uso en contextos donde no se pueden usar hooks
  */
 export const getAbsolutePath = (relativePath: string): string => {
   const normalizedPath = relativePath.startsWith('/')
