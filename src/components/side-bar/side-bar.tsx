@@ -1,8 +1,8 @@
 import { Icon } from '../icons'
-import { useLayout } from '../layout/useLayout'
+import { useLayout } from '../layout/layout.hook'
 import { SideBarItem } from './side-bar-item'
+import { useSideBar } from './side-bar.hook'
 import './side-bar.scss'
-import { useSideBar } from './use-side-bar'
 
 const version = __APP_VERSION__
 

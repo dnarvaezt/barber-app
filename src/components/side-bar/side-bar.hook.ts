@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useLayout } from '../layout/useLayout'
+import { useLayout } from '../layout/layout.hook'
 
 import type { RouteItem } from '../../routes'
 

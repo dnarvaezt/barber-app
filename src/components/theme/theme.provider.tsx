@@ -1,21 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ThemeContext } from './theme-context-def'
+import { ThemeContext } from './theme.context'
 
 import type { ReactNode } from 'react'
 
-import type { Theme, ThemeContextType } from './theme-context-def'
+import type { Theme, ThemeContextType } from './theme.context'
 
 interface ThemeState {
   theme: Theme
   isDark: boolean
 }
 
-// Provider del contexto
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, setState] = useState<ThemeState>(() => {
-    // Intentar obtener el tema del localStorage
     const savedTheme = localStorage.getItem('theme') as Theme
     const theme =
       savedTheme && ['light', 'dark'].includes(savedTheme)
@@ -28,7 +26,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
     }
   })
 
-  // Aplicar tema al documento
   useEffect(() => {
     const root = document.documentElement
 
@@ -38,11 +35,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
       root.classList.remove('dark')
     }
 
-    // Guardar en localStorage
     localStorage.setItem('theme', state.theme)
   }, [state.theme, state.isDark])
 
-  // Acciones del tema
   const toggleTheme = useCallback(() => {
     setState(prev => ({
       theme: prev.theme === 'light' ? 'dark' : 'light',

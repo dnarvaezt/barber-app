@@ -1,30 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
-import { LayoutContext } from './LayoutContextDef'
+import { LayoutContext } from './layout.context'
 
-import type { LayoutContextType } from './LayoutContextDef'
+import type { LayoutContextType, LayoutState } from './layout.context'
 
 import type { ReactNode } from 'react'
 import type { RouteItem } from '../../routes'
 
-// Tipos para el contexto
-interface LayoutState {
-  // Header
-  headerTitle: string
-  headerSubtitle?: string
-  headerVisible: boolean
-  headerActions?: ReactNode
-
-  // Sidebar
-  sidebarOpen: boolean
-  sidebarItems: RouteItem[]
-  sidebarVisible: boolean
-
-  // Overlay
-  overlayVisible: boolean
-  overlayContent?: ReactNode
-}
-
-// Estado inicial
 const initialState: LayoutState = {
   headerTitle: 'Filter Docs',
   headerSubtitle: undefined,
@@ -37,7 +18,6 @@ const initialState: LayoutState = {
   overlayContent: undefined,
 }
 
-// Provider del contexto
 export const LayoutProvider: React.FC<{
   children: ReactNode
   initialSidebarItems?: RouteItem[]
@@ -47,7 +27,6 @@ export const LayoutProvider: React.FC<{
     sidebarItems: initialSidebarItems,
   })
 
-  // Header actions
   const setHeaderTitle = useCallback((title: string) => {
     setState(prev => ({ ...prev, headerTitle: title }))
   }, [])
@@ -64,7 +43,6 @@ export const LayoutProvider: React.FC<{
     setState(prev => ({ ...prev, headerVisible: visible }))
   }, [])
 
-  // Sidebar actions
   const toggleSidebar = useCallback(() => {
     setState(prev => ({ ...prev, sidebarOpen: !prev.sidebarOpen }))
   }, [])
@@ -85,7 +63,6 @@ export const LayoutProvider: React.FC<{
     setState(prev => ({ ...prev, sidebarVisible: visible }))
   }, [])
 
-  // Overlay actions
   const setOverlayVisible = useCallback(
     (visible: boolean, content?: ReactNode) => {
       setState(prev => ({
@@ -105,7 +82,6 @@ export const LayoutProvider: React.FC<{
     }))
   }, [])
 
-  // Utility actions
   const resetLayout = useCallback(() => {
     setState(initialState)
   }, [])

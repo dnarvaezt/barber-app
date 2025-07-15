@@ -1,4 +1,4 @@
-export * from './theme-context-def'
-export * from './theme-provider'
 export * from './theme-toggle'
-export * from './use-theme'
+export * from './theme.context'
+export * from './theme.hook'
+export * from './theme.provider'

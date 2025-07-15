@@ -2,7 +2,6 @@
   @apply w-full;
 
   &__container {
-    // Contenedor principal - estructura de card sin borde (ya está dentro de una card)
     @apply w-full bg-transparent;
   }
 
@@ -54,21 +53,16 @@
     @apply mt-2 text-sm text-red-700 dark:text-red-300;
   }
 
-  // Contenedor del markdown - ajustado para GitHub Markdown con estilo de card
   &__markdown-body {
-    // Fondo del contenedor - ya aplicado en el container
     @apply bg-transparent;
 
-    // Asegurar que el markdown-body tenga el espacio correcto
     .markdown-body {
-      // Resetear el padding del markdown-body para que use el del contenedor
       padding: 1rem;
       margin: 0;
       max-width: none;
       min-width: auto;
       background-color: transparent;
 
-      // Responsive padding para mobile
       @media (min-width: 640px) {
         padding: 1.5rem;
       }
@@ -77,7 +71,6 @@
         padding: 2rem;
       }
 
-      // Asegurar que el contenido tenga el padding correcto
       > *:first-child {
         margin-top: 0;
       }
@@ -89,7 +82,6 @@
   }
 }
 
-// Estilos para el botón de copiar código
 .copy-button {
   @apply absolute top-2 right-2 p-2 rounded-md transition-all duration-200 opacity-0;
   @apply bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800;
@@ -102,23 +94,19 @@
     @apply w-4 h-4;
   }
 
-  // Estado copiado
   &.copied {
     @apply bg-green-100 text-green-700 border-green-300;
     @apply dark:bg-green-900/30 dark:text-green-400 dark:border-green-600;
   }
 }
 
-// Wrapper para bloques de código con botón de copiar
 .code-block-wrapper {
   @apply relative;
 
-  // Mostrar botón de copiar al hacer hover
   &:hover .copy-button {
     opacity: 1;
   }
 
-  // Asegurar que el pre tenga posición relativa
   pre {
     @apply relative;
   }

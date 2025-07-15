@@ -1,29 +1,30 @@
 import { Footer } from '../footer'
 import { Header } from '../header'
 import { Sidebar } from '../side-bar'
+import { useLayout } from './layout.hook'
+import './layout.scss'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
-export const Layout = ({ children }: LayoutProps) => {
+export const Layout = (props: LayoutProps) => {
+  const { children } = props
+  const { sidebarVisible, overlayVisible, overlayContent } = useLayout()
+
   return (
-    <div className='min-h-screen bg-gray-100 dark:bg-gray-900'>
-      <Sidebar />
+    <div className='layout'>
+      {sidebarVisible && <Sidebar />}
 
-      {/* Contenido principal - Con margen izquierdo para el sidebar */}
-      <div className='lg:ml-64'>
-        {/* Header */}
+      <div className='layout__container'>
         <Header />
-
-        {/* Body - Se adapta al 100% del alto disponible */}
-        <main className='min-h-screen bg-gray-50 dark:bg-gray-800'>
-          {children}
-        </main>
-
-        {/* Footer */}
+        <main className='layout__main'>{children}</main>
         <Footer />
       </div>
+
+      {overlayVisible && (
+        <div className='layout__overlay'>{overlayContent}</div>
+      )}
     </div>
   )
 }

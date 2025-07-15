@@ -1,7 +1,6 @@
 import { useContext } from 'react'
-import { LayoutContext } from './LayoutContextDef'
+import { LayoutContext } from './layout.context'
 
-// Hook personalizado para usar el contexto de layout
 export const useLayout = () => {
   const context = useContext(LayoutContext)
   if (context === undefined) {

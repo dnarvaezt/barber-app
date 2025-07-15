@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 
 interface UseMarkdownViewerProps {
-  /** URL del archivo Markdown a cargar */
   src?: string
-  /** Contenido Markdown directo */
   children?: string
-  /** Callback cuando se carga el contenido */
   onLoad?: (content: string) => void
-  /** Callback cuando hay un error */
   onError?: (error: Error) => void
 }
 
@@ -27,7 +23,6 @@ export const useMarkdownViewer = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Cargar contenido desde URL si se proporciona
   useEffect(() => {
     if (!src) {
       if (children) {

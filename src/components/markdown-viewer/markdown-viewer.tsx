@@ -5,21 +5,15 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import { useMarkdownViewer } from './markdown-viewer.hook'
 import './markdown-viewer.scss'
-import { useMarkdownViewer } from './use-markdown-viewer'
 
 interface MarkdownViewerProps {
-  /** URL del archivo Markdown a cargar */
   src?: string
-  /** Contenido Markdown directo */
   children?: string
-  /** Clases CSS adicionales */
   className?: string
-  /** Callback cuando se carga el contenido */
   onLoad?: (content: string) => void
-  /** Callback cuando hay un error */
   onError?: (error: Error) => void
-  /** Mostrar loading state */
   showLoading?: boolean
 }
 
@@ -38,13 +32,11 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
     onError,
   })
 
-  // Agregar botones de copiar a los bloques de código
   useEffect(() => {
     const addCopyButtons = () => {
       const codeBlocks = document.querySelectorAll('pre')
 
       codeBlocks.forEach(pre => {
-        // Evitar agregar múltiples botones
         if (pre.querySelector('.copy-button')) return
 
         const code = pre.querySelector('code')
@@ -52,7 +44,6 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
 
         const codeText = code.textContent || ''
 
-        // Crear wrapper si no existe
         let wrapper = pre.parentElement
         if (!wrapper?.classList.contains('code-block-wrapper')) {
           wrapper = document.createElement('div')
@@ -61,25 +52,21 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
           wrapper.appendChild(pre)
         }
 
-        // Crear botón de copiar
         const copyButton = document.createElement('button')
         copyButton.className = 'copy-button'
         copyButton.title = 'Copiar código'
         copyButton.setAttribute('aria-label', 'Copiar código al portapapeles')
 
-        // Icono de copiar
         copyButton.innerHTML = `
           <svg class="copy-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
           </svg>
         `
 
-        // Función de copiar
         copyButton.addEventListener('click', async () => {
           try {
             await navigator.clipboard.writeText(codeText)
 
-            // Cambiar icono a check
             copyButton.innerHTML = `
               <svg class="copy-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
@@ -88,7 +75,6 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
             copyButton.classList.add('copied')
             copyButton.title = '¡Copiado!'
 
-            // Restaurar después de 2 segundos
             setTimeout(() => {
               copyButton.innerHTML = `
                 <svg class="copy-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -107,16 +93,13 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
       })
     }
 
-    // Ejecutar después de que el contenido se renderice
     const timer = setTimeout(addCopyButtons, 100)
 
     return () => clearTimeout(timer)
   }, [content])
 
-  // Componentes personalizados para ReactMarkdown
   const components = {}
 
-  // Mostrar loading
   if (loading && showLoading) {
     return (
       <div className={`markdown-viewer ${className}`}>
@@ -130,7 +113,6 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
     )
   }
 
-  // Mostrar error
   if (error) {
     return (
       <div className={`markdown-viewer ${className}`}>
@@ -161,7 +143,6 @@ export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({
     )
   }
 
-  // Mostrar contenido Markdown
   return (
     <div className={`markdown-viewer ${className}`}>
       <div className={`markdown-viewer__container`}>

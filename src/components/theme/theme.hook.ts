@@ -1,7 +1,6 @@
 import { useContext } from 'react'
-import { ThemeContext } from './theme-context-def'
+import { ThemeContext } from './theme.context'
 
-// Hook personalizado para usar el contexto de tema
 export const useTheme = () => {
   const context = useContext(ThemeContext)
   if (context === undefined) {

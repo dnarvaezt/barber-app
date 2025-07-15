@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../icons'
 
 import type { RouteItem } from '../../routes'
-import type { SideBarState } from './use-side-bar'
+import type { SideBarState } from './side-bar.hook'
 
 interface SideBarItemProps {
   item: RouteItem

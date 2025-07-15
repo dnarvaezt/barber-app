@@ -1,6 +1,5 @@
 import { createContext } from 'react'
 
-// Tipos para el contexto de tema
 export type Theme = 'light' | 'dark'
 
 interface ThemeState {
@@ -13,7 +12,6 @@ export interface ThemeContextType extends ThemeState {
   setTheme: (theme: Theme) => void
 }
 
-// Crear contexto
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
 )
