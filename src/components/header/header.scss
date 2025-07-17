@@ -1,5 +1,9 @@
 .header {
-  @apply bg-white border-b border-gray-300 shadow-sm sticky top-0 z-30 dark:bg-gray-900 dark:border-gray-600;
+  @apply bg-bg-primary border-b border-border-primary shadow-sm sticky top-0 z-30;
+
+  .dark & {
+    @apply bg-dark-bg-primary border-dark-border-primary;
+  }
 
   &__container {
     @apply max-w-7xl mx-auto px-3 sm:px-4 lg:px-8;
@@ -14,8 +18,11 @@
   }
 
   &__menu-button {
-    @apply lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-2 sm:mr-3 transition-colors duration-200 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700;
-    cursor: var(--cursor-pointer);
+    @apply lg:hidden p-2 rounded-md text-text-secondary hover:text-text-primary hover:bg-bg-secondary mr-2 sm:mr-3 transition-colors duration-200 cursor__area cursor__area--pointer;
+
+    .dark & {
+      @apply text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-secondary;
+    }
   }
 
   &__title-container {
@@ -23,7 +30,11 @@
   }
 
   &__title {
-    @apply text-gray-900 text-lg font-semibold tracking-tight dark:text-gray-200;
+    @apply text-text-primary text-lg font-semibold tracking-tight;
+
+    .dark & {
+      @apply text-dark-text-primary;
+    }
   }
 
   &__right-section {

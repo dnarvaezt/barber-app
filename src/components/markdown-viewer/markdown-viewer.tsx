@@ -1,5 +1,3 @@
-import 'github-markdown-css'
-import 'highlight.js/styles/atom-one-dark.css'
 import React, { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'

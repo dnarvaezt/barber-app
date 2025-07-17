@@ -1,3 +1,6 @@
+@use 'github-markdown-css';
+@use 'highlight.js/styles/atom-one-dark.css';
+
 .markdown-viewer {
   @apply w-full;
 
@@ -80,34 +83,827 @@
       }
     }
   }
-}
 
-.copy-button {
-  @apply absolute top-2 right-2 p-2 rounded-md transition-all duration-200 opacity-0;
-  @apply bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800;
-  @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-gray-100;
-  @apply border border-gray-200 dark:border-gray-600;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-  @apply dark:focus:ring-offset-gray-900;
+  // Estilos específicos para Markdown
+  // Importar estilos de GitHub Markdown y Highlight.js
 
-  .copy-icon {
-    @apply w-4 h-4;
+  // Override highlight.js colors for better accessibility (4.5:1 contrast ratio)
+  .hljs {
+    // Keywords - using darker purple for better contrast
+    .hljs-keyword {
+      color: #7c3aed !important; // purple-600 - better contrast than #c678dd
+    }
+
+    // Class names - using darker yellow for better contrast
+    .hljs-title.class_ {
+      color: #d97706 !important; // amber-600 - better contrast than #e6c07b
+    }
+
+    // Strings - using darker green for better contrast
+    .hljs-string {
+      color: #059669 !important; // emerald-600 - better contrast than #98c379
+    }
+
+    // Numbers - using darker blue for better contrast
+    .hljs-number {
+      color: #2563eb !important; // blue-600 - better contrast than #d19a66
+    }
+
+    // Comments - using darker gray for better contrast
+    .hljs-comment {
+      color: #6b7280 !important; // gray-500 - better contrast than #5c6370
+    }
+
+    // Function names - using darker cyan for better contrast
+    .hljs-title.function_ {
+      color: #0891b2 !important; // cyan-600 - better contrast than #61afef
+    }
+
+    // Variables - using darker orange for better contrast
+    .hljs-variable {
+      color: #ea580c !important; // orange-600 - better contrast than #e06c75
+    }
+
+    // Properties - using darker teal for better contrast
+    .hljs-property {
+      color: #0d9488 !important; // teal-600 - better contrast than #56b6c2
+    }
+
+    // Operators - using darker red for better contrast
+    .hljs-operator {
+      color: #dc2626 !important; // red-600 - better contrast than #56b6c2
+    }
+
+    // Punctuation - using darker gray for better contrast
+    .hljs-punctuation {
+      color: #374151 !important; // gray-700 - better contrast than #abb2bf
+    }
+
+    // Built-in functions - using darker indigo for better contrast
+    .hljs-built_in {
+      color: #4f46e5 !important; // indigo-600 - better contrast than #e06c75
+    }
+
+    // Literals - using darker green for better contrast
+    .hljs-literal {
+      color: #059669 !important; // emerald-600 - better contrast than #56b6c2
+    }
+
+    // Types - using darker blue for better contrast
+    .hljs-type {
+      color: #2563eb !important; // blue-600 - better contrast than #e06c75
+    }
+
+    // Attributes - using darker purple for better contrast
+    .hljs-attr {
+      color: #7c3aed !important; // purple-600 - better contrast than #d19a66
+    }
+
+    // Selectors - using darker green for better contrast
+    .hljs-selector-tag {
+      color: #059669 !important; // emerald-600 - better contrast than #e06c75
+    }
+
+    // Template strings - using darker yellow for better contrast
+    .hljs-template-string {
+      color: #d97706 !important; // amber-600 - better contrast than #98c379
+    }
+
+    // Template variables - using darker cyan for better contrast
+    .hljs-template-variable {
+      color: #0891b2 !important; // cyan-600 - better contrast than #e06c75
+    }
+
+    // Substitution - using darker orange for better contrast
+    .hljs-subst {
+      color: #ea580c !important; // orange-600 - better contrast than #abb2bf
+    }
+
+    // Symbol - using darker red for better contrast
+    .hljs-symbol {
+      color: #dc2626 !important; // red-600 - better contrast than #61afef
+    }
+
+    // Bullet - using darker gray for better contrast
+    .hljs-bullet {
+      color: #374151 !important; // gray-700 - better contrast than #98c379
+    }
+
+    // Link - using darker blue for better contrast
+    .hljs-link {
+      color: #2563eb !important; // blue-600 - better contrast than #61afef
+    }
+
+    // Emphasis - using darker red for better contrast
+    .hljs-emphasis {
+      color: #dc2626 !important; // red-600 - better contrast than #abb2bf
+    }
+
+    // Strong - using darker gray for better contrast
+    .hljs-strong {
+      color: #111827 !important; // gray-900 - better contrast than #abb2bf
+    }
+
+    // Addition - using darker green for better contrast
+    .hljs-addition {
+      color: #059669 !important; // emerald-600 - better contrast than #98c379
+    }
+
+    // Deletion - using darker red for better contrast
+    .hljs-deletion {
+      color: #dc2626 !important; // red-600 - better contrast than #e06c75
+    }
   }
 
-  &.copied {
-    @apply bg-green-100 text-green-700 border-green-300;
-    @apply dark:bg-green-900/30 dark:text-green-400 dark:border-green-600;
+  // Dark mode overrides for better contrast
+  .dark .hljs {
+    // Keywords - using lighter purple for better contrast in dark mode
+    .hljs-keyword {
+      color: #a855f7 !important; // purple-500 - better contrast than #c678dd
+    }
+
+    // Class names - using lighter yellow for better contrast in dark mode
+    .hljs-title.class_ {
+      color: #f59e0b !important; // amber-500 - better contrast than #e6c07b
+    }
+
+    // Strings - using lighter green for better contrast in dark mode
+    .hljs-string {
+      color: #10b981 !important; // emerald-500 - better contrast than #98c379
+    }
+
+    // Numbers - using lighter blue for better contrast in dark mode
+    .hljs-number {
+      color: #3b82f6 !important; // blue-500 - better contrast than #d19a66
+    }
+
+    // Comments - using lighter gray for better contrast in dark mode
+    .hljs-comment {
+      color: #9ca3af !important; // gray-400 - better contrast than #5c6370
+    }
+
+    // Function names - using lighter cyan for better contrast in dark mode
+    .hljs-title.function_ {
+      color: #06b6d4 !important; // cyan-500 - better contrast than #61afef
+    }
+
+    // Variables - using lighter orange for better contrast in dark mode
+    .hljs-variable {
+      color: #f97316 !important; // orange-500 - better contrast than #e06c75
+    }
+
+    // Properties - using lighter teal for better contrast in dark mode
+    .hljs-property {
+      color: #14b8a6 !important; // teal-500 - better contrast than #56b6c2
+    }
+
+    // Operators - using lighter red for better contrast in dark mode
+    .hljs-operator {
+      color: #ef4444 !important; // red-500 - better contrast than #56b6c2
+    }
+
+    // Punctuation - using lighter gray for better contrast in dark mode
+    .hljs-punctuation {
+      color: #d1d5db !important; // gray-300 - better contrast than #abb2bf
+    }
+
+    // Built-in functions - using lighter indigo for better contrast in dark mode
+    .hljs-built_in {
+      color: #6366f1 !important; // indigo-500 - better contrast than #e06c75
+    }
+
+    // Literals - using lighter green for better contrast in dark mode
+    .hljs-literal {
+      color: #10b981 !important; // emerald-500 - better contrast than #56b6c2
+    }
+
+    // Types - using lighter blue for better contrast in dark mode
+    .hljs-type {
+      color: #3b82f6 !important; // blue-500 - better contrast than #e06c75
+    }
+
+    // Attributes - using lighter purple for better contrast in dark mode
+    .hljs-attr {
+      color: #a855f7 !important; // purple-500 - better contrast than #d19a66
+    }
+
+    // Selectors - using lighter green for better contrast in dark mode
+    .hljs-selector-tag {
+      color: #10b981 !important; // emerald-500 - better contrast than #e06c75
+    }
+
+    // Template strings - using lighter yellow for better contrast in dark mode
+    .hljs-template-string {
+      color: #f59e0b !important; // amber-500 - better contrast than #98c379
+    }
+
+    // Template variables - using lighter cyan for better contrast in dark mode
+    .hljs-template-variable {
+      color: #06b6d4 !important; // cyan-500 - better contrast than #e06c75
+    }
+
+    // Substitution - using lighter orange for better contrast in dark mode
+    .hljs-subst {
+      color: #f97316 !important; // orange-500 - better contrast than #abb2bf
+    }
+
+    // Symbol - using lighter red for better contrast in dark mode
+    .hljs-symbol {
+      color: #ef4444 !important; // red-500 - better contrast than #61afef
+    }
+
+    // Bullet - using lighter gray for better contrast in dark mode
+    .hljs-bullet {
+      color: #d1d5db !important; // gray-300 - better contrast than #98c379
+    }
+
+    // Link - using lighter blue for better contrast in dark mode
+    .hljs-link {
+      color: #3b82f6 !important; // blue-500 - better contrast than #61afef
+    }
+
+    // Emphasis - using lighter red for better contrast in dark mode
+    .hljs-emphasis {
+      color: #ef4444 !important; // red-500 - better contrast than #abb2bf
+    }
+
+    // Strong - using lighter gray for better contrast in dark mode
+    .hljs-strong {
+      color: #f9fafb !important; // gray-50 - better contrast than #abb2bf
+    }
+
+    // Addition - using lighter green for better contrast in dark mode
+    .hljs-addition {
+      color: #10b981 !important; // emerald-500 - better contrast than #98c379
+    }
+
+    // Deletion - using lighter red for better contrast in dark mode
+    .hljs-deletion {
+      color: #ef4444 !important; // red-500 - better contrast than #e06c75
+    }
   }
-}
 
-.code-block-wrapper {
-  @apply relative;
+  // Estilos base para markdown-body (modo light)
+  .markdown-body {
+    // Asegurar que los estilos base de GitHub Markdown se mantengan
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 1rem;
+    color: #24292f;
+    background-color: #ffffff;
 
-  &:hover .copy-button {
-    opacity: 1;
+    // Responsive padding para mobile
+    @media (min-width: 640px) {
+      padding: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 2rem;
+    }
+
+    @media (min-width: 1280px) {
+      padding: 2.8125rem; // 45px
+    }
+
+    // Ajustar colores de enlaces en modo light
+    a {
+      color: #0969da;
+
+      &:hover {
+        color: #1a7f37;
+      }
+    }
+
+    // Ajustar colores de código inline en modo light
+    code {
+      background-color: rgba(175, 184, 193, 0.2);
+      color: #24292f;
+      padding: 0.2em 0.4em;
+      border-radius: 6px;
+      font-size: 85%;
+      font-family:
+        'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    }
+
+    // Ajustar colores de bloques de código en modo light
+    pre {
+      background-color: #f6f8fa;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 16px;
+      overflow: auto;
+      margin: 16px 0;
+      position: relative;
+
+      // Mejorar la apariencia del scrollbar
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      code {
+        background-color: transparent;
+        padding: 0;
+        border-radius: 0;
+        font-size: 14px;
+        line-height: 1.45;
+        color: #24292f;
+      }
+    }
+
+    // Ajustar colores de tablas en modo light
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      overflow: auto;
+      break-inside: auto;
+      text-align: left;
+      border: 1px solid #d0d7de;
+
+      th,
+      td {
+        padding: 6px 13px;
+        border: 1px solid #d0d7de;
+      }
+
+      th {
+        background-color: #f6f8fa;
+        font-weight: 600;
+      }
+    }
+
+    // Ajustar colores de bloques de cita en modo light
+    blockquote {
+      padding: 0 1em;
+      color: #656d76;
+      border-left: 0.25em solid #d0d7de;
+      margin: 0 0 16px 0;
+    }
+
+    // Ajustar colores de listas en modo light
+    ul,
+    ol {
+      color: #24292f;
+    }
+
+    // Ajustar colores de encabezados en modo light
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #24292f;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 2em;
+      border-bottom: 1px solid #d0d7de;
+      padding-bottom: 0.3em;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      border-bottom: 1px solid #d0d7de;
+      padding-bottom: 0.3em;
+    }
+
+    h3 {
+      font-size: 1.25em;
+    }
+
+    h4 {
+      font-size: 1em;
+    }
+
+    h5 {
+      font-size: 0.875em;
+    }
+
+    h6 {
+      font-size: 0.85em;
+      color: #656d76;
+    }
   }
 
-  pre {
+  // Ajustes para el tema dark mode
+  .dark {
+    .markdown-body {
+      color-scheme: dark;
+      color: #e6edf3;
+      background-color: #0d1117;
+
+      // Ajustar colores de enlaces en dark mode
+      a {
+        color: #58a6ff;
+
+        &:hover {
+          color: #79c0ff;
+        }
+      }
+
+      // Ajustar colores de código inline en dark mode
+      code {
+        background-color: rgba(110, 118, 129, 0.4);
+        color: #e6edf3;
+      }
+
+      // Ajustar colores de bloques de código en dark mode
+      pre {
+        background-color: #161b22;
+        border-color: #30363d;
+
+        // Mejorar la apariencia del scrollbar en dark mode
+        &::-webkit-scrollbar-track {
+          background: #21262d;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #484f58;
+
+          &:hover {
+            background: #5a6169;
+          }
+        }
+
+        code {
+          background-color: transparent;
+          color: #e6edf3;
+        }
+      }
+
+      // Ajustar colores de tablas en dark mode
+      table {
+        border-color: #30363d;
+
+        th,
+        td {
+          border-color: #30363d;
+        }
+
+        th {
+          background-color: #161b22;
+        }
+      }
+
+      // Ajustar colores de bloques de cita en dark mode
+      blockquote {
+        color: #8b949e;
+        border-left-color: #30363d;
+      }
+
+      // Ajustar colores de listas en dark mode
+      ul,
+      ol {
+        color: #e6edf3;
+      }
+
+      // Ajustar colores de encabezados en dark mode
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: #f0f6fc;
+        border-bottom-color: #30363d;
+      }
+
+      h6 {
+        color: #8b949e;
+      }
+    }
+  }
+
+  // Ajustes específicos para highlight.js
+  .hljs,
+  pre.hljs {
+    // Asegurar que highlight.js funcione bien en ambos modos
+    display: block;
+    overflow-x: auto;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-family:
+      'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 14px;
+    line-height: 1.45;
+
+    // Ajustes para modo light
+    .markdown-body:not(.dark) & {
+      color: #24292f;
+    }
+
+    // Ajustes para modo dark
+    .dark .markdown-body & {
+      color: #e6edf3;
+    }
+
+    // Mejorar la apariencia del scrollbar para highlight.js
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+
+    // Scrollbar para modo dark
+    .dark & {
+      &::-webkit-scrollbar-track {
+        background: #21262d;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #484f58;
+
+        &:hover {
+          background: #5a6169;
+        }
+      }
+    }
+  }
+
+  // Estilos específicos para diferentes tipos de código basados en clases de lenguaje
+  .markdown-body {
+    // Estilos generales para todos los bloques de código con clases de lenguaje
+    pre[class*='language-'] {
+      overflow-x: auto;
+      position: relative;
+
+      // Mejorar la apariencia del scrollbar para todos los bloques de código
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      // Scrollbar para modo dark
+      .dark & {
+        &::-webkit-scrollbar-track {
+          background: #21262d;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #484f58;
+
+          &:hover {
+            background: #5a6169;
+          }
+        }
+      }
+    }
+    // Estilos para bloques de código bash/shell
+    pre.language-bash,
+    pre.language-shell,
+    pre[class*='language-bash'],
+    pre[class*='language-shell'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #28a745;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #3fb950;
+      }
+    }
+
+    // Estilos para bloques de código TypeScript/JavaScript
+    pre.language-typescript,
+    pre.language-javascript,
+    pre.language-js,
+    pre.language-ts,
+    pre[class*='language-typescript'],
+    pre[class*='language-javascript'],
+    pre[class*='language-js'],
+    pre[class*='language-ts'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #007acc;
+      overflow-x: auto;
+
+      // Mejorar la apariencia del scrollbar
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #58a6ff;
+
+        &::-webkit-scrollbar-track {
+          background: #21262d;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #484f58;
+
+          &:hover {
+            background: #5a6169;
+          }
+        }
+      }
+    }
+
+    // Estilos para bloques de código JSON
+    pre.language-json,
+    pre[class*='language-json'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #f39c12;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #fbb040;
+      }
+    }
+
+    // Estilos para bloques de código CSS/SCSS
+    pre.language-css,
+    pre.language-scss,
+    pre[class*='language-css'],
+    pre[class*='language-scss'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #e74c3c;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #ff7b72;
+      }
+    }
+
+    // Estilos para bloques de código HTML
+    pre.language-html,
+    pre[class*='language-html'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #e67e22;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #ffa657;
+      }
+    }
+
+    // Estilos para bloques de código Python
+    pre.language-python,
+    pre[class*='language-python'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #3776ab;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #4a9eff;
+      }
+    }
+
+    // Estilos para bloques de código SQL
+    pre.language-sql,
+    pre[class*='language-sql'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #336791;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #4a9eff;
+      }
+    }
+
+    // Estilos para bloques de código YAML
+    pre.language-yaml,
+    pre.language-yml,
+    pre[class*='language-yaml'],
+    pre[class*='language-yml'] {
+      background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
+      border-left: 4px solid #cb171e;
+
+      .dark & {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-left-color: #ff6b6b;
+      }
+    }
+
+    // Estilos específicos para contenedores de código con scroll
+    .code-container,
+    .code-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      margin: 16px 0;
+
+      // Mejorar la apariencia del scrollbar
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      // Scrollbar para modo dark
+      .dark & {
+        &::-webkit-scrollbar-track {
+          background: #21262d;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #484f58;
+
+          &:hover {
+            background: #5a6169;
+          }
+        }
+      }
+    }
+  }
+
+  .copy-button {
+    @apply absolute top-2 right-2 p-2 rounded-md transition-all duration-200 opacity-0;
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800;
+    @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-gray-100;
+    @apply border border-gray-200 dark:border-gray-600;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    @apply dark:focus:ring-offset-gray-900;
+
+    .copy-icon {
+      @apply w-4 h-4;
+    }
+
+    &.copied {
+      @apply bg-green-100 text-green-700 border-green-300;
+      @apply dark:bg-green-900/30 dark:text-green-400 dark:border-green-600;
+    }
+  }
+  .code-block-wrapper {
     @apply relative;
+
+    &:hover .copy-button {
+      opacity: 1;
+    }
+
+    pre {
+      @apply relative;
+    }
   }
 }

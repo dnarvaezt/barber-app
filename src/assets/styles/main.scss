@@ -1,6 +1,5 @@
 @use 'variables' as v;
 @use 'mixins' as m;
-@use 'markdown';
 
 @tailwind base;
 @tailwind components;
@@ -14,8 +13,7 @@ body {
   font-family: v.$font-family-base;
   font-size: v.$font-size-base;
   line-height: v.$line-height-base;
-  color: v.$text-primary;
-  background-color: v.$bg-tertiary;
+  @apply text-text-primary bg-bg-tertiary;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition:
@@ -27,8 +25,7 @@ body {
 .dark {
   html,
   body {
-    color: #e5e7eb; // gray-200
-    background-color: #111827; // gray-900
+    @apply text-text-primary bg-bg-primary;
   }
 }
 
@@ -36,10 +33,46 @@ body {
   box-sizing: border-box;
 }
 
+@layer components {
+  // Cursor classes following BEM convention
+  .cursor {
+    &__area {
+      cursor: var(--cursor-default);
+    }
+    &__area--pointer {
+      cursor: var(--cursor-pointer);
+    }
+    &__area--disabled {
+      cursor: var(--cursor-disabled);
+    }
+    &__area--drag {
+      cursor: var(--cursor-drag);
+    }
+    &__area--text {
+      cursor: var(--cursor-text);
+    }
+    &__area--move {
+      cursor: var(--cursor-move);
+    }
+    &__area--wait {
+      cursor: var(--cursor-wait);
+    }
+    &__area--help {
+      cursor: var(--cursor-help);
+    }
+    &__area--zoom-in {
+      cursor: var(--cursor-zoom-in);
+    }
+    &__area--zoom-out {
+      cursor: var(--cursor-zoom-out);
+    }
+  }
+}
+
 // Notion-inspired component styles with better contrast
 @layer components {
   .notion-card {
-    @apply bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-bg-card border border-border-primary rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
 
     .dark & {
       @apply bg-gray-800 border-gray-600;
@@ -51,7 +84,7 @@ body {
   }
 
   .notion-button-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700 shadow-sm;
+    @apply bg-primary-600 text-white hover:bg-primary-700 shadow-sm;
   }
 
   .notion-button-secondary {
@@ -63,15 +96,15 @@ body {
   }
 
   .notion-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent shadow-sm;
 
     .dark & {
-      @apply bg-gray-800 border-gray-600 text-gray-200 focus:ring-blue-400;
+      @apply bg-gray-800 border-gray-600 text-gray-200 focus:ring-primary-400;
     }
   }
 
   .notion-section {
-    @apply bg-white border border-gray-300 rounded-lg shadow-sm p-6;
+    @apply bg-bg-card border border-border-primary rounded-lg shadow-sm p-6;
 
     .dark & {
       @apply bg-gray-800 border-gray-600;
@@ -79,7 +112,7 @@ body {
   }
 
   .notion-text-primary {
-    @apply text-gray-800;
+    @apply text-text-primary;
 
     .dark & {
       @apply text-gray-200;
@@ -87,7 +120,7 @@ body {
   }
 
   .notion-text-secondary {
-    @apply text-gray-600;
+    @apply text-text-secondary;
 
     .dark & {
       @apply text-gray-400;
@@ -95,7 +128,7 @@ body {
   }
 
   .notion-border {
-    @apply border-gray-300;
+    @apply border-border-primary;
 
     .dark & {
       @apply border-gray-600;
