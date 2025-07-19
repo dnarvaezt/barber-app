@@ -4,16 +4,4 @@
   &__content {
     @apply max-w-6xl mx-auto space-y-6;
   }
-
-  &__section {
-    @apply bg-white rounded-lg border border-gray-300 shadow-sm dark:bg-gray-800 dark:border-gray-600 p-6;
-  }
-
-  &__error {
-    @apply bg-red-50 border border-red-200 rounded-lg p-4 dark:bg-red-900/20 dark:border-red-800;
-  }
-
-  &__error-message {
-    @apply text-red-700 dark:text-red-400 text-sm;
-  }
 }

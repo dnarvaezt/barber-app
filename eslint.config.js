@@ -25,6 +25,7 @@ export default tseslint.config([
       'prefer-arrow-callback': 'off',
       semi: 'off',
       '@typescript-eslint/semi': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
     languageOptions: {
       ecmaVersion: 2020,
