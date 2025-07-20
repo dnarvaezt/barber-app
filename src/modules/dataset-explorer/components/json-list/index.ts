@@ -1,1 +1,1 @@
-export * from './json-list'
+export { JSONList } from './json-list'

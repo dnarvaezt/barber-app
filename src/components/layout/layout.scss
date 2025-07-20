@@ -2,11 +2,13 @@
   @apply min-h-screen bg-gray-100 dark:bg-gray-900;
 
   &__container {
-    @apply lg:ml-64;
+    @apply lg:ml-64 flex flex-col h-screen;
   }
 
   &__main {
-    @apply min-h-screen bg-gray-50 dark:bg-gray-800;
+    @apply flex-1 bg-gray-50 dark:bg-gray-800 overflow-auto;
+    min-height: fit-content;
+    height: calc(100dvh - 3.5rem - 4rem);
   }
 
   &__overlay {

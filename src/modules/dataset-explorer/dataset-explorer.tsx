@@ -16,7 +16,6 @@ export const DatasetExplorer = () => {
             <JSONList items={data} />
           </div>
           <div className='dataset-explorer__editor'></div>
-          <div></div>
         </div>
       </div>
     </DatasetExplorerContext.Provider>
