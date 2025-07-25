@@ -11,7 +11,7 @@ export const useFooter = () => {
   const links = useMemo<FooterLink[]>(
     () => [
       {
-        href: 'https://github.com/andes-project/filter-docs',
+        href: 'https://github.com/dnarvaezt/barber-app',
         label: 'GitHub',
         icon: 'fa-brands fa-github',
         external: true,

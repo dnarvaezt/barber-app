@@ -12,8 +12,8 @@ const getBasePath = (mode: string) => {
   if (mode === 'development' || process.env.NODE_ENV === 'preview') {
     return '/'
   }
-  // En producción, usa '/filter-docs/' para GitHub Pages
-  return '/filter-docs/'
+  // En producción, usa '/barber-app/' para GitHub Pages
+  return '/barber-app/'
 }
 
 // Plugin para manejar archivos markdown

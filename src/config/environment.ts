@@ -4,12 +4,12 @@
 
 export const config = {
   // Base path de la aplicación
-  basePath: import.meta.env.DEV ? '/' : '/filter-docs/',
+  basePath: import.meta.env.DEV ? '/' : '/barber-app/',
 
   // URL base de la aplicación
   baseUrl: import.meta.env.DEV
     ? 'http://localhost:3000'
-    : 'https://andesproject.github.io/filter-docs',
+    : 'https://dnarvaezt.github.io/barber-app',
 
   // Versión de la aplicación
   version: __APP_VERSION__ || '0.0.0',

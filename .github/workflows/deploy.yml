@@ -49,8 +49,13 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        with:
-          enablement: true
+
+      - name: Check Pages status
+        run: |
+          echo "🔍 Verificando estado de GitHub Pages..."
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
