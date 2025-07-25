@@ -126,3 +126,79 @@ Para verificar que todo funciona:
 - ✅ Configuración centralizada y mantenible
 - ✅ Soporte para futuras migraciones (Netlify, etc.)
 - ✅ Documentación completa del proceso
+
+---
+
+# Migración a GitHub Actions Pages (2025-07-25)
+
+## Problema
+
+Error de permisos en el workflow de despliegue:
+
+```
+ProcessError: remote: Permission to dnarvaezt/barber-app.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/dnarvaezt/barber-app.git/': The requested URL returned error: 403
+```
+
+## Solución Implementada
+
+### 1. Migración de gh-pages a GitHub Actions Pages
+
+- ✅ Eliminada dependencia `gh-pages`
+- ✅ Actualizado workflow para usar `actions/deploy-pages@v4`
+- ✅ Configuración de concurrencia para evitar despliegues simultáneos
+- ✅ Separación de jobs de build y deploy
+
+### 2. Workflow Actualizado (`.github/workflows/deploy.yml`)
+
+- ✅ **Build Job:** Compila la aplicación y sube el artifact
+- ✅ **Deploy Job:** Despliega usando GitHub Actions Pages
+- ✅ **Concurrencia:** Controlada para evitar conflictos
+- ✅ **Permisos:** Configurados correctamente para Pages
+
+### 3. Scripts Simplificados (`package.json`)
+
+- ✅ `deploy`: Ahora solo ejecuta el build local
+- ✅ Eliminada dependencia `gh-pages`
+- ✅ Mantenido `build:gh-pages` para compatibilidad
+
+### 4. Documentación Actualizada (`DEPLOYMENT.md`)
+
+- ✅ Instrucciones para configurar GitHub Pages
+- ✅ Configuración de permisos requerida
+- ✅ Notas sobre el nuevo sistema
+
+## Configuración Requerida en GitHub
+
+### 1. Habilitar GitHub Pages
+
+- Settings > Pages > Source: "GitHub Actions"
+
+### 2. Configurar Permisos
+
+- Settings > Actions > General > Workflow permissions: "Read and write permissions"
+- Settings > Actions > General > Allow GitHub Actions to create and approve pull requests: ✅
+
+### 3. Verificar Entorno
+
+- Settings > Environments > github-pages (se crea automáticamente)
+
+## Beneficios de la Migración
+
+- ✅ **Mayor Seguridad:** No requiere tokens de acceso personal
+- ✅ **Mejor Control:** Concurrencia y permisos granulares
+- ✅ **Menos Dependencias:** Eliminada gh-pages
+- ✅ **Más Confiable:** Usa el sistema oficial de GitHub
+- ✅ **Mejor Logging:** Logs más detallados en GitHub Actions
+
+## Archivos Modificados
+
+- `.github/workflows/deploy.yml` (completamente reescrito)
+- `package.json` (eliminada gh-pages, simplificado deploy script)
+- `DEPLOYMENT.md` (actualizada documentación)
+
+## Verificación
+
+1. **Push a main/master** debe disparar el workflow automáticamente
+2. **Verificar en Actions** que el build y deploy sean exitosos
+3. **Comprobar en Pages** que el sitio esté disponible en la URL configurada

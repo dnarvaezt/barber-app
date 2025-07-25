@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -b && vite build",
     "build:gh-pages": "NODE_ENV=production tsc -b && vite build",
-    "deploy": "npm run build:gh-pages && gh-pages -d dist --repo https://x-access-token:$GITHUB_TOKEN@github.com/dnarvaezt/barber-app.git",
+    "deploy": "npm run build:gh-pages",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lighthouse": "npm run start -- --port=5173 & sleep 8 && lighthouse http://localhost:5173 --config=./lighthouse.config.js --output=html --output-path=./lighthouse-report.html && pkill -f 'vite'",
@@ -39,7 +39,6 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/react-router-dom": "^5.3.3",
     "@uiw/react-codemirror": "^4.24.1",
-    "gh-pages": "^6.3.0",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.1",
     "react": "^19.1.0",
