@@ -9,12 +9,13 @@ Este proyecto está configurado para desplegarse automáticamente en GitHub Page
 1. **Habilitar GitHub Pages en el repositorio:**
    - Ve a Settings > Pages
    - En "Source", selecciona "GitHub Actions"
-   - Esto permitirá que el workflow `.github/workflows/deploy.yml` maneje el despliegue
+   - **Nota:** El workflow puede habilitarlo automáticamente con `enablement: true`
 
 2. **Configurar permisos del repositorio:**
    - Ve a Settings > Actions > General
    - Asegúrate de que "Actions permissions" esté habilitado
    - En "Workflow permissions", selecciona "Read and write permissions"
+   - Habilita "Allow GitHub Actions to create and approve pull requests"
 
 ### Workflow de Despliegue
 
@@ -46,9 +47,9 @@ Si ves este error en el workflow:
 
 **Solución:**
 
-1. Verifica que GitHub Pages esté habilitado en Settings > Pages
-2. Asegúrate de que el repositorio tenga permisos de Pages
-3. El workflow ahora incluye `enablement: true` para habilitar Pages automáticamente
+1. El workflow ahora incluye `enablement: true` para habilitar Pages automáticamente
+2. Verifica que GitHub Pages esté habilitado en Settings > Pages
+3. Asegúrate de que el repositorio tenga permisos de Pages
 
 #### Error: "Build directory 'dist' not found"
 
@@ -86,11 +87,12 @@ npm run deploy
 
 ### Configuración de GitHub Pages
 
-Para que el nuevo workflow funcione correctamente:
+El workflow está configurado para habilitar GitHub Pages automáticamente. Sin embargo, para una configuración manual:
 
 1. **Habilitar GitHub Pages:**
    - Ve a Settings > Pages
    - En "Source", selecciona "GitHub Actions"
+   - **Nota:** El workflow puede habilitarlo automáticamente con `enablement: true`
 
 2. **Configurar permisos:**
    - Ve a Settings > Actions > General
@@ -99,4 +101,13 @@ Para que el nuevo workflow funcione correctamente:
 
 3. **Verificar el entorno:**
    - Ve a Settings > Environments
-   - Asegúrate de que existe el entorno "github-pages"
+   - Asegúrate de que existe el entorno "github-pages" (se crea automáticamente)
+
+### Beneficios del Nuevo Sistema
+
+- ✅ **Mayor Seguridad:** No requiere tokens de acceso personal
+- ✅ **Mejor Control:** Concurrencia y permisos granulares
+- ✅ **Menos Dependencias:** Eliminada gh-pages
+- ✅ **Más Confiable:** Usa el sistema oficial de GitHub
+- ✅ **Mejor Logging:** Logs más detallados en GitHub Actions
+- ✅ **Habilitación Automática:** Pages se habilita automáticamente si no está configurado
