@@ -44,6 +44,7 @@ $z-index-tooltip: 1070;
 
 // Theme-specific cursor overrides
 [data-theme='custom'] {
-  --cursor-pointer: url('/cursors/finger.cur'), pointer;
-  --cursor-drag: url('/cursors/grab.cur'), grab;
+  // TODO: Add custom cursor files when available
+  // --cursor-pointer: url('/cursors/finger.cur'), pointer;
+  // --cursor-drag: url('/cursors/grab.cur'), grab;
 }
