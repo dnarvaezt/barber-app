@@ -92,9 +92,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
               if (facadeModuleId.includes('node_modules')) {
                 return 'vendor/[name]-[hash].js'
               }
-              if (facadeModuleId.includes('dataset-explorer')) {
-                return 'modules/[name]-[hash].js'
-              }
             }
             return 'chunks/[name]-[hash].js'
           },

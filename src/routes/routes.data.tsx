@@ -24,13 +24,4 @@ export const appRoutes: RouteItem[] = [
     path: '/technical-documentation',
     children: [],
   },
-  {
-    id: 'dataset-explorer',
-    name: 'Explorador de Datasets',
-    title: 'Explorador de Datasets',
-    icon: <Icon name='fa-solid fa-database' />,
-    component: lazyRoute('dataset-explorer', 'DatasetExplorer'),
-    path: '/dataset-explorer',
-    children: [],
-  },
 ]
