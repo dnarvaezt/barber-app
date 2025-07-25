@@ -1,8 +1,8 @@
 {
-  "name": "filter-docs",
+  "name": "barber-app",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://andesproject.github.io/filter-docs",
+  "homepage": "https://dnarvaezt.github.io/barber-app",
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
@@ -32,11 +32,13 @@
   },
   "dependencies": {
     "@andes-project/filter": "^1.0.1",
+    "@codemirror/lang-javascript": "^6.2.4",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/react-router-dom": "^5.3.3",
+    "@uiw/react-codemirror": "^4.24.1",
     "gh-pages": "^6.3.0",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.1",
