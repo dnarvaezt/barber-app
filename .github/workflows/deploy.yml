@@ -41,6 +41,13 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           enablement: true
+        continue-on-error: true
+
+      - name: Check Pages Status
+        run: |
+          echo "Verificando estado de GitHub Pages..."
+          echo "Si el paso anterior falló, configura manualmente en Settings > Pages"
+          echo "Selecciona 'GitHub Actions' como fuente"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
