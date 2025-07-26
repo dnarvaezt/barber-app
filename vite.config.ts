@@ -3,20 +3,15 @@ import { readFileSync } from 'fs'
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 
-// Lee la versión del package.json
 const { version } = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
-// Determina el base path dinámicamente
 const getBasePath = (mode: string) => {
-  // En desarrollo local y preview, usa '/'
   if (mode === 'development' || process.env.NODE_ENV === 'preview') {
     return '/'
   }
-  // En producción, usa '/barber-app/' para GitHub Pages
   return '/barber-app/'
 }
 
-// Plugin para manejar archivos markdown
 const markdownPlugin = () => {
   return {
     name: 'markdown-loader',
@@ -31,28 +26,22 @@ const markdownPlugin = () => {
   }
 }
 
-// https://vite.dev/config/
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const basePath = getBasePath(mode)
 
   return {
     plugins: [react(), markdownPlugin()],
-    // Ensure environment variables are loaded
     envDir: '.',
-    // Define environment variables that should be exposed to the client
     define: {
       __APP_VERSION__: JSON.stringify(version),
       __BASE_PATH__: JSON.stringify(basePath),
       'process.env.NODE_ENV': JSON.stringify(mode),
     },
-    // Base path dinámico para GitHub Pages
     base: basePath,
-    // Server configuration
     server: {
       port: 3000,
       host: true,
     },
-    // Build configuration
     build: {
       outDir: 'dist',
       sourcemap: true,
@@ -62,23 +51,18 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              // Separar React y React-DOM
               if (id.includes('react') || id.includes('react-dom')) {
                 return 'react-vendor'
               }
-              // Separar React Router
               if (id.includes('react-router')) {
                 return 'router-vendor'
               }
-              // Separar FontAwesome
               if (id.includes('fontawesome') || id.includes('@fortawesome')) {
                 return 'icons-vendor'
               }
-              // Separar markdown processing
               if (id.includes('marked') || id.includes('highlight.js')) {
                 return 'markdown-vendor'
               }
-              // Otros vendors
               return 'vendor'
             }
             if (id.includes('/src/modules/')) {
@@ -126,7 +110,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
       },
     },
-    // Preview configuration (para probar el build)
     preview: {
       port: 4173,
       host: true,

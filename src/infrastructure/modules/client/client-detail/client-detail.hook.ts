@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Client } from '../../../../application/domain/client'
-import { useRoutes } from '../../../routes'
+import { RouteIds, useRoutes } from '../../../routes'
 
 export const useClientDetail = () => {
   const navigate = useNavigate()
@@ -13,15 +13,26 @@ export const useClientDetail = () => {
   const [isValidating, setIsValidating] = useState(true)
   const [isValidClient, setIsValidClient] = useState(false)
 
+  const editPath = useMemo(
+    () => getRoutePathById(RouteIds.CLIENT_FORM_EDIT),
+    [getRoutePathById]
+  )
+  const clientListPath = useMemo(
+    () => getRoutePathById('client'),
+    [getRoutePathById]
+  )
+  const notFoundPath = useMemo(
+    () => getRoutePathById(RouteIds.NOT_FOUND),
+    [getRoutePathById]
+  )
+
   const loadClient = useCallback(
     async (id: string) => {
       setLoading(true)
       setError(null)
       try {
-        // Simulación de llamada a API
         await new Promise(resolve => setTimeout(resolve, 1000))
 
-        // Mock data - generar datos diferentes para cada cliente basado en su ID
         const mockClients: Record<string, Client> = {
           '1': {
             id: '1',
@@ -75,27 +86,22 @@ export const useClientDetail = () => {
           },
         }
 
-        // Buscar el cliente por ID - solo aceptar IDs válidos
         const mockClient = mockClients[id]
 
         if (!mockClient) {
-          console.log('Cliente no encontrado:', id, 'redirigiendo a 404')
           setError('Cliente no encontrado')
           setIsValidClient(false)
-          const notFoundPath = getRoutePathById('not-found')
           if (notFoundPath) {
             navigate(notFoundPath, { replace: true })
           }
           return
         }
 
-        console.log('Cargando cliente:', id, mockClient)
         setClient(mockClient)
       } catch (error) {
         console.error('Error loading client:', error)
         setError('Error al cargar el cliente')
         setIsValidClient(false)
-        const clientListPath = getRoutePathById('client')
         if (clientListPath) {
           navigate(clientListPath, { replace: true })
         }
@@ -103,39 +109,30 @@ export const useClientDetail = () => {
         setLoading(false)
       }
     },
-    [navigate]
+    [navigate, notFoundPath, clientListPath]
   )
 
   const validateClientId = useCallback(
     async (id: string) => {
       setIsValidating(true)
       try {
-        // Simulación de validación de API
         await new Promise(resolve => setTimeout(resolve, 500))
 
-        // Mock validation - en una implementación real esto vendría del servicio
-        // Por ahora aceptamos cualquier ID que tenga al menos 1 carácter
         const isValid = id && id.length > 0
 
-        console.log('Validating client ID for detail:', id, 'isValid:', isValid)
-
         if (!isValid) {
-          console.log('Invalid client ID for detail, redirecting to /clients')
           setIsValidClient(false)
-          const clientListPath = getRoutePathById('client')
           if (clientListPath) {
             navigate(clientListPath, { replace: true })
           }
           return
         }
 
-        // Si el ID es válido, cargar el cliente
         await loadClient(id)
         setIsValidClient(true)
       } catch (error) {
         console.error('Error validating client ID:', error)
         setIsValidClient(false)
-        const clientListPath = getRoutePathById('client')
         if (clientListPath) {
           navigate(clientListPath, { replace: true })
         }
@@ -143,24 +140,20 @@ export const useClientDetail = () => {
         setIsValidating(false)
       }
     },
-    [navigate, loadClient]
+    [navigate, loadClient, notFoundPath, clientListPath]
   )
 
-  const handleEdit = useCallback(() => {
-    if (clientId) {
-      const editPath = getRoutePathById('client-form-edit')
-      if (editPath) {
-        navigate(editPath.replace(':clientId', clientId))
-      }
+  const handleEditMemoized = useCallback(() => {
+    if (clientId && editPath) {
+      navigate(editPath.replace(':clientId', clientId))
     }
-  }, [navigate, clientId, getRoutePathById])
+  }, [navigate, clientId, editPath])
 
-  const handleBack = useCallback(() => {
-    const clientListPath = getRoutePathById('client')
+  const handleBackMemoized = useCallback(() => {
     if (clientListPath) {
       navigate(clientListPath)
     }
-  }, [navigate, getRoutePathById])
+  }, [navigate, clientListPath])
 
   const formatDate = useCallback((date: Date) => {
     return date.toLocaleDateString('es-ES', {
@@ -171,7 +164,6 @@ export const useClientDetail = () => {
   }, [])
 
   const formatPhone = useCallback((phone: string) => {
-    // Formatear número de teléfono para mejor legibilidad
     const cleaned = phone.replace(/\D/g, '')
     if (cleaned.length === 12 && cleaned.startsWith('57')) {
       return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8, 10)} ${cleaned.slice(10, 12)}`
@@ -212,7 +204,6 @@ export const useClientDetail = () => {
     return months[birthDate.getMonth()]
   }, [])
 
-  // Validar y cargar cliente
   useEffect(() => {
     if (clientId) {
       validateClientId(clientId)
@@ -225,8 +216,8 @@ export const useClientDetail = () => {
     isValidClient,
     client,
     error,
-    handleEdit,
-    handleBack,
+    handleEdit: handleEditMemoized,
+    handleBack: handleBackMemoized,
     formatDate,
     formatPhone,
     getAge,

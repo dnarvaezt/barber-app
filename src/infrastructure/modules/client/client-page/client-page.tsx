@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLayout } from '../../../components'
-import { useRoutes } from '../../../routes'
+import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
 
@@ -32,7 +32,7 @@ export const ClientPage = () => {
     setHeaderActions(
       <button
         onClick={() => {
-          const newClientPath = getRoutePathById('client-form-new')
+          const newClientPath = getRoutePathById(RouteIds.CLIENT_FORM_NEW)
           if (newClientPath) {
             navigate(newClientPath)
           }
@@ -171,7 +171,7 @@ export const ClientPage = () => {
                       <div className='client-page__action-buttons'>
                         <Link
                           to={
-                            getRoutePathById('client-detail')?.replace(
+                            getRoutePathById(RouteIds.CLIENT_DETAIL)?.replace(
                               ':clientId',
                               client.id
                             ) || '#'
@@ -183,10 +183,9 @@ export const ClientPage = () => {
                         </Link>
                         <Link
                           to={
-                            getRoutePathById('client-form-edit')?.replace(
-                              ':clientId',
-                              client.id
-                            ) || '#'
+                            getRoutePathById(
+                              RouteIds.CLIENT_FORM_EDIT
+                            )?.replace(':clientId', client.id) || '#'
                           }
                           className='client-page__action-link client-page__action-link--edit'
                           title='Editar cliente'

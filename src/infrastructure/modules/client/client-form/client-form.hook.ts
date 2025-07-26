@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Client } from '../../../../application/domain/client'
-import { useRoutes } from '../../../routes'
+import { RouteIds, useRoutes } from '../../../routes'
 
 export const useClientForm = () => {
   const navigate = useNavigate()
@@ -25,10 +25,8 @@ export const useClientForm = () => {
     async (id: string) => {
       setLoading(true)
       try {
-        // Simulación de llamada a API
         await new Promise(resolve => setTimeout(resolve, 1000))
 
-        // Mock data - generar datos diferentes para cada cliente basado en su ID
         const mockClients: Record<string, Client> = {
           '1': {
             id: '1',
@@ -82,25 +80,17 @@ export const useClientForm = () => {
           },
         }
 
-        // Buscar el cliente por ID - solo aceptar IDs válidos
         const mockClient = mockClients[id]
 
         if (!mockClient) {
-          console.log(
-            'Cliente no encontrado para edición:',
-            id,
-            'redirigiendo a 404'
-          )
           setErrors({ general: 'Cliente no encontrado' })
           setIsValidClient(false)
-          const notFoundPath = getRoutePathById('not-found')
+          const notFoundPath = getRoutePathById(RouteIds.NOT_FOUND)
           if (notFoundPath) {
             navigate(notFoundPath, { replace: true })
           }
           return
         }
-
-        console.log('Cargando cliente para edición:', id, mockClient)
         setClient(mockClient)
         setFormData({
           name: mockClient.name,
@@ -126,17 +116,11 @@ export const useClientForm = () => {
     async (id: string) => {
       setIsValidating(true)
       try {
-        // Simulación de validación de API
         await new Promise(resolve => setTimeout(resolve, 500))
 
-        // Mock validation - en una implementación real esto vendría del servicio
-        // Por ahora aceptamos cualquier ID que no sea 'new' y tenga al menos 1 carácter
         const isValid = id && id !== 'new' && id.length > 0
 
-        console.log('Validating client ID:', id, 'isValid:', isValid)
-
         if (!isValid) {
-          console.log('Invalid client ID, redirecting to /clients')
           setIsValidClient(false)
           const clientListPath = getRoutePathById('client')
           if (clientListPath) {
@@ -145,7 +129,6 @@ export const useClientForm = () => {
           return
         }
 
-        // Si el ID es válido, cargar el cliente
         await loadClient(id)
         setIsValidClient(true)
       } catch (error) {
@@ -199,42 +182,20 @@ export const useClientForm = () => {
 
       setLoading(true)
       try {
-        const submitData = {
-          name: formData.name.trim(),
-          phoneNumber: formData.phoneNumber.trim(),
-          birthDate: new Date(formData.birthDate),
-          ...(isEditing
-            ? { id: clientId!, updatedBy: 'current-user' }
-            : { createdBy: 'current-user' }),
-        }
-
-        // Simulación de llamada a API
         await new Promise(resolve => setTimeout(resolve, 1000))
 
         let savedClientId: string
 
         if (isEditing) {
-          console.log('Actualizando cliente:', submitData)
-          // await clientService.updateClient(submitData as UpdateClientRequest)
           savedClientId = clientId!
         } else {
-          console.log('Creando cliente:', submitData)
-          // await clientService.createClient(submitData as CreateClientRequest)
-          // En una implementación real, el servicio devolvería el ID del cliente creado
-          // Generar un ID único para el mock
           savedClientId = `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
         }
 
-        // Mostrar estado de éxito y redirigir después de un breve delay
         setIsSuccess(true)
-        console.log(
-          'Cliente guardado exitosamente, redirigiendo al detalle:',
-          savedClientId
-        )
 
-        // Redirigir después de 1.5 segundos para que el usuario vea el mensaje de éxito
         setTimeout(() => {
-          const detailPath = getRoutePathById('client-detail')
+          const detailPath = getRoutePathById(RouteIds.CLIENT_DETAIL)
           if (detailPath) {
             navigate(detailPath.replace(':clientId', savedClientId))
           }
@@ -252,7 +213,6 @@ export const useClientForm = () => {
   const handleInputChange = useCallback(
     (field: string, value: string) => {
       setFormData(prev => ({ ...prev, [field]: value }))
-      // Limpiar error del campo cuando el usuario empiece a escribir
       if (errors[field]) {
         setErrors(prev => ({ ...prev, [field]: '' }))
       }
@@ -267,12 +227,10 @@ export const useClientForm = () => {
     }
   }, [navigate, getRoutePathById])
 
-  // Validar que el clientId sea válido (solo para edición)
   useEffect(() => {
     if (isEditing && clientId) {
       validateClientId(clientId)
     } else if (!isEditing) {
-      // Si no es edición (es creación), permitir acceso
       setIsValidating(false)
       setIsValidClient(true)
     }

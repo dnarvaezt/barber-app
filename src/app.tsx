@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { Layout, LayoutProvider } from './infrastructure/components'
+import { Layout, LayoutProvider } from './infrastructure/components/layout'
 import { ThemeProvider } from './infrastructure/components/theme'
 import { appRoutes, useRoutes } from './infrastructure/routes'
 
@@ -36,7 +36,6 @@ export const App = () => {
                   element={<page.component />}
                 />
               ))}
-              {/* Redirigir rutas no encontradas a la página de inicio */}
               <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>
           </Suspense>

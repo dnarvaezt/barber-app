@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLayout } from '../../components'
-import { useRoutes } from '../../routes'
+import { RouteIds, useRoutes } from '../../routes'
 import './not-found.scss'
 
 export const NotFoundPage = () => {
@@ -33,7 +33,7 @@ export const NotFoundPage = () => {
             </button>
             <button
               onClick={() => {
-                const clientListPath = getRoutePathById('client')
+                const clientListPath = getRoutePathById(RouteIds.CLIENT)
                 if (clientListPath) {
                   window.location.href = clientListPath
                 }
