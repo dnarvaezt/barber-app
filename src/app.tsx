@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { Layout, LayoutProvider } from './components'
-import { ThemeProvider } from './components/theme'
-import { appRoutes, useRoutes } from './routes'
+import { Layout, LayoutProvider } from './infrastructure/components'
+import { ThemeProvider } from './infrastructure/components/theme'
+import { appRoutes, useRoutes } from './infrastructure/routes'
 
 export const App = () => {
   const { getPages } = useRoutes()
