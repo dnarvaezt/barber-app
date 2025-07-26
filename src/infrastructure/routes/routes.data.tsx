@@ -13,15 +13,12 @@ export const appRoutes: RouteItem[] = [
     children: [],
   },
   {
-    id: 'technical-documentation',
-    name: 'Documentación Técnica',
-    title: 'Documentación Técnica',
-    icon: <Icon name='home' />,
-    component: lazyRoute(
-      'technical-documentation-page',
-      'TechnicalDocumentationPage'
-    ),
-    path: '/technical-documentation',
+    id: 'clients',
+    name: 'Clientes',
+    title: 'Gestión de Clientes',
+    icon: <Icon name='users' />,
+    component: lazyRoute('client-page', 'ClientPage'),
+    path: '/clients',
     children: [],
   },
 ]
