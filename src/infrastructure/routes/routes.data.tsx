@@ -9,7 +9,7 @@ export const appRoutes: RouteItem[] = [
     title: 'Gestión de Cliente',
     icon: <Icon name='user' />,
     component: lazyRoute('client-page', 'ClientPage'),
-    path: '/client',
+    path: '/clients',
     children: [
       {
         id: 'client-form-new',

@@ -163,14 +163,14 @@ export const ClientPage = () => {
                     <td className='client-page__table-cell client-page__table-cell--actions'>
                       <div className='client-page__action-buttons'>
                         <Link
-                          to={`/client/${client.id}`}
+                          to={`/clients/${client.id}`}
                           className='client-page__action-link client-page__action-link--view'
                           title='Ver detalle del cliente'
                         >
                           👁️ Ver
                         </Link>
                         <Link
-                          to={`/client/form/${client.id}`}
+                          to={`/clients/form/${client.id}`}
                           className='client-page__action-link client-page__action-link--edit'
                           title='Editar cliente'
                         >

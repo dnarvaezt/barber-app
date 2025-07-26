@@ -220,7 +220,7 @@ export const useClientForm = () => {
 
         // Redirigir después de 1.5 segundos para que el usuario vea el mensaje de éxito
         setTimeout(() => {
-          navigate(`/client/${savedClientId}`)
+          navigate(`/clients/${savedClientId}`)
         }, 1500)
       } catch (error) {
         console.error('Error submitting form:', error)

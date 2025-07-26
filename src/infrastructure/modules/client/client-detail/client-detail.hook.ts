@@ -134,7 +134,7 @@ export const useClientDetail = () => {
 
   const handleEdit = useCallback(() => {
     if (clientId) {
-      navigate(`/client/form/${clientId}`)
+      navigate(`/clients/form/${clientId}`)
     }
   }, [navigate, clientId])
 
