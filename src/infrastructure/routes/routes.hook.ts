@@ -26,6 +26,14 @@ export const useRoutes = () => {
     return routesService.routeExists(path)
   }
 
+  const getRoutePathById = (routeId: string): string | undefined => {
+    return routesService.getRoutePathById(routeId)
+  }
+
+  const findRouteById = (routeId: string) => {
+    return routesService.findRouteById(routeId)
+  }
+
   return {
     routes: appRoutes,
     getPages,
@@ -33,5 +41,7 @@ export const useRoutes = () => {
     getAllRoutes,
     getRoutesByLevel,
     routeExists,
+    getRoutePathById,
+    findRouteById,
   }
 }

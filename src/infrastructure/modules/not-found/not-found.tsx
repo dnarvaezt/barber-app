@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 import { useLayout } from '../../components'
+import { useRoutes } from '../../routes'
 import './not-found.scss'
 
 export const NotFoundPage = () => {
   const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { getRoutePathById } = useRoutes()
 
   useEffect(() => {
     setHeaderTitle('Página No Encontrada')
@@ -30,7 +32,12 @@ export const NotFoundPage = () => {
               ← Volver
             </button>
             <button
-              onClick={() => (window.location.href = '/clients')}
+              onClick={() => {
+                const clientListPath = getRoutePathById('client')
+                if (clientListPath) {
+                  window.location.href = clientListPath
+                }
+              }}
               className='not-found-page__button not-found-page__button--primary'
             >
               Ir a Clientes

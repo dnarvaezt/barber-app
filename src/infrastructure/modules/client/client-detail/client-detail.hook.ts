@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Client } from '../../../../application/domain/client'
+import { useRoutes } from '../../../routes'
 
 export const useClientDetail = () => {
   const navigate = useNavigate()
   const { clientId } = useParams<{ clientId: string }>()
+  const { getRoutePathById } = useRoutes()
   const [loading, setLoading] = useState(true)
   const [client, setClient] = useState<Client | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -80,7 +82,10 @@ export const useClientDetail = () => {
           console.log('Cliente no encontrado:', id, 'redirigiendo a 404')
           setError('Cliente no encontrado')
           setIsValidClient(false)
-          navigate('/404', { replace: true })
+          const notFoundPath = getRoutePathById('not-found')
+          if (notFoundPath) {
+            navigate(notFoundPath, { replace: true })
+          }
           return
         }
 
@@ -90,7 +95,10 @@ export const useClientDetail = () => {
         console.error('Error loading client:', error)
         setError('Error al cargar el cliente')
         setIsValidClient(false)
-        navigate('/clients', { replace: true })
+        const clientListPath = getRoutePathById('client')
+        if (clientListPath) {
+          navigate(clientListPath, { replace: true })
+        }
       } finally {
         setLoading(false)
       }
@@ -114,7 +122,10 @@ export const useClientDetail = () => {
         if (!isValid) {
           console.log('Invalid client ID for detail, redirecting to /clients')
           setIsValidClient(false)
-          navigate('/clients', { replace: true })
+          const clientListPath = getRoutePathById('client')
+          if (clientListPath) {
+            navigate(clientListPath, { replace: true })
+          }
           return
         }
 
@@ -124,7 +135,10 @@ export const useClientDetail = () => {
       } catch (error) {
         console.error('Error validating client ID:', error)
         setIsValidClient(false)
-        navigate('/clients', { replace: true })
+        const clientListPath = getRoutePathById('client')
+        if (clientListPath) {
+          navigate(clientListPath, { replace: true })
+        }
       } finally {
         setIsValidating(false)
       }
@@ -134,13 +148,19 @@ export const useClientDetail = () => {
 
   const handleEdit = useCallback(() => {
     if (clientId) {
-      navigate(`/clients/form/${clientId}`)
+      const editPath = getRoutePathById('client-form-edit')
+      if (editPath) {
+        navigate(editPath.replace(':clientId', clientId))
+      }
     }
-  }, [navigate, clientId])
+  }, [navigate, clientId, getRoutePathById])
 
   const handleBack = useCallback(() => {
-    navigate('/clients')
-  }, [navigate])
+    const clientListPath = getRoutePathById('client')
+    if (clientListPath) {
+      navigate(clientListPath)
+    }
+  }, [navigate, getRoutePathById])
 
   const formatDate = useCallback((date: Date) => {
     return date.toLocaleDateString('es-ES', {

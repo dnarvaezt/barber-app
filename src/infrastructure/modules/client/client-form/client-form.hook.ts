@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Client } from '../../../../application/domain/client'
+import { useRoutes } from '../../../routes'
 
 export const useClientForm = () => {
   const navigate = useNavigate()
   const { clientId } = useParams<{ clientId: string }>()
+  const { getRoutePathById } = useRoutes()
   const [loading, setLoading] = useState(false)
   const [client, setClient] = useState<Client | null>(null)
   const [formData, setFormData] = useState({
@@ -91,7 +93,10 @@ export const useClientForm = () => {
           )
           setErrors({ general: 'Cliente no encontrado' })
           setIsValidClient(false)
-          navigate('/404', { replace: true })
+          const notFoundPath = getRoutePathById('not-found')
+          if (notFoundPath) {
+            navigate(notFoundPath, { replace: true })
+          }
           return
         }
 
@@ -106,7 +111,10 @@ export const useClientForm = () => {
         console.error('Error loading client:', error)
         setErrors({ general: 'Error al cargar el cliente' })
         setIsValidClient(false)
-        navigate('/clients', { replace: true })
+        const clientListPath = getRoutePathById('client')
+        if (clientListPath) {
+          navigate(clientListPath, { replace: true })
+        }
       } finally {
         setLoading(false)
       }
@@ -130,7 +138,10 @@ export const useClientForm = () => {
         if (!isValid) {
           console.log('Invalid client ID, redirecting to /clients')
           setIsValidClient(false)
-          navigate('/clients', { replace: true })
+          const clientListPath = getRoutePathById('client')
+          if (clientListPath) {
+            navigate(clientListPath, { replace: true })
+          }
           return
         }
 
@@ -140,7 +151,10 @@ export const useClientForm = () => {
       } catch (error) {
         console.error('Error validating client ID:', error)
         setIsValidClient(false)
-        navigate('/clients', { replace: true })
+        const clientListPath = getRoutePathById('client')
+        if (clientListPath) {
+          navigate(clientListPath, { replace: true })
+        }
       } finally {
         setIsValidating(false)
       }
@@ -220,7 +234,10 @@ export const useClientForm = () => {
 
         // Redirigir después de 1.5 segundos para que el usuario vea el mensaje de éxito
         setTimeout(() => {
-          navigate(`/clients/${savedClientId}`)
+          const detailPath = getRoutePathById('client-detail')
+          if (detailPath) {
+            navigate(detailPath.replace(':clientId', savedClientId))
+          }
         }, 1500)
       } catch (error) {
         console.error('Error submitting form:', error)
@@ -244,8 +261,11 @@ export const useClientForm = () => {
   )
 
   const handleCancel = useCallback(() => {
-    navigate('/clients')
-  }, [navigate])
+    const clientListPath = getRoutePathById('client')
+    if (clientListPath) {
+      navigate(clientListPath)
+    }
+  }, [navigate, getRoutePathById])
 
   // Validar que el clientId sea válido (solo para edición)
   useEffect(() => {

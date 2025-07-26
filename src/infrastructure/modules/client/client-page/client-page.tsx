@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLayout } from '../../../components'
+import { useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
 
 export const ClientPage = () => {
   const navigate = useNavigate()
   const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { getRoutePathById } = useRoutes()
   const {
     clients,
     loading,
@@ -29,7 +31,12 @@ export const ClientPage = () => {
     setHeaderTitle('Gestión de Clientes')
     setHeaderActions(
       <button
-        onClick={() => navigate('/client/form/new')}
+        onClick={() => {
+          const newClientPath = getRoutePathById('client-form-new')
+          if (newClientPath) {
+            navigate(newClientPath)
+          }
+        }}
         className='client-page__action-button client-page__action-button--edit'
       >
         ➕ Nuevo Cliente
@@ -163,14 +170,24 @@ export const ClientPage = () => {
                     <td className='client-page__table-cell client-page__table-cell--actions'>
                       <div className='client-page__action-buttons'>
                         <Link
-                          to={`/clients/${client.id}`}
+                          to={
+                            getRoutePathById('client-detail')?.replace(
+                              ':clientId',
+                              client.id
+                            ) || '#'
+                          }
                           className='client-page__action-link client-page__action-link--view'
                           title='Ver detalle del cliente'
                         >
                           👁️ Ver
                         </Link>
                         <Link
-                          to={`/clients/form/${client.id}`}
+                          to={
+                            getRoutePathById('client-form-edit')?.replace(
+                              ':clientId',
+                              client.id
+                            ) || '#'
+                          }
                           className='client-page__action-link client-page__action-link--edit'
                           title='Editar cliente'
                         >

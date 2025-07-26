@@ -107,6 +107,49 @@ export class RoutesService {
     return this.findRouteByPath(path) !== undefined
   }
 
+  /**
+   * Obtiene el path completo de una ruta por su ID
+   */
+  getRoutePathById(routeId: string): string | undefined {
+    const result = this.findRouteById(routeId)
+    return result?.fullPath
+  }
+
+  /**
+   * Encuentra una ruta por su ID y retorna el objeto con el path completo
+   */
+  findRouteById(
+    routeId: string
+  ): { route: RouteItem; fullPath: string } | undefined {
+    const traverse = (
+      items: RouteItem[],
+      parentPath: string = ''
+    ): { route: RouteItem; fullPath: string } | undefined => {
+      for (const item of items) {
+        let currentPath = item.path || ''
+
+        if (item.inheritPath && parentPath) {
+          currentPath = parentPath + currentPath
+        } else if (item.path) {
+          currentPath = item.path
+        }
+
+        if (item.id === routeId) {
+          return { route: item, fullPath: currentPath }
+        }
+
+        if (item.children && item.children.length > 0) {
+          const newParentPath = item.path ? currentPath : parentPath
+          const found = traverse(item.children, newParentPath)
+          if (found) return found
+        }
+      }
+      return undefined
+    }
+
+    return traverse(this.routes)
+  }
+
   private findRouteByPathRecursive(
     path: string,
     routes: RouteItem[]
