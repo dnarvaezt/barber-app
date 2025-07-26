@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
-import type {
-  Client,
-  CreateClientRequest,
-  UpdateClientRequest,
-} from '../../../application/domain/client'
-import { useLayout } from '../../components'
-import { ClientForm } from './client-form'
+import { Link, useNavigate } from 'react-router-dom'
+import { useLayout } from '../../../components'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
 
 export const ClientPage = () => {
+  const navigate = useNavigate()
   const { setHeaderTitle, setHeaderActions } = useLayout()
   const {
     clients,
@@ -19,8 +15,6 @@ export const ClientPage = () => {
     handleSearch,
     handleBirthMonthFilter,
     clearFilters,
-    createClient,
-    updateClient,
     deleteClient,
     formatDate,
     formatPhone,
@@ -30,18 +24,12 @@ export const ClientPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
     null
   )
-  const [showClientForm, setShowClientForm] = useState<{
-    mode: 'create' | 'edit'
-    client?: Client
-  } | null>(null)
-
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     setHeaderTitle('Gestión de Clientes')
     setHeaderActions(
       <button
-        onClick={() => setShowClientForm({ mode: 'create' })}
+        onClick={() => navigate('/client/form/new')}
         className='client-page__action-button client-page__action-button--edit'
       >
         ➕ Nuevo Cliente
@@ -51,7 +39,7 @@ export const ClientPage = () => {
     return () => {
       setHeaderActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions])
+  }, [setHeaderTitle, setHeaderActions, navigate])
 
   const handleDeleteClick = (clientId: string) => {
     setShowDeleteConfirm(clientId)
@@ -174,17 +162,24 @@ export const ClientPage = () => {
                     </td>
                     <td className='client-page__table-cell client-page__table-cell--actions'>
                       <div className='client-page__action-buttons'>
-                        <button
-                          onClick={() =>
-                            setShowClientForm({ mode: 'edit', client })
-                          }
-                          className='client-page__action-button client-page__action-button--edit'
+                        <Link
+                          to={`/client/${client.id}`}
+                          className='client-page__action-link client-page__action-link--view'
+                          title='Ver detalle del cliente'
+                        >
+                          👁️ Ver
+                        </Link>
+                        <Link
+                          to={`/client/form/${client.id}`}
+                          className='client-page__action-link client-page__action-link--edit'
+                          title='Editar cliente'
                         >
                           ✏️ Editar
-                        </button>
+                        </Link>
                         <button
                           onClick={() => handleDeleteClick(client.id)}
                           className='client-page__action-button client-page__action-button--delete'
+                          title='Eliminar cliente'
                         >
                           🗑️ Eliminar
                         </button>
@@ -227,28 +222,6 @@ export const ClientPage = () => {
         )}
 
         {/* Formulario de cliente */}
-        {showClientForm && (
-          <ClientForm
-            client={showClientForm.client}
-            onSubmit={async data => {
-              setIsSubmitting(true)
-              try {
-                if (showClientForm.mode === 'create') {
-                  await createClient(data as CreateClientRequest)
-                } else {
-                  await updateClient(data as UpdateClientRequest)
-                }
-                setShowClientForm(null)
-              } catch (error) {
-                console.error('Error submitting form:', error)
-              } finally {
-                setIsSubmitting(false)
-              }
-            }}
-            onCancel={() => setShowClientForm(null)}
-            isSubmitting={isSubmitting}
-          />
-        )}
       </div>
     </div>
   )

@@ -1,3 +1,2 @@
-export * from './client-page'
-export * from './home-page'
-export * from './technical-documentation-page'
+export * from './client'
+export * from './not-found'

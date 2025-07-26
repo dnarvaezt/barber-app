@@ -3,7 +3,7 @@ import type {
   Client,
   CreateClientRequest,
   UpdateClientRequest,
-} from '../../../application/domain/client'
+} from '../../../../application/domain/client'
 
 interface ClientFormProps {
   client?: Client

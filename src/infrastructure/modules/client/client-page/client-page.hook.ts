@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Client } from '../../../application/domain/client'
+import type { Client } from '../../../../application/domain/client'
 
 export const useClientPage = () => {
   const [clients, setClients] = useState<Client[]>([])

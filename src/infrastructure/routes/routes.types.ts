@@ -7,6 +7,7 @@ export interface RouteItem {
   icon?: React.ReactNode
   path?: string
   inheritPath?: boolean
+  internal?: boolean
   component?: React.ComponentType
   children?: RouteItem[]
 }

@@ -1,8 +1,21 @@
 import { lazy } from 'react'
 
+// Mapeo estático de rutas para evitar problemas con Vite
+const moduleMap: Record<string, () => Promise<any>> = {
+  'client-page': () => import('../modules/client/client-page/index.ts'),
+  'client-form': () => import('../modules/client/client-form/index.ts'),
+  'client-detail': () => import('../modules/client/client-detail/index.ts'),
+  'not-found': () => import('../modules/not-found/index.ts'),
+}
+
 export function lazyRoute(path: string, exportName = 'default') {
+  const importFn = moduleMap[path]
+  if (!importFn) {
+    throw new Error(`Unknown module path: ${path}`)
+  }
+
   return lazy(() =>
-    import(`../modules/${path}/index.ts`).then(module => ({
+    importFn().then(module => ({
       default: module[exportName],
     }))
   )
