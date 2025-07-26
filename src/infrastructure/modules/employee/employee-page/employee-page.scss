@@ -1,0 +1,127 @@
+.employee-page {
+  @apply container mx-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-6 lg:py-8;
+
+  &__content {
+    @apply max-w-7xl mx-auto;
+  }
+
+  &__header {
+    @apply mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4;
+  }
+
+  &__title {
+    @apply text-2xl font-bold text-gray-900 dark:text-white;
+  }
+
+  &__actions {
+    @apply flex flex-col sm:flex-row gap-3;
+  }
+
+  &__search-section {
+    @apply mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm p-4;
+  }
+
+  &__search-form {
+    @apply flex flex-col sm:flex-row gap-4;
+  }
+
+  &__search-input {
+    @apply flex-1;
+  }
+
+  &__filter-select {
+    @apply w-full sm:w-48;
+  }
+
+  &__table-container {
+    @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm overflow-hidden;
+  }
+
+  &__table {
+    @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+  }
+
+  &__table-header {
+    @apply bg-gray-50 dark:bg-gray-700;
+  }
+
+  &__table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider;
+  }
+
+  &__table-body {
+    @apply bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700;
+  }
+
+  &__table-row {
+    @apply hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200;
+  }
+
+  &__table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100;
+  }
+
+  &__table-cell--name {
+    @apply font-medium;
+  }
+
+  &__table-cell--phone {
+    @apply font-mono;
+  }
+
+  &__table-cell--birth-date {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  &__table-cell--percentage {
+    @apply text-center;
+  }
+
+  &__table-cell--actions {
+    @apply text-right;
+  }
+
+  &__action-buttons {
+    @apply flex items-center justify-end gap-2;
+  }
+
+  &__action-button {
+    @apply inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200;
+  }
+
+  &__action-link {
+    @apply inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200 no-underline;
+  }
+
+  &__action-link--view {
+    @apply text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300;
+  }
+
+  &__action-link--edit {
+    @apply text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+  }
+
+  &__action-button--delete {
+    @apply text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300;
+  }
+
+  &__empty-state {
+    @apply text-center py-12;
+  }
+
+  &__empty-state-icon {
+    @apply mx-auto h-12 w-12 text-gray-400;
+  }
+
+  &__empty-state-text {
+    @apply mt-2 text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  &__loading {
+    @apply flex justify-center items-center py-12;
+  }
+
+  &__loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+  }
+}

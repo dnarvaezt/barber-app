@@ -116,5 +116,14 @@ export class EmployeeService {
     if (!employeeData.createdBy) {
       throw new Error('Created by user ID is required')
     }
+
+    // Validación específica para el campo percentage
+    if (typeof employeeData.percentage !== 'number') {
+      throw new Error('Percentage must be a number')
+    }
+
+    if (employeeData.percentage < 0 || employeeData.percentage > 100) {
+      throw new Error('Percentage must be between 0 and 100')
+    }
   }
 }

@@ -1,12 +1,15 @@
 import type { User } from '../user/user.model'
 
-export type Employee = User
+export interface Employee extends User {
+  percentage: number
+}
 
 export interface CreateEmployeeRequest {
   name: string
   phoneNumber: string
   birthDate: Date
   createdBy: string
+  percentage: number
 }
 
 export interface UpdateEmployeeRequest {
@@ -15,4 +18,5 @@ export interface UpdateEmployeeRequest {
   phoneNumber?: string
   birthDate?: Date
   updatedBy: string
+  percentage?: number
 }

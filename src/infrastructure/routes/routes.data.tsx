@@ -4,6 +4,7 @@ import { RouteIds } from './routes.constants'
 import type { RouteItem } from './routes.types'
 
 const userIcon = <Icon name='user' />
+const employeeIcon = <Icon name='user' />
 const alertIcon = <Icon name='alert' />
 
 export const appRoutes: RouteItem[] = [
@@ -14,6 +15,7 @@ export const appRoutes: RouteItem[] = [
     icon: userIcon,
     component: lazyRoute('client-page', 'ClientPage'),
     path: '/clients',
+    internal: false,
     children: [
       {
         id: RouteIds.CLIENT_FORM_NEW,
@@ -44,6 +46,50 @@ export const appRoutes: RouteItem[] = [
         icon: userIcon,
         component: lazyRoute('client-form', 'ClientFormPage'),
         path: '/form/:clientId',
+        inheritPath: true,
+        internal: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: RouteIds.EMPLOYEES,
+    name: 'Empleado',
+    title: 'Gestión de Empleado',
+    icon: employeeIcon,
+    component: lazyRoute('employee-page', 'EmployeePage'),
+    path: '/employees',
+    internal: false,
+    children: [
+      {
+        id: RouteIds.EMPLOYEE_FORM_NEW,
+        name: 'Nuevo Empleado',
+        title: 'Crear Nuevo Empleado',
+        icon: userIcon,
+        component: lazyRoute('employee-form', 'EmployeeForm'),
+        path: '/form/new',
+        inheritPath: true,
+        internal: true,
+        children: [],
+      },
+      {
+        id: RouteIds.EMPLOYEE_DETAIL,
+        name: 'Detalle Empleado',
+        title: 'Detalle del Empleado',
+        icon: userIcon,
+        component: lazyRoute('employee-detail', 'EmployeeDetail'),
+        path: '/:employeeId',
+        inheritPath: true,
+        internal: true,
+        children: [],
+      },
+      {
+        id: RouteIds.EMPLOYEE_FORM_EDIT,
+        name: 'Editar Empleado',
+        title: 'Editar Empleado',
+        icon: userIcon,
+        component: lazyRoute('employee-form', 'EmployeeForm'),
+        path: '/form/:employeeId',
         inheritPath: true,
         internal: true,
         children: [],

@@ -8,13 +8,13 @@ import type { RouteItem } from '../../routes'
 
 const initialState: LayoutState = {
   header: {
-    title: 'Filter Docs',
+    title: 'Barber App',
     subtitle: undefined,
     visible: true,
     actions: undefined,
   },
   sidebar: {
-    open: false,
+    open: true,
     items: [],
     sidebarVisible: true,
   },
