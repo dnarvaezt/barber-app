@@ -20,15 +20,33 @@ const initialState: LayoutState = {
   },
 }
 
+// Función helper para filtrar rutas internas recursivamente
+const filterInternalRoutes = (routes: RouteItem[]): RouteItem[] => {
+  return routes
+    .filter(route => !route.internal) // Filtrar rutas con internal: true
+    .map(route => ({
+      ...route,
+      children: route.children
+        ? filterInternalRoutes(route.children)
+        : undefined,
+    }))
+}
+
 export const LayoutProvider: React.FC<{
   children: ReactNode
   initialSidebarItems?: RouteItem[]
 }> = ({ children, initialSidebarItems = [] }) => {
+  // Filtrar rutas internas antes de inicializar el estado
+  const filteredSidebarItems = useMemo(
+    () => filterInternalRoutes(initialSidebarItems),
+    [initialSidebarItems]
+  )
+
   const [state, setState] = useState<LayoutState>({
     ...initialState,
     sidebar: {
       ...initialState.sidebar,
-      items: initialSidebarItems,
+      items: filteredSidebarItems,
     },
   })
 
@@ -82,9 +100,11 @@ export const LayoutProvider: React.FC<{
   }, [])
 
   const setSidebarItems = useCallback((items: RouteItem[]) => {
+    // Filtrar rutas internas antes de actualizar el estado
+    const filteredItems = filterInternalRoutes(items)
     setState(prev => ({
       ...prev,
-      sidebar: { ...prev.sidebar, items },
+      sidebar: { ...prev.sidebar, items: filteredItems },
     }))
   }, [])
 
