@@ -7,7 +7,7 @@ import './employee-page.scss'
 
 export const EmployeePage = () => {
   const navigate = useNavigate()
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const { getRoutePathById } = useRoutes()
   const {
     employees,
@@ -28,8 +28,8 @@ export const EmployeePage = () => {
   )
 
   useEffect(() => {
-    setHeaderTitle('Gestión de Empleados')
-    setHeaderActions(
+    headerCommands.setTitle('Gestión de Empleados')
+    headerCommands.setActions(
       <button
         onClick={() => {
           const newEmployeePath = getRoutePathById(RouteIds.EMPLOYEE_FORM_NEW)
@@ -44,9 +44,9 @@ export const EmployeePage = () => {
     )
 
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, navigate])
+  }, [headerCommands, navigate, getRoutePathById])
 
   const handleDeleteClick = (employeeId: string) => {
     setShowDeleteConfirm(employeeId)
@@ -59,6 +59,25 @@ export const EmployeePage = () => {
 
   const handleDeleteCancel = () => {
     setShowDeleteConfirm(null)
+  }
+
+  // Obtener rutas dinámicas
+  const getEmployeeDetailPath = (employeeId: string) => {
+    return (
+      getRoutePathById(RouteIds.EMPLOYEE_DETAIL)?.replace(
+        ':employeeId',
+        employeeId
+      ) || '#'
+    )
+  }
+
+  const getEmployeeEditPath = (employeeId: string) => {
+    return (
+      getRoutePathById(RouteIds.EMPLOYEE_FORM_EDIT)?.replace(
+        ':employeeId',
+        employeeId
+      ) || '#'
+    )
   }
 
   if (loading) {
@@ -144,10 +163,11 @@ export const EmployeePage = () => {
                   <th className='employee-page__table-header-cell'>Nombre</th>
                   <th className='employee-page__table-header-cell'>Teléfono</th>
                   <th className='employee-page__table-header-cell'>
-                    Fecha de Cumpleaños
+                    Fecha de Nacimiento
                   </th>
+                  <th className='employee-page__table-header-cell'>Edad</th>
                   <th className='employee-page__table-header-cell'>
-                    Fecha de Registro
+                    Mes de Cumpleaños
                   </th>
                   <th className='employee-page__table-header-cell'>
                     Porcentaje
@@ -158,52 +178,45 @@ export const EmployeePage = () => {
               <tbody className='employee-page__table-body'>
                 {employees.map(employee => (
                   <tr key={employee.id} className='employee-page__table-row'>
-                    <td className='employee-page__table-cell employee-page__table-cell--name'>
+                    <td className='employee-page__table-cell'>
                       {employee.name}
                     </td>
-                    <td className='employee-page__table-cell employee-page__table-cell--phone'>
+                    <td className='employee-page__table-cell'>
                       {formatPhone(employee.phoneNumber)}
                     </td>
-                    <td className='employee-page__table-cell employee-page__table-cell--birth-date'>
+                    <td className='employee-page__table-cell'>
                       {formatDate(employee.birthDate)}
                     </td>
-                    <td className='employee-page__table-cell employee-page__table-cell--birth-date'>
-                      {formatDate(employee.createdAt)}
+                    <td className='employee-page__table-cell'>
+                      {Math.floor(
+                        (Date.now() - employee.birthDate.getTime()) /
+                          (1000 * 60 * 60 * 24 * 365.25)
+                      )}{' '}
+                      años
                     </td>
-                    <td className='employee-page__table-cell employee-page__table-cell--percentage'>
-                      <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'>
-                        {employee.percentage}%
-                      </span>
+                    <td className='employee-page__table-cell'>
+                      {getMonthName(employee.birthDate.getMonth() + 1)}
                     </td>
-                    <td className='employee-page__table-cell employee-page__table-cell--actions'>
-                      <div className='employee-page__action-buttons'>
+                    <td className='employee-page__table-cell'>
+                      {employee.percentage}%
+                    </td>
+                    <td className='employee-page__table-cell'>
+                      <div className='employee-page__table-actions'>
                         <Link
-                          to={
-                            getRoutePathById(RouteIds.EMPLOYEE_DETAIL)?.replace(
-                              ':employeeId',
-                              employee.id
-                            ) || '#'
-                          }
-                          className='employee-page__action-link employee-page__action-link--view'
-                          title='Ver detalle del empleado'
+                          to={getEmployeeDetailPath(employee.id)}
+                          className='employee-page__action-button employee-page__action-button--view'
                         >
                           👁️ Ver
                         </Link>
                         <Link
-                          to={
-                            getRoutePathById(
-                              RouteIds.EMPLOYEE_FORM_EDIT
-                            )?.replace(':employeeId', employee.id) || '#'
-                          }
-                          className='employee-page__action-link employee-page__action-link--edit'
-                          title='Editar empleado'
+                          to={getEmployeeEditPath(employee.id)}
+                          className='employee-page__action-button employee-page__action-button--edit'
                         >
                           ✏️ Editar
                         </Link>
                         <button
                           onClick={() => handleDeleteClick(employee.id)}
                           className='employee-page__action-button employee-page__action-button--delete'
-                          title='Eliminar empleado'
                         >
                           🗑️ Eliminar
                         </button>
@@ -218,25 +231,25 @@ export const EmployeePage = () => {
 
         {/* Modal de confirmación de eliminación */}
         {showDeleteConfirm && (
-          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-            <div className='bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4'>
-              <h3 className='text-lg font-medium text-gray-900 dark:text-white mb-4'>
-                Confirmar Eliminación
+          <div className='employee-page__delete-modal'>
+            <div className='employee-page__delete-modal-content'>
+              <h3 className='employee-page__delete-modal-title'>
+                Confirmar eliminación
               </h3>
-              <p className='text-sm text-gray-500 dark:text-gray-400 mb-6'>
+              <p className='employee-page__delete-modal-message'>
                 ¿Estás seguro de que quieres eliminar este empleado? Esta acción
                 no se puede deshacer.
               </p>
-              <div className='flex justify-end gap-3'>
+              <div className='employee-page__delete-modal-actions'>
                 <button
                   onClick={handleDeleteCancel}
-                  className='px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600'
+                  className='employee-page__delete-modal-button employee-page__delete-modal-button--cancel'
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={() => handleDeleteConfirm(showDeleteConfirm)}
-                  className='px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700'
+                  className='employee-page__delete-modal-button employee-page__delete-modal-button--confirm'
                 >
                   Eliminar
                 </button>
@@ -244,8 +257,6 @@ export const EmployeePage = () => {
             </div>
           </div>
         )}
-
-        {/* Formulario de empleado */}
       </div>
     </div>
   )

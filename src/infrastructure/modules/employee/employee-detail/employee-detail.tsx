@@ -4,7 +4,7 @@ import { useEmployeeDetail } from './employee-detail.hook'
 import './employee-detail.scss'
 
 export const EmployeeDetail = () => {
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const {
     loading,
     isValidating,
@@ -20,8 +20,8 @@ export const EmployeeDetail = () => {
   } = useEmployeeDetail()
 
   useEffect(() => {
-    setHeaderTitle('Detalle del Empleado')
-    setHeaderActions(
+    headerCommands.setTitle('Detalle del Empleado')
+    headerCommands.setActions(
       <div className='employee-detail-page__header-actions'>
         <button
           onClick={handleBack}
@@ -38,9 +38,9 @@ export const EmployeeDetail = () => {
       </div>
     )
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, handleBack, handleEdit])
+  }, [headerCommands, handleBack, handleEdit])
 
   // Mostrar loading mientras valida el employeeId
   if (isValidating) {

@@ -2,10 +2,10 @@ import { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout, LayoutProvider } from './infrastructure/components/layout'
 import { ThemeProvider } from './infrastructure/components/theme'
-import { appRoutes, useRoutes } from './infrastructure/routes'
+import { appRoutes, RouteIds, useRoutes } from './infrastructure/routes'
 
 export const App = () => {
-  const { getPages } = useRoutes()
+  const { getPages, getRoutePathById } = useRoutes()
   const pages = getPages()
 
   return (
@@ -36,7 +36,15 @@ export const App = () => {
                   element={<page.component />}
                 />
               ))}
-              <Route path='*' element={<Navigate to='/' replace />} />
+              <Route
+                path='*'
+                element={
+                  <Navigate
+                    to={getRoutePathById(RouteIds.NOT_FOUND) || '/404'}
+                    replace
+                  />
+                }
+              />
             </Routes>
           </Suspense>
         </Layout>

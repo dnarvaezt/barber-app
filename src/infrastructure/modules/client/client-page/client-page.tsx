@@ -7,7 +7,7 @@ import './client-page.scss'
 
 export const ClientPage = () => {
   const navigate = useNavigate()
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const { getRoutePathById } = useRoutes()
   const {
     clients,
@@ -28,8 +28,8 @@ export const ClientPage = () => {
   )
 
   useEffect(() => {
-    setHeaderTitle('Gestión de Clientes')
-    setHeaderActions(
+    headerCommands.setTitle('Gestión de Clientes')
+    headerCommands.setActions(
       <button
         onClick={() => {
           const newClientPath = getRoutePathById(RouteIds.CLIENT_FORM_NEW)
@@ -44,9 +44,9 @@ export const ClientPage = () => {
     )
 
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, navigate])
+  }, [headerCommands, navigate, getRoutePathById])
 
   const handleDeleteClick = (clientId: string) => {
     setShowDeleteConfirm(clientId)
@@ -59,6 +59,25 @@ export const ClientPage = () => {
 
   const handleDeleteCancel = () => {
     setShowDeleteConfirm(null)
+  }
+
+  // Obtener rutas dinámicas
+  const getClientDetailPath = (clientId: string) => {
+    return (
+      getRoutePathById(RouteIds.CLIENT_DETAIL)?.replace(
+        ':clientId',
+        clientId
+      ) || '#'
+    )
+  }
+
+  const getClientEditPath = (clientId: string) => {
+    return (
+      getRoutePathById(RouteIds.CLIENT_FORM_EDIT)?.replace(
+        ':clientId',
+        clientId
+      ) || '#'
+    )
   }
 
   if (loading) {
@@ -144,10 +163,11 @@ export const ClientPage = () => {
                   <th className='client-page__table-header-cell'>Nombre</th>
                   <th className='client-page__table-header-cell'>Teléfono</th>
                   <th className='client-page__table-header-cell'>
-                    Fecha de Cumpleaños
+                    Fecha de Nacimiento
                   </th>
+                  <th className='client-page__table-header-cell'>Edad</th>
                   <th className='client-page__table-header-cell'>
-                    Fecha de Registro
+                    Mes de Cumpleaños
                   </th>
                   <th className='client-page__table-header-cell'>Acciones</th>
                 </tr>
@@ -155,47 +175,40 @@ export const ClientPage = () => {
               <tbody className='client-page__table-body'>
                 {clients.map(client => (
                   <tr key={client.id} className='client-page__table-row'>
-                    <td className='client-page__table-cell client-page__table-cell--name'>
-                      {client.name}
-                    </td>
-                    <td className='client-page__table-cell client-page__table-cell--phone'>
+                    <td className='client-page__table-cell'>{client.name}</td>
+                    <td className='client-page__table-cell'>
                       {formatPhone(client.phoneNumber)}
                     </td>
-                    <td className='client-page__table-cell client-page__table-cell--birth-date'>
+                    <td className='client-page__table-cell'>
                       {formatDate(client.birthDate)}
                     </td>
-                    <td className='client-page__table-cell client-page__table-cell--birth-date'>
-                      {formatDate(client.createdAt)}
+                    <td className='client-page__table-cell'>
+                      {Math.floor(
+                        (Date.now() - client.birthDate.getTime()) /
+                          (1000 * 60 * 60 * 24 * 365.25)
+                      )}{' '}
+                      años
                     </td>
-                    <td className='client-page__table-cell client-page__table-cell--actions'>
-                      <div className='client-page__action-buttons'>
+                    <td className='client-page__table-cell'>
+                      {getMonthName(client.birthDate.getMonth() + 1)}
+                    </td>
+                    <td className='client-page__table-cell'>
+                      <div className='client-page__table-actions'>
                         <Link
-                          to={
-                            getRoutePathById(RouteIds.CLIENT_DETAIL)?.replace(
-                              ':clientId',
-                              client.id
-                            ) || '#'
-                          }
-                          className='client-page__action-link client-page__action-link--view'
-                          title='Ver detalle del cliente'
+                          to={getClientDetailPath(client.id)}
+                          className='client-page__action-button client-page__action-button--view'
                         >
                           👁️ Ver
                         </Link>
                         <Link
-                          to={
-                            getRoutePathById(
-                              RouteIds.CLIENT_FORM_EDIT
-                            )?.replace(':clientId', client.id) || '#'
-                          }
-                          className='client-page__action-link client-page__action-link--edit'
-                          title='Editar cliente'
+                          to={getClientEditPath(client.id)}
+                          className='client-page__action-button client-page__action-button--edit'
                         >
                           ✏️ Editar
                         </Link>
                         <button
                           onClick={() => handleDeleteClick(client.id)}
                           className='client-page__action-button client-page__action-button--delete'
-                          title='Eliminar cliente'
                         >
                           🗑️ Eliminar
                         </button>
@@ -210,25 +223,25 @@ export const ClientPage = () => {
 
         {/* Modal de confirmación de eliminación */}
         {showDeleteConfirm && (
-          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-            <div className='bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4'>
-              <h3 className='text-lg font-medium text-gray-900 dark:text-white mb-4'>
-                Confirmar Eliminación
+          <div className='client-page__delete-modal'>
+            <div className='client-page__delete-modal-content'>
+              <h3 className='client-page__delete-modal-title'>
+                Confirmar eliminación
               </h3>
-              <p className='text-sm text-gray-500 dark:text-gray-400 mb-6'>
+              <p className='client-page__delete-modal-message'>
                 ¿Estás seguro de que quieres eliminar este cliente? Esta acción
                 no se puede deshacer.
               </p>
-              <div className='flex justify-end gap-3'>
+              <div className='client-page__delete-modal-actions'>
                 <button
                   onClick={handleDeleteCancel}
-                  className='px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600'
+                  className='client-page__delete-modal-button client-page__delete-modal-button--cancel'
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={() => handleDeleteConfirm(showDeleteConfirm)}
-                  className='px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700'
+                  className='client-page__delete-modal-button client-page__delete-modal-button--confirm'
                 >
                   Eliminar
                 </button>
@@ -236,8 +249,6 @@ export const ClientPage = () => {
             </div>
           </div>
         )}
-
-        {/* Formulario de cliente */}
       </div>
     </div>
   )

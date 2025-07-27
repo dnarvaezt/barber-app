@@ -2,6 +2,7 @@ import { lazy } from 'react'
 
 // Mapeo estático de rutas para evitar problemas con Vite
 const moduleMap: Record<string, () => Promise<any>> = {
+  dashboard: () => import('../modules/dashboard/index.ts'),
   'client-page': () => import('../modules/client/client-page/index.ts'),
   'client-form': () => import('../modules/client/client-form/index.ts'),
   'client-detail': () => import('../modules/client/client-detail/index.ts'),

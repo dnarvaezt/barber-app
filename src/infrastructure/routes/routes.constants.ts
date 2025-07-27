@@ -1,5 +1,6 @@
 // Enum para los IDs de rutas - facilita el uso y previene errores de tipeo
 export const RouteIds = {
+  DASHBOARD: 'dashboard',
   CLIENT: 'client',
   CLIENT_FORM_NEW: 'client-form-new',
   CLIENT_DETAIL: 'client-detail',

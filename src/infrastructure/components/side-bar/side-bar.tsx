@@ -30,7 +30,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
     items,
     isOpen = false,
     isVisible = true,
-    title = 'Filter Docs',
+    title = 'Barber App',
     onClose,
     onNavigate,
     onToggle,

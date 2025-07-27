@@ -4,7 +4,7 @@ import { useClientForm } from './client-form.hook'
 import './client-form.scss'
 
 export const ClientFormPage = () => {
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const {
     loading,
     isValidating,
@@ -19,12 +19,12 @@ export const ClientFormPage = () => {
   } = useClientForm()
 
   useEffect(() => {
-    setHeaderTitle(isEditing ? 'Editar Cliente' : 'Nuevo Cliente')
-    setHeaderActions(undefined)
+    headerCommands.setTitle(isEditing ? 'Editar Cliente' : 'Nuevo Cliente')
+    headerCommands.setActions(undefined)
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, isEditing])
+  }, [headerCommands, isEditing])
 
   // Mostrar loading mientras valida el clientId
   if (isValidating) {

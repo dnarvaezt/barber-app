@@ -1,167 +1,74 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { LayoutContext } from './layout.context'
-
-import type { LayoutContextType, LayoutState } from './layout.context'
-
 import type { ReactNode } from 'react'
 import type { RouteItem } from '../../routes'
+import { createLayoutProvider } from './layout.context'
+import { createDefaultLayoutFactory } from './layout.factory'
+import type { ILayoutState } from './layout.types'
 
-const initialState: LayoutState = {
-  header: {
-    title: 'Barber App',
-    subtitle: undefined,
-    visible: true,
-    actions: undefined,
-  },
-  sidebar: {
-    open: true,
-    items: [],
-    sidebarVisible: true,
-  },
-}
+// ============================================================================
+// LAYOUT PROVIDER - Provider simplificado y desacoplado
+// ============================================================================
 
-const filterInternalRoutes = (routes: RouteItem[]): RouteItem[] => {
-  const filtered = routes
-    .filter(route => !route.internal)
-    .map(route => ({
-      ...route,
-      children: route.children
-        ? filterInternalRoutes(route.children)
-        : undefined,
-    }))
-  return filtered
-}
-
-export const LayoutProvider: React.FC<{
+interface LayoutProviderProps {
   children: ReactNode
   initialSidebarItems?: RouteItem[]
-}> = ({ children, initialSidebarItems = [] }) => {
-  const [state, setState] = useState<LayoutState>(initialState)
+  initialState?: Partial<ILayoutState>
+}
 
-  useEffect(() => {
-    if (initialSidebarItems.length > 0) {
-      const filteredItems = filterInternalRoutes(initialSidebarItems)
-      setState(prev => ({
-        ...prev,
-        sidebar: {
-          ...prev.sidebar,
-          items: filteredItems,
-        },
-      }))
-    }
-  }, [initialSidebarItems])
+export const LayoutProvider = ({
+  children,
+  initialSidebarItems = [],
+  initialState = {},
+}: LayoutProviderProps) => {
+  // Crear factory y estado inicial
+  const factory = createDefaultLayoutFactory(initialSidebarItems)
+  const layoutState = factory.createLayoutState(initialState)
 
-  const setHeaderTitle = useCallback((title: string) => {
-    setState(prev => ({
-      ...prev,
-      header: { ...prev.header, title },
-    }))
-  }, [])
+  // Crear provider usando factory
+  const Provider = createLayoutProvider(layoutState)
 
-  const setHeaderSubtitle = useCallback((subtitle: string) => {
-    setState(prev => ({
-      ...prev,
-      header: { ...prev.header, subtitle },
-    }))
-  }, [])
+  return <Provider>{children}</Provider>
+}
 
-  const setHeaderActions = useCallback((actions: ReactNode) => {
-    setState(prev => ({
-      ...prev,
-      header: { ...prev.header, actions },
-    }))
-  }, [])
+// ============================================================================
+// SPECIALIZED PROVIDERS - Providers específicos
+// ============================================================================
 
-  const setHeaderVisible = useCallback((visible: boolean) => {
-    setState(prev => ({
-      ...prev,
-      header: { ...prev.header, visible },
-    }))
-  }, [])
+export const MinimalLayoutProvider = ({
+  children,
+}: {
+  children: ReactNode
+}) => {
+  const factory = createDefaultLayoutFactory()
+  const layoutState = factory.createMinimalLayoutState()
+  const Provider = createLayoutProvider(layoutState)
 
-  const toggleSidebar = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      sidebar: { ...prev.sidebar, open: !prev.sidebar.open },
-    }))
-  }, [])
+  return <Provider>{children}</Provider>
+}
 
-  const openSidebar = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      sidebar: { ...prev.sidebar, open: true },
-    }))
-  }, [])
+export const MobileLayoutProvider = ({
+  children,
+  sidebarItems = [],
+}: {
+  children: ReactNode
+  sidebarItems?: RouteItem[]
+}) => {
+  const factory = createDefaultLayoutFactory(sidebarItems)
+  const layoutState = factory.createMobileLayoutState(sidebarItems)
+  const Provider = createLayoutProvider(layoutState)
 
-  const closeSidebar = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      sidebar: { ...prev.sidebar, open: false },
-    }))
-  }, [])
+  return <Provider>{children}</Provider>
+}
 
-  const setSidebarItems = useCallback((items: RouteItem[]) => {
-    const filteredItems = filterInternalRoutes(items)
-    setState(prev => ({
-      ...prev,
-      sidebar: { ...prev.sidebar, items: filteredItems },
-    }))
-  }, [])
+export const AdminLayoutProvider = ({
+  children,
+  sidebarItems = [],
+}: {
+  children: ReactNode
+  sidebarItems?: RouteItem[]
+}) => {
+  const factory = createDefaultLayoutFactory(sidebarItems)
+  const layoutState = factory.createFullLayoutState(sidebarItems)
+  const Provider = createLayoutProvider(layoutState)
 
-  const setSidebarVisible = useCallback((visible: boolean) => {
-    setState(prev => ({
-      ...prev,
-      sidebar: { ...prev.sidebar, sidebarVisible: visible },
-    }))
-  }, [])
-
-  const resetLayout = useCallback(() => {
-    setState(initialState)
-  }, [])
-
-  const contextValue: LayoutContextType = useMemo(
-    () => ({
-      title: state.header.title,
-      subtitle: state.header.subtitle,
-      visible: state.header.visible,
-      actions: state.header.actions,
-      open: state.sidebar.open,
-      items: state.sidebar.items,
-      sidebarVisible: state.sidebar.sidebarVisible,
-      setHeaderTitle,
-      setHeaderSubtitle,
-      setHeaderActions,
-      setHeaderVisible,
-      toggleSidebar,
-      openSidebar,
-      closeSidebar,
-      setSidebarItems,
-      setSidebarVisible,
-      resetLayout,
-    }),
-    [
-      state.header.title,
-      state.header.subtitle,
-      state.header.visible,
-      state.header.actions,
-      state.sidebar.open,
-      state.sidebar.sidebarVisible,
-      setHeaderTitle,
-      setHeaderSubtitle,
-      setHeaderActions,
-      setHeaderVisible,
-      toggleSidebar,
-      openSidebar,
-      closeSidebar,
-      setSidebarItems,
-      setSidebarVisible,
-      resetLayout,
-    ]
-  )
-
-  return (
-    <LayoutContext.Provider value={contextValue}>
-      {children}
-    </LayoutContext.Provider>
-  )
+  return <Provider>{children}</Provider>
 }

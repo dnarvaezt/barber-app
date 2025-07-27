@@ -1,46 +1,50 @@
+import { useNavigate } from 'react-router-dom'
 import { Footer } from '../footer'
 import { Header } from '../header'
 import { Sidebar } from '../side-bar'
-import { useLayout } from './layout.hook'
+import { useLayout, useLayoutVisibility } from './layout.hook'
 import './layout.scss'
+
+// ============================================================================
+// LAYOUT COMPONENT - Componente principal desacoplado
+// ============================================================================
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
-export const Layout = (props: LayoutProps) => {
-  const { children } = props
-  const {
-    title,
-    visible,
-    actions,
-    sidebarVisible,
-    open,
-    items,
-    closeSidebar,
-    toggleSidebar,
-  } = useLayout()
+export const Layout = ({ children }: LayoutProps) => {
+  const navigate = useNavigate()
+  const { sidebar, sidebarCommands } = useLayout()
+  const { headerVisible, sidebarVisible, sidebarOpen } = useLayoutVisibility()
+
+  const handleNavigate = (path: string) => {
+    navigate(path)
+  }
 
   return (
     <div className='layout'>
       {sidebarVisible && (
         <Sidebar
-          items={items}
-          isOpen={open}
+          items={sidebar.items} // Obtener items del store
+          isOpen={sidebarOpen}
           isVisible={sidebarVisible}
-          onClose={closeSidebar}
-          onToggle={toggleSidebar}
+          onClose={sidebarCommands.close}
+          onToggle={sidebarCommands.toggle}
+          onNavigate={handleNavigate}
         />
       )}
 
       <div className='layout__container'>
-        <Header
-          title={title}
-          visible={visible}
-          actions={actions}
-          onMenuToggle={toggleSidebar}
-          showMenuButton={sidebarVisible}
-        />
+        {headerVisible && (
+          <Header
+            title='' // El título se maneja internamente en el store
+            visible={headerVisible}
+            actions={undefined} // Las acciones se manejan internamente
+            onMenuToggle={sidebarCommands.toggle}
+            showMenuButton={sidebarVisible}
+          />
+        )}
         <main className='layout__main'>{children}</main>
         <Footer />
       </div>

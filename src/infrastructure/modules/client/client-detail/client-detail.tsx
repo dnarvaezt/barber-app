@@ -4,7 +4,7 @@ import { useClientDetail } from './client-detail.hook'
 import './client-detail.scss'
 
 export const ClientDetailPage = () => {
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const {
     loading,
     isValidating,
@@ -20,8 +20,8 @@ export const ClientDetailPage = () => {
   } = useClientDetail()
 
   useEffect(() => {
-    setHeaderTitle('Detalle del Cliente')
-    setHeaderActions(
+    headerCommands.setTitle('Detalle del Cliente')
+    headerCommands.setActions(
       <div className='client-detail-page__header-actions'>
         <button
           onClick={handleBack}
@@ -38,9 +38,9 @@ export const ClientDetailPage = () => {
       </div>
     )
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, handleBack, handleEdit])
+  }, [headerCommands, handleBack, handleEdit])
 
   // Mostrar loading mientras valida el clientId
   if (isValidating) {

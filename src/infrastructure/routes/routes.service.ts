@@ -17,13 +17,15 @@ export class RoutesService {
       for (const item of items) {
         let currentPath = item.path || ''
 
+        // Calcular el path completo para esta ruta
         if (item.inheritPath && parentPath) {
           currentPath = parentPath + currentPath
         } else if (item.path) {
           currentPath = item.path
         }
 
-        if (item.component && item.path) {
+        // Solo agregar páginas que tengan componente y path
+        if (item.component && currentPath) {
           pages.push({
             path: currentPath,
             name: item.name,
@@ -31,9 +33,9 @@ export class RoutesService {
           })
         }
 
+        // Procesar hijos con el path actual como parent path
         if (item.children && item.children.length > 0) {
-          const newParentPath = item.path ? currentPath : parentPath
-          traverse(item.children, newParentPath)
+          traverse(item.children, currentPath)
         }
       }
     }
@@ -46,13 +48,41 @@ export class RoutesService {
    * Encuentra una ruta por su path
    */
   findRouteByPath(path: string): RouteItem | undefined {
+    const allRoutes = this.getAllRoutes()
+    return allRoutes.find(route => {
+      const fullPath = this.getFullPath(route)
+      return fullPath === path
+    })
+  }
+
+  /**
+   * Obtiene el path completo de una ruta
+   */
+  private getFullPath(route: RouteItem): string {
+    const parentRoute = this.findParentRoute(route)
+    if (parentRoute && route.inheritPath) {
+      const parentPath = this.getFullPath(parentRoute)
+      return parentPath + route.path
+    }
+    return route.path || ''
+  }
+
+  /**
+   * Encuentra la ruta padre de una ruta
+   */
+  private findParentRoute(childRoute: RouteItem): RouteItem | undefined {
     for (const route of this.routes) {
-      if (route.path === path) {
+      if (route.children?.some(child => child.id === childRoute.id)) {
         return route
       }
-      if (route.children && route.children.length > 0) {
-        const found = this.findRouteByPathRecursive(path, route.children)
-        if (found) return found
+      if (route.children) {
+        for (const child of route.children) {
+          if (
+            child.children?.some(grandChild => grandChild.id === childRoute.id)
+          ) {
+            return child
+          }
+        }
       }
     }
     return undefined
@@ -121,48 +151,15 @@ export class RoutesService {
   findRouteById(
     routeId: string
   ): { route: RouteItem; fullPath: string } | undefined {
-    const traverse = (
-      items: RouteItem[],
-      parentPath: string = ''
-    ): { route: RouteItem; fullPath: string } | undefined => {
-      for (const item of items) {
-        let currentPath = item.path || ''
+    const allRoutes = this.getAllRoutes()
 
-        if (item.inheritPath && parentPath) {
-          currentPath = parentPath + currentPath
-        } else if (item.path) {
-          currentPath = item.path
-        }
-
-        if (item.id === routeId) {
-          return { route: item, fullPath: currentPath }
-        }
-
-        if (item.children && item.children.length > 0) {
-          const newParentPath = item.path ? currentPath : parentPath
-          const found = traverse(item.children, newParentPath)
-          if (found) return found
-        }
-      }
-      return undefined
-    }
-
-    return traverse(this.routes)
-  }
-
-  private findRouteByPathRecursive(
-    path: string,
-    routes: RouteItem[]
-  ): RouteItem | undefined {
-    for (const route of routes) {
-      if (route.path === path) {
-        return route
-      }
-      if (route.children && route.children.length > 0) {
-        const found = this.findRouteByPathRecursive(path, route.children)
-        if (found) return found
+    for (const route of allRoutes) {
+      if (route.id === routeId) {
+        const fullPath = this.getFullPath(route)
+        return { route, fullPath }
       }
     }
+
     return undefined
   }
 }

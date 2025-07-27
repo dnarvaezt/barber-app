@@ -1,59 +1,117 @@
-import { createContext } from 'react'
-
 import type { ReactNode } from 'react'
-import type { RouteItem } from '../../routes'
+import { createContext, useEffect, useRef } from 'react'
 
-// Header related state
-export interface HeaderState {
-  title: string
-  subtitle?: string
-  visible: boolean
-  actions?: ReactNode
-}
+import { LayoutStore } from './layout.store'
+import type {
+  ILayoutContextValue,
+  ILayoutObserver,
+  ILayoutState,
+} from './layout.types'
 
-// Sidebar related state
-export interface SidebarState {
-  open: boolean
-  items: RouteItem[]
-  sidebarVisible: boolean
-}
+// ============================================================================
+// LAYOUT CONTEXT - Contexto React desacoplado
+// ============================================================================
 
-// Main layout state combining all sections
-export interface LayoutState {
-  header: HeaderState
-  sidebar: SidebarState
-}
-
-// Header related methods
-export interface HeaderMethods {
-  setHeaderTitle: (title: string) => void
-  setHeaderSubtitle: (subtitle: string) => void
-  setHeaderActions: (actions: ReactNode) => void
-  setHeaderVisible: (visible: boolean) => void
-}
-
-// Sidebar related methods
-export interface SidebarMethods {
-  toggleSidebar: () => void
-  openSidebar: () => void
-  closeSidebar: () => void
-  setSidebarItems: (items: RouteItem[]) => void
-  setSidebarVisible: (visible: boolean) => void
-}
-
-// Layout general methods
-export interface LayoutMethods {
-  resetLayout: () => void
-}
-
-// Complete context type inheriting directly from state interfaces
-export interface LayoutContextType
-  extends HeaderState,
-    SidebarState,
-    HeaderMethods,
-    SidebarMethods,
-    LayoutMethods {}
-
-export const LayoutContext = createContext<LayoutContextType | undefined>(
+export const LayoutContext = createContext<ILayoutContextValue | undefined>(
   undefined
 )
+
+// ============================================================================
+// CONTEXT PROVIDER FACTORY - Patrón Factory
+// ============================================================================
+
+export interface LayoutProviderFactory {
+  createProvider: (
+    initialState: ILayoutState
+  ) => React.FC<{ children: ReactNode }>
+}
+
+export class DefaultLayoutProviderFactory implements LayoutProviderFactory {
+  createProvider(
+    initialState: ILayoutState
+  ): React.FC<{ children: ReactNode }> {
+    return ({ children }) => {
+      const storeRef = useRef<LayoutStore | null>(null)
+      const stateRef = useRef<ILayoutState>(initialState)
+
+      // Inicializar store una sola vez
+      if (!storeRef.current) {
+        storeRef.current = new LayoutStore(initialState)
+      }
+
+      // Suscribirse a cambios del store
+      useEffect(() => {
+        const store = storeRef.current!
+        const unsubscribe = store.subscribe(newState => {
+          stateRef.current = newState
+        })
+
+        return () => {
+          unsubscribe()
+          store.destroy()
+        }
+      }, [])
+
+      // Crear valor del contexto estable
+      const contextValue: ILayoutContextValue = {
+        // State - siempre actualizado
+        get header() {
+          return stateRef.current.header
+        },
+        get sidebar() {
+          return stateRef.current.sidebar
+        },
+
+        // Commands - estables (no cambian)
+        get headerCommands() {
+          return storeRef.current!.getCommands().headerCommands
+        },
+        get sidebarCommands() {
+          return storeRef.current!.getCommands().sidebarCommands
+        },
+        get layoutCommands() {
+          return storeRef.current!.getCommands().layoutCommands
+        },
+
+        // Observers - estables
+        get observers() {
+          return [] // Los observers se manejan internamente en el store
+        },
+        addObserver: (observer: ILayoutObserver) => {
+          storeRef.current!.addObserver(observer)
+        },
+        removeObserver: (observer: ILayoutObserver) => {
+          storeRef.current!.removeObserver(observer)
+        },
+      }
+
+      return (
+        <LayoutContext.Provider value={contextValue}>
+          {children}
+        </LayoutContext.Provider>
+      )
+    }
+  }
+}
+
+// ============================================================================
+// PROVIDER INSTANCES PREDEFINIDAS
+// ============================================================================
+
+export const createLayoutProvider = (initialState: ILayoutState) => {
+  const factory = new DefaultLayoutProviderFactory()
+  return factory.createProvider(initialState)
+}
+
+// ============================================================================
+// EXPORTACIONES COMPATIBILIDAD
+// ============================================================================
+
+// Re-exportar tipos para compatibilidad
+export type {
+  IHeaderState,
+  ILayoutContextValue,
+  ILayoutObserver,
+  ILayoutState,
+  ISidebarState,
+} from './layout.types'

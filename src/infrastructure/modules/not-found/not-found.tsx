@@ -1,19 +1,21 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLayout } from '../../components'
 import { RouteIds, useRoutes } from '../../routes'
 import './not-found.scss'
 
 export const NotFoundPage = () => {
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const navigate = useNavigate()
+  const { headerCommands } = useLayout()
   const { getRoutePathById } = useRoutes()
 
   useEffect(() => {
-    setHeaderTitle('Página No Encontrada')
-    setHeaderActions(undefined)
+    headerCommands.setTitle('Página No Encontrada')
+    headerCommands.setActions(undefined)
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions])
+  }, [headerCommands])
 
   return (
     <div className='not-found-page'>
@@ -35,7 +37,7 @@ export const NotFoundPage = () => {
               onClick={() => {
                 const clientListPath = getRoutePathById(RouteIds.CLIENT)
                 if (clientListPath) {
-                  window.location.href = clientListPath
+                  navigate(clientListPath)
                 }
               }}
               className='not-found-page__button not-found-page__button--primary'

@@ -4,7 +4,7 @@ import { useEmployeeForm } from './employee-form.hook'
 import './employee-form.scss'
 
 export const EmployeeForm = () => {
-  const { setHeaderTitle, setHeaderActions } = useLayout()
+  const { headerCommands } = useLayout()
   const {
     loading,
     isValidating,
@@ -19,12 +19,12 @@ export const EmployeeForm = () => {
   } = useEmployeeForm()
 
   useEffect(() => {
-    setHeaderTitle(isEditing ? 'Editar Empleado' : 'Nuevo Empleado')
-    setHeaderActions(undefined)
+    headerCommands.setTitle(isEditing ? 'Editar Empleado' : 'Nuevo Empleado')
+    headerCommands.setActions(undefined)
     return () => {
-      setHeaderActions(undefined)
+      headerCommands.setActions(undefined)
     }
-  }, [setHeaderTitle, setHeaderActions, isEditing])
+  }, [headerCommands, isEditing])
 
   // Mostrar loading mientras valida el employeeId
   if (isValidating) {

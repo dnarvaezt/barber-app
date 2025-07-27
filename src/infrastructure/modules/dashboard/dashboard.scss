@@ -1,0 +1,55 @@
+.dashboard-page {
+  @apply p-6;
+
+  &__content {
+    @apply max-w-6xl mx-auto;
+  }
+
+  &__welcome {
+    @apply text-center mb-8;
+
+    .dashboard-page__title {
+      @apply text-3xl font-bold text-gray-900 dark:text-white mb-2;
+    }
+
+    .dashboard-page__subtitle {
+      @apply text-lg text-gray-600 dark:text-gray-400;
+    }
+  }
+
+  &__stats {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
+  }
+
+  &__stat-card {
+    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center;
+
+    h3 {
+      @apply text-lg font-semibold text-gray-900 dark:text-white mb-2;
+    }
+
+    .dashboard-page__stat-number {
+      @apply text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1;
+    }
+
+    .dashboard-page__stat-label {
+      @apply text-sm text-gray-600 dark:text-gray-400;
+    }
+  }
+
+  &__quick-actions {
+    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md;
+
+    h2 {
+      @apply text-xl font-semibold text-gray-900 dark:text-white mb-4;
+    }
+  }
+
+  &__actions-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+
+  &__action-button {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center;
+  }
+}
