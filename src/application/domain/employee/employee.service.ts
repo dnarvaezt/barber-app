@@ -1,3 +1,5 @@
+import type { PaginatedResponse, PaginationParams } from '../common'
+import { PaginationHelper } from '../common'
 import type {
   CreateEmployeeRequest,
   Employee,
@@ -13,34 +15,51 @@ export class EmployeeService {
   }
 
   // Métodos heredados de UserService
-  async findEmployees(searchTerm: string): Promise<Employee[]> {
+  async findEmployees(
+    searchTerm: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>> {
     if (!searchTerm || searchTerm.trim().length === 0) {
       throw new Error('Search term is required')
     }
-    return this.employeeRepository.find(searchTerm)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.employeeRepository.find(searchTerm, validatedPagination)
   }
 
-  async getEmployeeById(id: string): Promise<Employee | null> {
+  async getEmployeeById(
+    id: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>> {
     if (!id) {
       throw new Error('Employee ID is required')
     }
-    return this.employeeRepository.findById(id)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.employeeRepository.findById(id, validatedPagination)
   }
 
-  async getEmployeesByBirthMonth(month: number): Promise<Employee[]> {
+  async getEmployeesByBirthMonth(
+    month: number,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>> {
     if (month < 1 || month > 12) {
       throw new Error('Month must be between 1 and 12')
     }
-    return this.employeeRepository.findByBirthMonth(month)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.employeeRepository.findByBirthMonth(month, validatedPagination)
   }
 
   async createEmployee(employeeData: CreateEmployeeRequest): Promise<Employee> {
     this.validateEmployeeData(employeeData)
 
+    const defaultPagination: PaginationParams = { page: 1, limit: 100 }
     const existingEmployees = await this.employeeRepository.find(
-      employeeData.phoneNumber
+      employeeData.phoneNumber,
+      defaultPagination
     )
-    const existingEmployee = existingEmployees.find(
+    const existingEmployee = existingEmployees.data.find(
       employee => employee.phoneNumber === employeeData.phoneNumber
     )
     if (existingEmployee) {
@@ -55,9 +74,12 @@ export class EmployeeService {
       throw new Error('Employee ID is required for update')
     }
 
-    const existingEmployee = await this.employeeRepository.findById(
-      employeeData.id
+    const defaultPagination: PaginationParams = { page: 1, limit: 1 }
+    const existingEmployeeResponse = await this.employeeRepository.findById(
+      employeeData.id,
+      defaultPagination
     )
+    const existingEmployee = existingEmployeeResponse.data[0]
     if (!existingEmployee) {
       throw new Error('Employee not found')
     }
@@ -67,9 +89,10 @@ export class EmployeeService {
       employeeData.phoneNumber !== existingEmployee.phoneNumber
     ) {
       const employeesWithPhone = await this.employeeRepository.find(
-        employeeData.phoneNumber
+        employeeData.phoneNumber,
+        defaultPagination
       )
-      const employeeWithPhone = employeesWithPhone.find(
+      const employeeWithPhone = employeesWithPhone.data.find(
         employee => employee.phoneNumber === employeeData.phoneNumber
       )
       if (employeeWithPhone) {

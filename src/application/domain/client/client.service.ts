@@ -1,3 +1,5 @@
+import type { PaginatedResponse, PaginationParams } from '../common'
+import { PaginationHelper } from '../common'
 import type {
   Client,
   CreateClientRequest,
@@ -13,34 +15,51 @@ export class ClientService {
   }
 
   // Métodos heredados de UserService
-  async findClients(searchTerm: string): Promise<Client[]> {
+  async findClients(
+    searchTerm: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Client>> {
     if (!searchTerm || searchTerm.trim().length === 0) {
       throw new Error('Search term is required')
     }
-    return this.clientRepository.find(searchTerm)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.clientRepository.find(searchTerm, validatedPagination)
   }
 
-  async getClientById(id: string): Promise<Client | null> {
+  async getClientById(
+    id: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Client>> {
     if (!id) {
       throw new Error('Client ID is required')
     }
-    return this.clientRepository.findById(id)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.clientRepository.findById(id, validatedPagination)
   }
 
-  async getClientsByBirthMonth(month: number): Promise<Client[]> {
+  async getClientsByBirthMonth(
+    month: number,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Client>> {
     if (month < 1 || month > 12) {
       throw new Error('Month must be between 1 and 12')
     }
-    return this.clientRepository.findByBirthMonth(month)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.clientRepository.findByBirthMonth(month, validatedPagination)
   }
 
   async createClient(clientData: CreateClientRequest): Promise<Client> {
     this.validateClientData(clientData)
 
+    const defaultPagination: PaginationParams = { page: 1, limit: 100 }
     const existingClients = await this.clientRepository.find(
-      clientData.phoneNumber
+      clientData.phoneNumber,
+      defaultPagination
     )
-    const existingClient = existingClients.find(
+    const existingClient = existingClients.data.find(
       client => client.phoneNumber === clientData.phoneNumber
     )
     if (existingClient) {
@@ -55,7 +74,12 @@ export class ClientService {
       throw new Error('Client ID is required for update')
     }
 
-    const existingClient = await this.clientRepository.findById(clientData.id)
+    const defaultPagination: PaginationParams = { page: 1, limit: 1 }
+    const existingClientResponse = await this.clientRepository.findById(
+      clientData.id,
+      defaultPagination
+    )
+    const existingClient = existingClientResponse.data[0]
     if (!existingClient) {
       throw new Error('Client not found')
     }
@@ -65,9 +89,10 @@ export class ClientService {
       clientData.phoneNumber !== existingClient.phoneNumber
     ) {
       const clientsWithPhone = await this.clientRepository.find(
-        clientData.phoneNumber
+        clientData.phoneNumber,
+        defaultPagination
       )
-      const clientWithPhone = clientsWithPhone.find(
+      const clientWithPhone = clientsWithPhone.data.find(
         client => client.phoneNumber === clientData.phoneNumber
       )
       if (clientWithPhone) {

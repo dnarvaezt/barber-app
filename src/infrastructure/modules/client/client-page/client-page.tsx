@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLayout } from '../../../components'
+import { Pagination, useLayout } from '../../../components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
@@ -12,11 +12,15 @@ export const ClientPage = () => {
   const {
     clients,
     loading,
+    error,
+    meta,
     searchTerm,
     birthMonthFilter,
     handleSearch,
     handleBirthMonthFilter,
     clearFilters,
+    handlePageChange,
+    handleLimitChange,
     deleteClient,
     formatDate,
     formatPhone,
@@ -92,6 +96,18 @@ export const ClientPage = () => {
     )
   }
 
+  if (error) {
+    return (
+      <div className='client-page'>
+        <div className='client-page__content'>
+          <div className='client-page__error'>
+            <p className='client-page__error-message'>Error: {error}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='client-page'>
       <div className='client-page__content'>
@@ -157,67 +173,78 @@ export const ClientPage = () => {
               </p>
             </div>
           ) : (
-            <table className='client-page__table'>
-              <thead className='client-page__table-header'>
-                <tr>
-                  <th className='client-page__table-header-cell'>Nombre</th>
-                  <th className='client-page__table-header-cell'>Teléfono</th>
-                  <th className='client-page__table-header-cell'>
-                    Fecha de Nacimiento
-                  </th>
-                  <th className='client-page__table-header-cell'>Edad</th>
-                  <th className='client-page__table-header-cell'>
-                    Mes de Cumpleaños
-                  </th>
-                  <th className='client-page__table-header-cell'>Acciones</th>
-                </tr>
-              </thead>
-              <tbody className='client-page__table-body'>
-                {clients.map(client => (
-                  <tr key={client.id} className='client-page__table-row'>
-                    <td className='client-page__table-cell'>{client.name}</td>
-                    <td className='client-page__table-cell'>
-                      {formatPhone(client.phoneNumber)}
-                    </td>
-                    <td className='client-page__table-cell'>
-                      {formatDate(client.birthDate)}
-                    </td>
-                    <td className='client-page__table-cell'>
-                      {Math.floor(
-                        (Date.now() - client.birthDate.getTime()) /
-                          (1000 * 60 * 60 * 24 * 365.25)
-                      )}{' '}
-                      años
-                    </td>
-                    <td className='client-page__table-cell'>
-                      {getMonthName(client.birthDate.getMonth() + 1)}
-                    </td>
-                    <td className='client-page__table-cell'>
-                      <div className='client-page__table-actions'>
-                        <Link
-                          to={getClientDetailPath(client.id)}
-                          className='client-page__action-button client-page__action-button--view'
-                        >
-                          👁️ Ver
-                        </Link>
-                        <Link
-                          to={getClientEditPath(client.id)}
-                          className='client-page__action-button client-page__action-button--edit'
-                        >
-                          ✏️ Editar
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteClick(client.id)}
-                          className='client-page__action-button client-page__action-button--delete'
-                        >
-                          🗑️ Eliminar
-                        </button>
-                      </div>
-                    </td>
+            <>
+              <table className='client-page__table'>
+                <thead className='client-page__table-header'>
+                  <tr>
+                    <th className='client-page__table-header-cell'>Nombre</th>
+                    <th className='client-page__table-header-cell'>Teléfono</th>
+                    <th className='client-page__table-header-cell'>
+                      Fecha de Nacimiento
+                    </th>
+                    <th className='client-page__table-header-cell'>Edad</th>
+                    <th className='client-page__table-header-cell'>
+                      Mes de Cumpleaños
+                    </th>
+                    <th className='client-page__table-header-cell'>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className='client-page__table-body'>
+                  {clients.map(client => (
+                    <tr key={client.id} className='client-page__table-row'>
+                      <td className='client-page__table-cell'>{client.name}</td>
+                      <td className='client-page__table-cell'>
+                        {formatPhone(client.phoneNumber)}
+                      </td>
+                      <td className='client-page__table-cell'>
+                        {formatDate(client.birthDate)}
+                      </td>
+                      <td className='client-page__table-cell'>
+                        {Math.floor(
+                          (Date.now() - client.birthDate.getTime()) /
+                            (1000 * 60 * 60 * 24 * 365.25)
+                        )}{' '}
+                        años
+                      </td>
+                      <td className='client-page__table-cell'>
+                        {getMonthName(client.birthDate.getMonth() + 1)}
+                      </td>
+                      <td className='client-page__table-cell'>
+                        <div className='client-page__table-actions'>
+                          <Link
+                            to={getClientDetailPath(client.id)}
+                            className='client-page__action-button client-page__action-button--view'
+                          >
+                            👁️ Ver
+                          </Link>
+                          <Link
+                            to={getClientEditPath(client.id)}
+                            className='client-page__action-button client-page__action-button--edit'
+                          >
+                            ✏️ Editar
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteClick(client.id)}
+                            className='client-page__action-button client-page__action-button--delete'
+                          >
+                            🗑️ Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Componente de paginación */}
+              <Pagination
+                meta={meta}
+                onPageChange={handlePageChange}
+                onLimitChange={handleLimitChange}
+                showLimitSelector={true}
+                className='client-page__pagination'
+              />
+            </>
           )}
         </div>
 

@@ -2,6 +2,7 @@
 export { useEntityDetail } from './use-entity-detail.hook'
 export { useEntityForm } from './use-entity-form.hook'
 export { useEntityList } from './use-entity-list.hook'
+export { usePagination } from './use-pagination.hook'
 
 // Hooks de utilidad
 export { useMockData } from './use-mock-data.hook'

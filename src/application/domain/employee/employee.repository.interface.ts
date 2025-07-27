@@ -1,3 +1,4 @@
+import type { PaginatedResponse, PaginationParams } from '../common'
 import type {
   CreateEmployeeRequest,
   Employee,
@@ -6,9 +7,18 @@ import type {
 
 export interface EmployeeRepository {
   // Métodos heredados de UserRepository
-  find(searchTerm: string): Promise<Employee[]>
-  findById(id: string): Promise<Employee | null>
-  findByBirthMonth(month: number): Promise<Employee[]>
+  find(
+    searchTerm: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>>
+  findById(
+    id: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>>
+  findByBirthMonth(
+    month: number,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>>
   create(employeeData: CreateEmployeeRequest): Promise<Employee>
   update(employeeData: UpdateEmployeeRequest): Promise<Employee>
   delete(id: string): Promise<boolean>

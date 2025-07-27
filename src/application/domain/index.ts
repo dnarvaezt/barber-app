@@ -1,3 +1,6 @@
+// Common Types
+export * from './common'
+
 // User Domain
 export * from './user'
 

@@ -1,3 +1,5 @@
+import type { PaginatedResponse, PaginationParams } from '../common'
+import { PaginationHelper } from '../common'
 import type { CreateUserRequest, UpdateUserRequest, User } from './user.model'
 import type { UserRepository } from './user.repository.interface'
 
@@ -8,32 +10,51 @@ export class UserService {
     this.userRepository = userRepository
   }
 
-  async findUsers(searchTerm: string): Promise<User[]> {
+  async findUsers(
+    searchTerm: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>> {
     if (!searchTerm || searchTerm.trim().length === 0) {
       throw new Error('Search term is required')
     }
-    return this.userRepository.find(searchTerm)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.userRepository.find(searchTerm, validatedPagination)
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async getUserById(
+    id: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>> {
     if (!id) {
       throw new Error('User ID is required')
     }
-    return this.userRepository.findById(id)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.userRepository.findById(id, validatedPagination)
   }
 
-  async getUsersByBirthMonth(month: number): Promise<User[]> {
+  async getUsersByBirthMonth(
+    month: number,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>> {
     if (month < 1 || month > 12) {
       throw new Error('Month must be between 1 and 12')
     }
-    return this.userRepository.findByBirthMonth(month)
+
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+    return this.userRepository.findByBirthMonth(month, validatedPagination)
   }
 
   async createUser(userData: CreateUserRequest): Promise<User> {
     this.validateUserData(userData)
 
-    const existingUsers = await this.userRepository.find(userData.phoneNumber)
-    const existingUser = existingUsers.find(
+    const defaultPagination: PaginationParams = { page: 1, limit: 100 }
+    const existingUsers = await this.userRepository.find(
+      userData.phoneNumber,
+      defaultPagination
+    )
+    const existingUser = existingUsers.data.find(
       user => user.phoneNumber === userData.phoneNumber
     )
     if (existingUser) {
@@ -48,7 +69,12 @@ export class UserService {
       throw new Error('User ID is required for update')
     }
 
-    const existingUser = await this.userRepository.findById(userData.id)
+    const defaultPagination: PaginationParams = { page: 1, limit: 1 }
+    const existingUserResponse = await this.userRepository.findById(
+      userData.id,
+      defaultPagination
+    )
+    const existingUser = existingUserResponse.data[0]
     if (!existingUser) {
       throw new Error('User not found')
     }
@@ -58,9 +84,10 @@ export class UserService {
       userData.phoneNumber !== existingUser.phoneNumber
     ) {
       const usersWithPhone = await this.userRepository.find(
-        userData.phoneNumber
+        userData.phoneNumber,
+        defaultPagination
       )
-      const userWithPhone = usersWithPhone.find(
+      const userWithPhone = usersWithPhone.data.find(
         user => user.phoneNumber === userData.phoneNumber
       )
       if (userWithPhone) {

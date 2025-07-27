@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLayout } from '../../../components'
+import { Pagination, useLayout } from '../../../components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeePage } from './employee-page.hook'
 import './employee-page.scss'
@@ -12,11 +12,15 @@ export const EmployeePage = () => {
   const {
     employees,
     loading,
+    error,
+    meta,
     searchTerm,
     birthMonthFilter,
     handleSearch,
     handleBirthMonthFilter,
     clearFilters,
+    handlePageChange,
+    handleLimitChange,
     deleteEmployee,
     formatDate,
     formatPhone,
@@ -92,6 +96,18 @@ export const EmployeePage = () => {
     )
   }
 
+  if (error) {
+    return (
+      <div className='employee-page'>
+        <div className='employee-page__content'>
+          <div className='employee-page__error'>
+            <p className='employee-page__error-message'>Error: {error}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='employee-page'>
       <div className='employee-page__content'>
@@ -157,75 +173,90 @@ export const EmployeePage = () => {
               </p>
             </div>
           ) : (
-            <table className='employee-page__table'>
-              <thead className='employee-page__table-header'>
-                <tr>
-                  <th className='employee-page__table-header-cell'>Nombre</th>
-                  <th className='employee-page__table-header-cell'>Teléfono</th>
-                  <th className='employee-page__table-header-cell'>
-                    Fecha de Nacimiento
-                  </th>
-                  <th className='employee-page__table-header-cell'>Edad</th>
-                  <th className='employee-page__table-header-cell'>
-                    Mes de Cumpleaños
-                  </th>
-                  <th className='employee-page__table-header-cell'>
-                    Porcentaje
-                  </th>
-                  <th className='employee-page__table-header-cell'>Acciones</th>
-                </tr>
-              </thead>
-              <tbody className='employee-page__table-body'>
-                {employees.map(employee => (
-                  <tr key={employee.id} className='employee-page__table-row'>
-                    <td className='employee-page__table-cell'>
-                      {employee.name}
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      {formatPhone(employee.phoneNumber)}
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      {formatDate(employee.birthDate)}
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      {Math.floor(
-                        (Date.now() - employee.birthDate.getTime()) /
-                          (1000 * 60 * 60 * 24 * 365.25)
-                      )}{' '}
-                      años
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      {getMonthName(employee.birthDate.getMonth() + 1)}
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      {employee.percentage}%
-                    </td>
-                    <td className='employee-page__table-cell'>
-                      <div className='employee-page__table-actions'>
-                        <Link
-                          to={getEmployeeDetailPath(employee.id)}
-                          className='employee-page__action-button employee-page__action-button--view'
-                        >
-                          👁️ Ver
-                        </Link>
-                        <Link
-                          to={getEmployeeEditPath(employee.id)}
-                          className='employee-page__action-button employee-page__action-button--edit'
-                        >
-                          ✏️ Editar
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteClick(employee.id)}
-                          className='employee-page__action-button employee-page__action-button--delete'
-                        >
-                          🗑️ Eliminar
-                        </button>
-                      </div>
-                    </td>
+            <>
+              <table className='employee-page__table'>
+                <thead className='employee-page__table-header'>
+                  <tr>
+                    <th className='employee-page__table-header-cell'>Nombre</th>
+                    <th className='employee-page__table-header-cell'>
+                      Teléfono
+                    </th>
+                    <th className='employee-page__table-header-cell'>
+                      Fecha de Nacimiento
+                    </th>
+                    <th className='employee-page__table-header-cell'>Edad</th>
+                    <th className='employee-page__table-header-cell'>
+                      Mes de Cumpleaños
+                    </th>
+                    <th className='employee-page__table-header-cell'>
+                      Porcentaje
+                    </th>
+                    <th className='employee-page__table-header-cell'>
+                      Acciones
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className='employee-page__table-body'>
+                  {employees.map(employee => (
+                    <tr key={employee.id} className='employee-page__table-row'>
+                      <td className='employee-page__table-cell'>
+                        {employee.name}
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        {formatPhone(employee.phoneNumber)}
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        {formatDate(employee.birthDate)}
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        {Math.floor(
+                          (Date.now() - employee.birthDate.getTime()) /
+                            (1000 * 60 * 60 * 24 * 365.25)
+                        )}{' '}
+                        años
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        {getMonthName(employee.birthDate.getMonth() + 1)}
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        {employee.percentage}%
+                      </td>
+                      <td className='employee-page__table-cell'>
+                        <div className='employee-page__table-actions'>
+                          <Link
+                            to={getEmployeeDetailPath(employee.id)}
+                            className='employee-page__action-button employee-page__action-button--view'
+                          >
+                            👁️ Ver
+                          </Link>
+                          <Link
+                            to={getEmployeeEditPath(employee.id)}
+                            className='employee-page__action-button employee-page__action-button--edit'
+                          >
+                            ✏️ Editar
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteClick(employee.id)}
+                            className='employee-page__action-button employee-page__action-button--delete'
+                          >
+                            🗑️ Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Componente de paginación */}
+              <Pagination
+                meta={meta}
+                onPageChange={handlePageChange}
+                onLimitChange={handleLimitChange}
+                showLimitSelector={true}
+                className='employee-page__pagination'
+              />
+            </>
           )}
         </div>
 

@@ -1,9 +1,19 @@
+import type { PaginatedResponse, PaginationParams } from '../common'
 import type { CreateUserRequest, UpdateUserRequest, User } from './user.model'
 
 export interface UserRepository {
-  find(searchTerm: string): Promise<User[]>
-  findById(id: string): Promise<User | null>
-  findByBirthMonth(month: number): Promise<User[]>
+  find(
+    searchTerm: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>>
+  findById(
+    id: string,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>>
+  findByBirthMonth(
+    month: number,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<User>>
   create(userData: CreateUserRequest): Promise<User>
   update(userData: UpdateUserRequest): Promise<User>
   delete(id: string): Promise<boolean>
