@@ -91,36 +91,17 @@ export class EmployeeRepositoryMemory
   }
 
   async delete(id: string): Promise<boolean> {
-    console.log('🔍 EmployeeRepository: Deleting employee with ID:', id)
-    console.log(
-      '🔍 EmployeeRepository: Total employees before delete:',
-      this.data.length
-    )
-
     const index = this.data.findIndex(emp => emp.id === id)
-    console.log('🔍 EmployeeRepository: Found at index:', index)
 
     if (index === -1) {
-      console.log('🔍 EmployeeRepository: Employee not found')
       return false
     }
 
     this.data.splice(index, 1)
-    console.log(
-      '🔍 EmployeeRepository: Total employees after delete:',
-      this.data.length
-    )
     return true
   }
 
   async exists(id: string): Promise<boolean> {
-    const exists = this.data.some(emp => emp.id === id)
-    console.log(
-      '🔍 EmployeeRepository: Checking if employee exists:',
-      id,
-      'Result:',
-      exists
-    )
-    return exists
+    return this.data.some(emp => emp.id === id)
   }
 }

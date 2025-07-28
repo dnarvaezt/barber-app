@@ -42,9 +42,7 @@ export const ClientPage = () => {
 
   const handleConfirmDelete = async (clientId: string) => {
     try {
-      console.log('🗑️ Attempting to delete client:', clientId)
       await deleteClient(clientId)
-      console.log('✅ Client deleted successfully:', clientId)
       setShowDeleteConfirm(null)
     } catch (error) {
       console.error('❌ Error deleting client:', error)

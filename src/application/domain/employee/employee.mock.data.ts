@@ -161,7 +161,7 @@ const employeeNames = [
   'Imelda Méndez',
 ]
 
-// Números de teléfono colombianos
+// Números de teléfono colombianos con formato +57
 const generatePhoneNumber = (): string => {
   const prefixes = [
     '300',
@@ -201,7 +201,7 @@ const generatePhoneNumber = (): string => {
   const number = Math.floor(Math.random() * 10000000)
     .toString()
     .padStart(7, '0')
-  return `${prefix}${number}`
+  return `+57${prefix}${number}`
 }
 
 export const employeeMockData: Employee[] = Array.from(

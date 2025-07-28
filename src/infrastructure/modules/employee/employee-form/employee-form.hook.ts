@@ -81,8 +81,8 @@ export const useEmployeeForm = () => {
             // Actualizar empleado existente
             const updatedEmployee = await employeeService.updateEmployee({
               id: entityForm.entity!.id,
-              name: entityForm.formData.name,
-              phoneNumber: entityForm.formData.phoneNumber,
+              name: entityForm.formData.name.trim(),
+              phoneNumber: entityForm.formData.phoneNumber.trim(),
               birthDate: new Date(entityForm.formData.birthDate),
               updatedBy: 'admin_001',
               percentage: Number(entityForm.formData.percentage),
@@ -91,8 +91,8 @@ export const useEmployeeForm = () => {
           } else {
             // Crear nuevo empleado
             const newEmployee = await employeeService.createEmployee({
-              name: entityForm.formData.name,
-              phoneNumber: entityForm.formData.phoneNumber,
+              name: entityForm.formData.name.trim(),
+              phoneNumber: entityForm.formData.phoneNumber.trim(),
               birthDate: new Date(entityForm.formData.birthDate),
               createdBy: 'admin_001',
               percentage: Number(entityForm.formData.percentage),

@@ -124,24 +124,29 @@ export class EntityEventHandler implements IEventHandler {
     }
   }
 
-  protected async onEntityCreated(payload: any): Promise<void> {
-    console.log(`${this.entityType} created:`, payload.entity)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async onEntityCreated(_payload: any): Promise<void> {
+    // Event handled
   }
 
-  protected async onEntityUpdated(payload: any): Promise<void> {
-    console.log(`${this.entityType} updated:`, payload.entity)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async onEntityUpdated(_payload: any): Promise<void> {
+    // Event handled
   }
 
-  protected async onEntityDeleted(payload: any): Promise<void> {
-    console.log(`${this.entityType} deleted:`, payload.entityId)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async onEntityDeleted(_payload: any): Promise<void> {
+    // Event handled
   }
 
-  protected async onValidationFailed(payload: any): Promise<void> {
-    console.error(`${this.entityType} validation failed:`, payload.errors)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async onValidationFailed(_payload: any): Promise<void> {
+    // Validation failed event handled
   }
 
-  protected async onSearchPerformed(payload: any): Promise<void> {
-    console.log(`${this.entityType} search performed:`, payload.searchTerm)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async onSearchPerformed(_payload: any): Promise<void> {
+    // Search performed event handled
   }
 }
 

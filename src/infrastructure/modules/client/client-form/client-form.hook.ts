@@ -76,8 +76,8 @@ export const useClientForm = () => {
             // Actualizar cliente existente
             const updatedClient = await clientService.updateClient({
               id: entityForm.entity!.id,
-              name: entityForm.formData.name,
-              phoneNumber: entityForm.formData.phoneNumber,
+              name: entityForm.formData.name.trim(),
+              phoneNumber: entityForm.formData.phoneNumber.trim(),
               birthDate: new Date(entityForm.formData.birthDate),
               updatedBy: 'admin_001',
             })
@@ -85,8 +85,8 @@ export const useClientForm = () => {
           } else {
             // Crear nuevo cliente
             const newClient = await clientService.createClient({
-              name: entityForm.formData.name,
-              phoneNumber: entityForm.formData.phoneNumber,
+              name: entityForm.formData.name.trim(),
+              phoneNumber: entityForm.formData.phoneNumber.trim(),
               birthDate: new Date(entityForm.formData.birthDate),
               createdBy: 'admin_001',
             })

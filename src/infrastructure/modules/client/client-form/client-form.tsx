@@ -7,9 +7,10 @@ export const ClientForm = () => {
     loading,
     isValidating,
     isValidClient,
-    client,
     isEditing,
     formData,
+    showSuccessMessage,
+    errors,
     handleSubmit,
     handleCancel,
     handleInputChange,
@@ -68,7 +69,7 @@ export const ClientForm = () => {
 
         <div className='client-form__form'>
           {/* Mensaje de éxito */}
-          {client && (
+          {showSuccessMessage && (
             <div className='client-form__success-message'>
               <div className='client-form__success-icon'>✅</div>
               <p className='client-form__success-text'>
@@ -76,6 +77,14 @@ export const ClientForm = () => {
                   ? '¡Cliente actualizado exitosamente!'
                   : '¡Cliente creado exitosamente!'}
               </p>
+            </div>
+          )}
+
+          {/* Mensaje de error general */}
+          {errors.general && (
+            <div className='client-form__error-message'>
+              <div className='client-form__error-icon'>❌</div>
+              <p className='client-form__error-text'>{errors.general}</p>
             </div>
           )}
 

@@ -143,7 +143,13 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
       sortOrder: urlState.pagination.sortOrder,
     }
     loadData(initialPagination)
-  }, [loadData]) // Solo ejecutar cuando cambie loadData
+  }, [
+    loadData,
+    urlState.pagination.page,
+    urlState.pagination.limit,
+    urlState.pagination.sortBy,
+    urlState.pagination.sortOrder,
+  ]) // Solo ejecutar cuando cambie loadData
 
   // Recargar datos cuando cambien los filtros, búsqueda o ordenamiento
   useEffect(() => {

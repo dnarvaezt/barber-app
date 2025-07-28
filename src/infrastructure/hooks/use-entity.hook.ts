@@ -213,7 +213,15 @@ export const useEntity = <
         urlState.pagination.sortOrder || config.entityConfig.defaultSortOrder,
     }
     loadData(initialPagination)
-  }, [loadData])
+  }, [
+    loadData,
+    urlState.pagination.page,
+    urlState.pagination.limit,
+    urlState.pagination.sortBy,
+    urlState.pagination.sortOrder,
+    config.entityConfig.defaultSortBy,
+    config.entityConfig.defaultSortOrder,
+  ])
 
   // Recargar datos cuando cambien los filtros, búsqueda o ordenamiento
   useEffect(() => {

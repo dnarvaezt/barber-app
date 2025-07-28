@@ -38,6 +38,7 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
   const [isValidating, setIsValidating] = useState(true)
   const [isValidEntity, setIsValidEntity] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const isValidatingRef = useRef(false)
 
   const loadEntity = useCallback(
@@ -140,20 +141,25 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
       }
 
       setLoading(true)
+      setErrors({})
       try {
         const savedEntityId = await saveEntity(formData)
         setIsSuccess(true)
+        setShowSuccessMessage(true)
 
-        const detailPath = getRoutePathById(config.detailRouteId)
-        if (detailPath) {
-          const detailPathWithId = detailPath.replace(
-            `:${config.entityIdParam}`,
-            savedEntityId
-          )
-          navigate(detailPathWithId)
-        } else {
-          console.error(`Route not found for ID: ${config.detailRouteId}`)
-        }
+        // Mostrar mensaje de éxito por 2 segundos antes de redirigir
+        setTimeout(() => {
+          const detailPath = getRoutePathById(config.detailRouteId)
+          if (detailPath) {
+            const detailPathWithId = detailPath.replace(
+              `:${config.entityIdParam}`,
+              savedEntityId
+            )
+            navigate(detailPathWithId)
+          } else {
+            console.error(`Route not found for ID: ${config.detailRouteId}`)
+          }
+        }, 2000)
       } catch (error) {
         console.error(`Error submitting ${config.entityName} form:`, error)
         setErrors({ general: config.errorMessages.saveError })
@@ -170,8 +176,12 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
       if (errors[field]) {
         setErrors(prev => ({ ...prev, [field]: '' }))
       }
+      // Limpiar mensaje de éxito cuando el usuario modifica el formulario
+      if (showSuccessMessage) {
+        setShowSuccessMessage(false)
+      }
     },
-    [errors]
+    [errors, showSuccessMessage]
   )
 
   const handleCancel = useCallback(() => {
@@ -201,6 +211,7 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
     isValidating,
     isValidEntity,
     isSuccess,
+    showSuccessMessage,
     entity,
     formData,
     setFormData,

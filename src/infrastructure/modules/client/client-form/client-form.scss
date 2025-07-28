@@ -1,105 +1,117 @@
 @use '../../../assets/styles/variables' as *;
 
 .client-form {
-  @apply min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8;
+  @apply min-h-screen bg-gray-50 dark:bg-gray-900 py-8;
 
-  &__container {
-    @apply container mx-auto px-4 max-w-2xl;
-  }
+  .client-form__container {
+    @apply max-w-2xl mx-auto px-4;
 
-  &__header {
-    @apply text-center mb-8;
+    .client-form__header {
+      @apply text-center mb-8;
 
-    .client-form__title {
-      @apply text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4;
-    }
-
-    .client-form__subtitle {
-      @apply text-lg text-gray-600 dark:text-gray-400;
-    }
-  }
-
-  &__form {
-    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700;
-
-    .client-form__success-message {
-      @apply flex items-center gap-3 p-4 mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl;
-
-      .client-form__success-icon {
-        @apply text-2xl;
+      .client-form__title {
+        @apply text-3xl font-bold text-gray-900 dark:text-white mb-2;
       }
 
-      .client-form__success-text {
-        @apply text-green-800 dark:text-green-200 font-medium;
+      .client-form__subtitle {
+        @apply text-gray-600 dark:text-gray-400;
       }
     }
 
-    .client-form__form-content {
-      @apply space-y-6;
+    .client-form__form {
+      @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8;
 
-      .client-form__field {
-        @apply space-y-2;
+      .client-form__success-message {
+        @apply bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6 flex items-center gap-3;
 
-        .client-form__label {
-          @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
+        .client-form__success-icon {
+          @apply text-green-600 dark:text-green-400 text-xl;
         }
 
-        .client-form__input {
-          @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300;
-
-          &--filled {
-            @apply border-blue-500 dark:border-blue-400;
-          }
-
-          &:focus {
-            @apply shadow-lg transform scale-[1.02];
-          }
-
-          &::placeholder {
-            @apply text-gray-400 dark:text-gray-500;
-          }
+        .client-form__success-text {
+          @apply text-green-800 dark:text-green-200 font-medium;
         }
       }
 
-      .client-form__actions {
-        @apply flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-600;
+      .client-form__error-message {
+        @apply bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 flex items-center gap-3;
 
-        .client-form__button {
-          @apply flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed;
+        .client-form__error-icon {
+          @apply text-red-600 dark:text-red-400 text-xl;
+        }
 
-          &--secondary {
-            @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+        .client-form__error-text {
+          @apply text-red-800 dark:text-red-200 font-medium;
+        }
+      }
+
+      .client-form__loading {
+        @apply flex flex-col items-center justify-center py-12;
+
+        .client-form__loading-spinner {
+          @apply w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4;
+        }
+
+        .client-form__loading-text {
+          @apply text-gray-600 dark:text-gray-400 font-medium;
+        }
+      }
+
+      .client-form__form-content {
+        @apply space-y-6;
+
+        .client-form__field {
+          @apply space-y-2;
+
+          .client-form__label {
+            @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
           }
 
-          &--primary {
-            @apply bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl;
-          }
+          .client-form__input {
+            @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300;
 
-          .client-form__loading-spinner {
-            @apply w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
+            &--filled {
+              @apply border-blue-500 dark:border-blue-400;
+            }
 
-            &--small {
-              @apply w-4 h-4;
+            &:focus {
+              @apply shadow-lg transform scale-[1.02];
+            }
+
+            &::placeholder {
+              @apply text-gray-400 dark:text-gray-500;
             }
           }
+        }
 
-          .client-form__button-text {
-            @apply font-medium;
+        .client-form__actions {
+          @apply flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-600;
+
+          .client-form__button {
+            @apply flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed;
+
+            &--secondary {
+              @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+            }
+
+            &--primary {
+              @apply bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl;
+            }
+
+            .client-form__loading-spinner {
+              @apply w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
+
+              &--small {
+                @apply w-4 h-4;
+              }
+            }
+
+            .client-form__button-text {
+              @apply font-medium;
+            }
           }
         }
       }
-    }
-  }
-
-  &__loading {
-    @apply flex flex-col items-center justify-center py-12;
-
-    .client-form__loading-spinner {
-      @apply w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4;
-    }
-
-    .client-form__loading-text {
-      @apply text-gray-600 dark:text-gray-400;
     }
   }
 }

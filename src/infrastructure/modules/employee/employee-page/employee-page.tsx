@@ -42,9 +42,7 @@ export const EmployeePage = () => {
 
   const handleConfirmDelete = async (employeeId: string) => {
     try {
-      console.log('🗑️ Attempting to delete employee:', employeeId)
       await deleteEmployee(employeeId)
-      console.log('✅ Employee deleted successfully:', employeeId)
       setShowDeleteConfirm(null)
     } catch (error) {
       console.error('❌ Error deleting employee:', error)

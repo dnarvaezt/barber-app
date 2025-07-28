@@ -7,9 +7,10 @@ export const EmployeeForm = () => {
     loading,
     isValidating,
     isValidEmployee,
-    employee,
     isEditing,
     formData,
+    showSuccessMessage,
+    errors,
     handleSubmit,
     handleCancel,
     handleInputChange,
@@ -68,7 +69,7 @@ export const EmployeeForm = () => {
 
         <div className='employee-form__form'>
           {/* Mensaje de éxito */}
-          {employee && (
+          {showSuccessMessage && (
             <div className='employee-form__success-message'>
               <div className='employee-form__success-icon'>✅</div>
               <p className='employee-form__success-text'>
@@ -76,6 +77,14 @@ export const EmployeeForm = () => {
                   ? '¡Empleado actualizado exitosamente!'
                   : '¡Empleado creado exitosamente!'}
               </p>
+            </div>
+          )}
+
+          {/* Mensaje de error general */}
+          {errors.general && (
+            <div className='employee-form__error-message'>
+              <div className='employee-form__error-icon'>❌</div>
+              <p className='employee-form__error-text'>{errors.general}</p>
             </div>
           )}
 
