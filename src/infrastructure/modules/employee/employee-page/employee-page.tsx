@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Pagination, SortControls, useLayout } from '../../../components'
-import { useSearchInput } from '../../../hooks'
+import { Pagination, SortControls } from '../../../components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeePage } from './employee-page.hook'
 import './employee-page.scss'
 
 export const EmployeePage = () => {
   const navigate = useNavigate()
-  const { headerCommands } = useLayout()
-  const { getRoutePathById } = useRoutes()
+  const { buildRoutePathWithParams } = useRoutes()
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  )
   const {
     employees,
     loading,
@@ -18,7 +19,6 @@ export const EmployeePage = () => {
     searchTerm,
     sortBy,
     sortOrder,
-
     handleSearch,
     clearFilters,
     handlePageChange,
@@ -30,49 +30,16 @@ export const EmployeePage = () => {
     getMonthName,
   } = useEmployeePage()
 
-  // Hook para manejar la búsqueda con debounce y eventos de teclado
-  const searchInput = useSearchInput({
-    onSearch: handleSearch,
-    debounceMs: 300,
-    initialValue: searchTerm,
-  })
-
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
-    null
-  )
-
-  // Monitorear cambios en el estado del modal
   useEffect(() => {
-    console.log('🔍 Modal state changed:', showDeleteConfirm)
-  }, [showDeleteConfirm])
-
-  useEffect(() => {
-    headerCommands.setTitle('Gestión de Empleados')
-    headerCommands.setActions(
-      <button
-        onClick={() => {
-          const newEmployeePath = getRoutePathById(RouteIds.EMPLOYEE_FORM_NEW)
-          if (newEmployeePath) {
-            navigate(newEmployeePath)
-          }
-        }}
-        className='employee-page__action-button employee-page__action-button--edit'
-      >
-        ➕ Nuevo Empleado
-      </button>
-    )
-
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands, navigate, getRoutePathById])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   const handleDeleteClick = (employeeId: string) => {
-    console.log('🗑️ Delete button clicked for employee:', employeeId)
     setShowDeleteConfirm(employeeId)
   }
 
-  const handleDeleteConfirm = async (employeeId: string) => {
+  const handleConfirmDelete = async (employeeId: string) => {
     try {
       console.log('🗑️ Attempting to delete employee:', employeeId)
       await deleteEmployee(employeeId)
@@ -80,31 +47,29 @@ export const EmployeePage = () => {
       setShowDeleteConfirm(null)
     } catch (error) {
       console.error('❌ Error deleting employee:', error)
-      alert(`Error al eliminar empleado: ${error}`)
+      // Aquí podrías mostrar un mensaje de error al usuario
     }
   }
 
-  const handleDeleteCancel = () => {
+  const handleCancelDelete = () => {
     setShowDeleteConfirm(null)
   }
 
-  // Obtener rutas dinámicas
-  const getEmployeeDetailPath = (employeeId: string) => {
-    return (
-      getRoutePathById(RouteIds.EMPLOYEE_DETAIL)?.replace(
-        ':employeeId',
-        employeeId
-      ) || '#'
-    )
-  }
+  // Función para calcular la edad
+  const getAge = (birthDate: Date) => {
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
 
-  const getEmployeeEditPath = (employeeId: string) => {
-    return (
-      getRoutePathById(RouteIds.EMPLOYEE_FORM_EDIT)?.replace(
-        ':employeeId',
-        employeeId
-      ) || '#'
-    )
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--
+    }
+
+    return age
   }
 
   if (loading) {
@@ -113,6 +78,7 @@ export const EmployeePage = () => {
         <div className='employee-page__content'>
           <div className='employee-page__loading'>
             <div className='employee-page__loading-spinner'></div>
+            <p>Cargando empleados...</p>
           </div>
         </div>
       </div>
@@ -124,7 +90,15 @@ export const EmployeePage = () => {
       <div className='employee-page'>
         <div className='employee-page__content'>
           <div className='employee-page__error'>
-            <p className='employee-page__error-message'>Error: {error}</p>
+            <div className='employee-page__error-icon'>⚠️</div>
+            <h3 className='employee-page__error-title'>Error</h3>
+            <p className='employee-page__error-message'>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className='employee-page__button employee-page__button--primary'
+            >
+              Reintentar
+            </button>
           </div>
         </div>
       </div>
@@ -134,28 +108,42 @@ export const EmployeePage = () => {
   return (
     <div className='employee-page'>
       <div className='employee-page__content'>
-        {/* Sección de búsqueda y filtros */}
-        <div className='employee-page__search-section'>
-          <div className='employee-page__search-form'>
-            <div className='employee-page__search-input'>
-              <input
-                type='text'
-                placeholder='Buscar por nombre o teléfono... (Enter para buscar, Esc para limpiar)'
-                value={searchInput.searchValue}
-                onChange={e => searchInput.handleInputChange(e.target.value)}
-                onKeyDown={searchInput.handleKeyDown}
-                className='w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-              />
-              {searchInput.isSearching && (
-                <div className='employee-page__search-loading'>
-                  <div className='employee-page__search-loading-spinner'></div>
-                </div>
-              )}
-            </div>
-            {searchInput.searchValue && (
+        {/* Header de la página */}
+        <div className='employee-page__header'>
+          <div className='employee-page__header-content'>
+            <h1 className='employee-page__title'>Gestión de Empleados</h1>
+            <div className='employee-page__header-actions'>
               <button
                 onClick={() => {
-                  searchInput.clearSearch()
+                  const newEmployeePath = buildRoutePathWithParams(
+                    RouteIds.EMPLOYEE_FORM_NEW,
+                    {}
+                  )
+                  if (newEmployeePath) {
+                    navigate(newEmployeePath)
+                  }
+                }}
+                className='employee-page__action-button employee-page__action-button--edit'
+              >
+                ➕ Nuevo Empleado
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros y búsqueda */}
+        <div className='employee-page__filters'>
+          <div className='employee-page__search-section'>
+            <input
+              type='text'
+              placeholder='Buscar empleados...'
+              value={searchTerm}
+              onChange={e => handleSearch(e.target.value)}
+              className='employee-page__search-input'
+            />
+            {searchTerm && (
+              <button
+                onClick={() => {
                   clearFilters()
                 }}
                 className='px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
@@ -165,7 +153,6 @@ export const EmployeePage = () => {
             )}
           </div>
 
-          {/* Controles de ordenamiento */}
           <div className='employee-page__sort-section'>
             <SortControls
               currentSortBy={sortBy}
@@ -176,55 +163,57 @@ export const EmployeePage = () => {
           </div>
         </div>
 
-        {/* Tabla de empleados */}
-        <div className='employee-page__table-container'>
+        {/* Lista de empleados */}
+        <div className='employee-page__list'>
           {employees.length === 0 ? (
-            <div className='employee-page__empty-state'>
-              <div className='employee-page__empty-state-icon'>
-                <svg fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-                  />
-                </svg>
-              </div>
-              <p className='employee-page__empty-state-text'>
-                {searchInput.searchValue
-                  ? 'No se encontraron empleados con los filtros aplicados'
-                  : 'No hay empleados registrados'}
+            <div className='employee-page__empty'>
+              <div className='employee-page__empty-icon'>👥</div>
+              <h3 className='employee-page__empty-title'>No hay empleados</h3>
+              <p className='employee-page__empty-message'>
+                {searchTerm
+                  ? 'No se encontraron empleados con esa búsqueda.'
+                  : 'Aún no hay empleados registrados.'}
               </p>
+              {!searchTerm && (
+                <button
+                  onClick={() => {
+                    const newEmployeePath = buildRoutePathWithParams(
+                      RouteIds.EMPLOYEE_FORM_NEW,
+                      {}
+                    )
+                    if (newEmployeePath) {
+                      navigate(newEmployeePath)
+                    }
+                  }}
+                  className='employee-page__button employee-page__button--primary'
+                >
+                  ➕ Agregar Primer Empleado
+                </button>
+              )}
             </div>
           ) : (
-            <>
+            <div className='employee-page__table-container'>
               <table className='employee-page__table'>
                 <thead className='employee-page__table-header'>
                   <tr>
-                    <th className='employee-page__table-header-cell'>Nombre</th>
-                    <th className='employee-page__table-header-cell'>
-                      Teléfono
-                    </th>
-                    <th className='employee-page__table-header-cell'>
-                      Fecha de Nacimiento
-                    </th>
-                    <th className='employee-page__table-header-cell'>Edad</th>
-                    <th className='employee-page__table-header-cell'>
-                      Mes de Cumpleaños
-                    </th>
-                    <th className='employee-page__table-header-cell'>
-                      Porcentaje
-                    </th>
-                    <th className='employee-page__table-header-cell'>
-                      Acciones
-                    </th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Mes de Nacimiento</th>
+                    <th>Porcentaje</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody className='employee-page__table-body'>
                   {employees.map(employee => (
                     <tr key={employee.id} className='employee-page__table-row'>
                       <td className='employee-page__table-cell'>
-                        {employee.name}
+                        <div className='employee-page__employee-info'>
+                          <span className='employee-page__employee-name'>
+                            {employee.name}
+                          </span>
+                        </div>
                       </td>
                       <td className='employee-page__table-cell'>
                         {formatPhone(employee.phoneNumber)}
@@ -233,28 +222,30 @@ export const EmployeePage = () => {
                         {formatDate(employee.birthDate)}
                       </td>
                       <td className='employee-page__table-cell'>
-                        {Math.floor(
-                          (Date.now() - employee.birthDate.getTime()) /
-                            (1000 * 60 * 60 * 24 * 365.25)
-                        )}{' '}
-                        años
+                        {getAge(employee.birthDate)}
                       </td>
                       <td className='employee-page__table-cell'>
-                        {getMonthName(employee.birthDate.getMonth() + 1)}
+                        {getMonthName(new Date(employee.birthDate).getMonth())}
                       </td>
                       <td className='employee-page__table-cell'>
                         {employee.percentage}%
                       </td>
                       <td className='employee-page__table-cell'>
-                        <div className='employee-page__table-actions'>
+                        <div className='employee-page__actions'>
                           <Link
-                            to={getEmployeeDetailPath(employee.id)}
+                            to={buildRoutePathWithParams(
+                              RouteIds.EMPLOYEE_DETAIL,
+                              { employeeId: employee.id }
+                            )}
                             className='employee-page__action-button employee-page__action-button--view'
                           >
                             👁️ Ver
                           </Link>
                           <Link
-                            to={getEmployeeEditPath(employee.id)}
+                            to={buildRoutePathWithParams(
+                              RouteIds.EMPLOYEE_FORM_EDIT,
+                              { employeeId: employee.id }
+                            )}
                             className='employee-page__action-button employee-page__action-button--edit'
                           >
                             ✏️ Editar
@@ -271,40 +262,40 @@ export const EmployeePage = () => {
                   ))}
                 </tbody>
               </table>
-
-              {/* Componente de paginación */}
-              <Pagination
-                meta={meta}
-                onPageChange={handlePageChange}
-                onLimitChange={handleLimitChange}
-                showLimitSelector={true}
-                className='employee-page__pagination'
-              />
-            </>
+            </div>
           )}
         </div>
 
+        {/* Componente de paginación */}
+        <Pagination
+          meta={meta}
+          onPageChange={handlePageChange}
+          onLimitChange={handleLimitChange}
+          showLimitSelector={true}
+          className='employee-page__pagination'
+        />
+
         {/* Modal de confirmación de eliminación */}
         {showDeleteConfirm && (
-          <div className='employee-page__delete-modal'>
-            <div className='employee-page__delete-modal-content'>
-              <h3 className='employee-page__delete-modal-title'>
-                Confirmar eliminación
-              </h3>
-              <p className='employee-page__delete-modal-message'>
-                ¿Estás seguro de que quieres eliminar este empleado? Esta acción
-                no se puede deshacer.
-              </p>
-              <div className='employee-page__delete-modal-actions'>
+          <div className='employee-page__modal-overlay'>
+            <div className='employee-page__modal'>
+              <div className='employee-page__modal-header'>
+                <h3>Confirmar Eliminación</h3>
+              </div>
+              <div className='employee-page__modal-body'>
+                <p>¿Estás seguro de que quieres eliminar este empleado?</p>
+                <p>Esta acción no se puede deshacer.</p>
+              </div>
+              <div className='employee-page__modal-actions'>
                 <button
-                  onClick={handleDeleteCancel}
-                  className='employee-page__delete-modal-button employee-page__delete-modal-button--cancel'
+                  onClick={handleCancelDelete}
+                  className='employee-page__button employee-page__button--secondary'
                 >
                   Cancelar
                 </button>
                 <button
-                  onClick={() => handleDeleteConfirm(showDeleteConfirm)}
-                  className='employee-page__delete-modal-button employee-page__delete-modal-button--confirm'
+                  onClick={() => handleConfirmDelete(showDeleteConfirm)}
+                  className='employee-page__button employee-page__button--danger'
                 >
                   Eliminar
                 </button>

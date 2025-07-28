@@ -1,11 +1,22 @@
+@use '../../assets/styles/variables' as v;
+@use '../../assets/styles/mixins' as m;
+@use 'sass:color';
+
 .pagination {
-  @apply flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700;
+  @apply flex flex-col sm:flex-row items-center justify-between gap-4 p-4;
+  background: v.$notion-bg-card;
+  border-top: 1px solid v.$notion-border-primary;
+
+  .dark & {
+    background: v.$notion-dark-bg-card;
+    border-color: v.$notion-dark-border-primary;
+  }
 
   &__info {
     @apply flex items-center;
 
     &-text {
-      @apply text-sm text-gray-600 dark:text-gray-400;
+      @include m.notion-text-secondary;
     }
   }
 
@@ -17,11 +28,19 @@
     @apply flex items-center gap-2;
 
     &-label {
-      @apply text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap;
+      @apply text-sm whitespace-nowrap;
+      color: v.$notion-text-secondary;
+
+      .dark & {
+        color: v.$notion-dark-text-secondary;
+      }
     }
 
     &-select {
-      @apply px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+      @include m.notion-input;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      width: auto;
     }
   }
 
@@ -30,7 +49,9 @@
   }
 
   &__button {
-    @apply px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200;
+    @include m.notion-button-secondary;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
 
     &--prev {
       @apply flex items-center gap-1;
@@ -46,14 +67,42 @@
   }
 
   &__page-button {
-    @apply px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 min-w-[40px];
+    @include m.notion-button-secondary;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-width: 2.5rem;
 
     &--active {
-      @apply text-white bg-blue-600 dark:bg-blue-500 border-blue-600 dark:border-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 hover:text-white;
+      background: v.$notion-accent-blue;
+      color: white;
+      border-color: v.$notion-accent-blue;
+
+      &:hover {
+        background: color.adjust(v.$notion-accent-blue, $lightness: -5%);
+        border-color: color.adjust(v.$notion-accent-blue, $lightness: -5%);
+        color: white;
+      }
     }
 
     &--ellipsis {
-      @apply cursor-default hover:bg-transparent dark:hover:bg-transparent hover:text-gray-500 dark:hover:text-gray-400;
+      cursor: default;
+      background: transparent;
+      border-color: transparent;
+      color: v.$notion-text-tertiary;
+
+      &:hover {
+        background: transparent;
+        border-color: transparent;
+        color: v.$notion-text-tertiary;
+      }
+
+      .dark & {
+        color: v.$notion-dark-text-tertiary;
+
+        &:hover {
+          color: v.$notion-dark-text-tertiary;
+        }
+      }
     }
   }
 }
@@ -72,11 +121,14 @@
     }
 
     &__page-button {
-      @apply px-2 py-1 min-w-[32px] text-xs;
+      padding: 0.25rem 0.5rem;
+      min-width: 2rem;
+      font-size: 0.75rem;
     }
 
     &__button {
-      @apply px-2 py-1 text-xs;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
     }
   }
-} 
+}

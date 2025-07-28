@@ -1,13 +1,20 @@
+@use '../../assets/styles/variables' as v;
+
 .side-bar {
   &__overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden transition-opacity duration-300;
+    @apply fixed inset-0 z-20 lg:hidden transition-opacity duration-300;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
   }
 
   &__container {
-    @apply fixed top-0 left-0 z-30 h-full w-64 bg-white border-r border-gray-300 shadow-sm transform transition-transform duration-300 ease-in-out;
+    @apply fixed top-0 left-0 z-30 h-full w-64 transform transition-transform duration-300 ease-in-out;
+    background: v.$notion-bg-sidebar;
+    border-right: 1px solid v.$notion-border-primary;
 
     .dark & {
-      @apply bg-gray-900 border-gray-600;
+      background: v.$notion-dark-bg-sidebar;
+      border-color: v.$notion-dark-border-primary;
     }
   }
 
@@ -20,10 +27,13 @@
   }
 
   &__header {
-    @apply flex items-center h-14 px-4 border-b border-gray-300 bg-gray-50;
+    @apply flex items-center h-14 px-4;
+    background: v.$notion-bg-sidebar;
+    border-bottom: 1px solid v.$notion-border-primary;
 
     .dark & {
-      @apply border-gray-600 bg-gray-800;
+      background: v.$notion-dark-bg-sidebar;
+      border-color: v.$notion-dark-border-primary;
     }
   }
 
@@ -32,23 +42,38 @@
   }
 
   &__logo {
-    @apply w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm;
+    @apply w-6 h-6 rounded-lg flex items-center justify-center;
+    background: v.$notion-accent-blue;
   }
 
   &__title {
-    @apply text-gray-900 font-semibold text-sm truncate;
+    @apply font-semibold text-sm truncate;
+    color: v.$notion-text-primary;
 
     .dark & {
-      @apply text-gray-200;
+      color: v.$notion-dark-text-primary;
     }
   }
 
   &__close-button {
-    @apply lg:hidden ml-2 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors duration-150 flex items-center justify-center h-9 w-9;
+    @apply lg:hidden ml-2 transition-colors duration-150 flex items-center justify-center h-9 w-9;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    color: v.$notion-text-tertiary;
     min-height: 0;
 
+    &:hover {
+      color: v.$notion-text-primary;
+      background: v.$notion-bg-hover;
+    }
+
     .dark & {
-      @apply text-gray-400 hover:text-gray-200 hover:bg-gray-700;
+      color: v.$notion-dark-text-tertiary;
+
+      &:hover {
+        color: v.$notion-dark-text-primary;
+        background: v.$notion-dark-bg-hover;
+      }
     }
   }
 
@@ -61,18 +86,22 @@
   }
 
   &__footer {
-    @apply px-4 py-3 border-t border-gray-300 bg-gray-50;
+    @apply px-4 py-3;
+    background: v.$notion-bg-sidebar;
+    border-top: 1px solid v.$notion-border-primary;
 
     .dark & {
-      @apply border-gray-600 bg-gray-800;
+      background: v.$notion-dark-bg-sidebar;
+      border-color: v.$notion-dark-border-primary;
     }
   }
 
   &__version {
-    @apply text-xs text-gray-500 text-center font-medium;
+    @apply text-xs text-center font-medium;
+    color: v.$notion-text-tertiary;
 
     .dark & {
-      @apply text-gray-400;
+      color: v.$notion-dark-text-tertiary;
     }
   }
 }
@@ -80,6 +109,9 @@
 .side-bar-item {
   &__container {
     @apply flex items-center justify-between text-sm font-normal transition-colors duration-150 cursor-pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    margin: 0.125rem 0;
   }
 
   &__container--nested {
@@ -87,18 +119,32 @@
   }
 
   &__container--active {
-    @apply bg-blue-100 text-blue-800 border-r-2 border-blue-500;
+    background: rgba(46, 170, 220, 0.1);
+    color: v.$notion-accent-blue;
+    border-right: 2px solid v.$notion-accent-blue;
 
     .dark & {
-      @apply bg-blue-900/30 text-blue-300 border-blue-400;
+      background: rgba(46, 170, 220, 0.15);
+      color: v.$notion-accent-blue;
+      border-color: v.$notion-accent-blue;
     }
   }
 
   &__container--inactive {
-    @apply text-gray-800 hover:bg-gray-100 hover:text-gray-900;
+    color: v.$notion-text-primary;
+
+    &:hover {
+      background: v.$notion-bg-hover;
+      color: v.$notion-text-primary;
+    }
 
     .dark & {
-      @apply text-gray-300 hover:bg-gray-700 hover:text-gray-100;
+      color: v.$notion-dark-text-primary;
+
+      &:hover {
+        background: v.$notion-dark-bg-hover;
+        color: v.$notion-dark-text-primary;
+      }
     }
   }
 
@@ -111,18 +157,18 @@
   }
 
   &__icon--active {
-    @apply text-blue-600;
+    color: v.$notion-accent-blue;
 
     .dark & {
-      @apply text-blue-400;
+      color: v.$notion-accent-blue;
     }
   }
 
   &__icon--inactive {
-    @apply text-gray-600;
+    color: v.$notion-text-secondary;
 
     .dark & {
-      @apply text-gray-400;
+      color: v.$notion-dark-text-secondary;
     }
   }
 
@@ -139,31 +185,51 @@
   }
 
   &__expand-button--active {
-    @apply text-blue-600 hover:bg-blue-200;
+    color: v.$notion-accent-blue;
+
+    &:hover {
+      background: rgba(46, 170, 220, 0.1);
+    }
 
     .dark & {
-      @apply text-blue-400 hover:bg-blue-900/30;
+      color: v.$notion-accent-blue;
+
+      &:hover {
+        background: rgba(46, 170, 220, 0.15);
+      }
     }
   }
 
   &__expand-button--inactive {
-    @apply text-gray-500 hover:text-gray-700 hover:bg-gray-200;
+    color: v.$notion-text-tertiary;
+
+    &:hover {
+      color: v.$notion-text-primary;
+      background: v.$notion-bg-hover;
+    }
 
     .dark & {
-      @apply text-gray-400 hover:text-gray-200 hover:bg-gray-700;
+      color: v.$notion-dark-text-tertiary;
+
+      &:hover {
+        color: v.$notion-dark-text-primary;
+        background: v.$notion-dark-bg-hover;
+      }
     }
   }
 
   &__children {
-    @apply mt-1 border-l border-gray-200 ml-3;
+    @apply mt-1 ml-3;
+    border-left: 1px solid v.$notion-border-secondary;
 
     .dark & {
-      @apply border-gray-600;
+      border-color: v.$notion-dark-border-secondary;
     }
   }
 
   &__link,
   &__button {
-    @apply flex items-center justify-between px-3 py-2 w-full;
+    @apply flex items-center justify-between w-full;
+    padding: 0.5rem 0.75rem;
   }
 }

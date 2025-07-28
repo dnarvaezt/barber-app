@@ -1,3 +1,4 @@
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { Icon } from '../icons'
 import { ThemeToggle } from '../theme'
 import './header.scss'
@@ -6,17 +7,42 @@ export interface HeaderProps {
   title: string
   visible?: boolean
   actions?: React.ReactNode
-  onMenuToggle?: () => void
   showMenuButton?: boolean
 }
 
-export const Header = ({
-  title,
-  visible = true,
-  actions,
-  onMenuToggle,
-  showMenuButton = true,
-}: HeaderProps) => {
+export interface HeaderRef {
+  toggleMenu: () => void
+  setTitle: (title: string) => void
+  isMenuOpen: () => boolean
+}
+
+export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
+  const { title, visible = true, actions, showMenuButton = true } = props
+
+  // Estado interno autónomo
+  const [currentTitle, setCurrentTitle] = useState(title)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  // Sincronizar título cuando cambien las props
+  useEffect(() => {
+    setCurrentTitle(title)
+  }, [title])
+
+  function handleMenuToggle() {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  // Exponer métodos a través de ref
+  useImperativeHandle(
+    ref,
+    () => ({
+      toggleMenu: () => handleMenuToggle(),
+      setTitle: (newTitle: string) => setCurrentTitle(newTitle),
+      isMenuOpen: () => isMenuOpen,
+    }),
+    [isMenuOpen]
+  )
+
   if (!visible) {
     return null
   }
@@ -26,9 +52,9 @@ export const Header = ({
       <div className='header__container'>
         <div className='header__content'>
           <div className='header__left-section'>
-            {showMenuButton && onMenuToggle && (
+            {showMenuButton && (
               <button
-                onClick={onMenuToggle}
+                onClick={handleMenuToggle}
                 className='header__menu-button'
                 aria-label='Abrir menú lateral'
               >
@@ -36,7 +62,7 @@ export const Header = ({
               </button>
             )}
             <div className='header__title-container'>
-              <h1 className='header__title'>{title}</h1>
+              <h1 className='header__title'>{currentTitle}</h1>
             </div>
           </div>
 
@@ -48,4 +74,4 @@ export const Header = ({
       </div>
     </header>
   )
-}
+})

@@ -9,6 +9,7 @@ interface SideBarItemProps {
   level?: number
   parentPath?: string
   sideBarState: SideBarState
+  onNavigate?: (path: string) => void
 }
 
 export const SideBarItem = ({
@@ -16,6 +17,7 @@ export const SideBarItem = ({
   level = 0,
   parentPath = '',
   sideBarState,
+  onNavigate,
 }: SideBarItemProps) => {
   const {
     isItemActive,
@@ -52,7 +54,12 @@ export const SideBarItem = ({
       <Link
         to={fullPath}
         className='side-bar-item__link'
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          e.stopPropagation()
+          if (onNavigate && fullPath) {
+            onNavigate(fullPath)
+          }
+        }}
       >
         {renderContentItem()}
       </Link>
@@ -103,6 +110,7 @@ export const SideBarItem = ({
             level={level + 1}
             parentPath={fullPath}
             sideBarState={sideBarState}
+            onNavigate={onNavigate}
           />
         ))}
       </div>

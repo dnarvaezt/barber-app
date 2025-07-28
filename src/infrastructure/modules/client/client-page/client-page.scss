@@ -1,32 +1,49 @@
+@use '../../../assets/styles/variables' as v;
+@use '../../../assets/styles/mixins' as m;
+@use 'sass:color';
+
 .client-page {
-  @apply container mx-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-6 lg:py-8;
+  @include m.notion-padding;
 
   &__content {
     @apply max-w-7xl mx-auto;
   }
 
   &__header {
-    @apply mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4;
+    @apply mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
   }
 
   &__title {
-    @apply text-2xl font-bold text-gray-900 dark:text-white;
+    margin: 0;
+    @include m.notion-heading-2;
   }
 
   &__actions {
-    @apply flex flex-col sm:flex-row gap-3;
+    @apply flex flex-col gap-2 sm:flex-row sm:gap-3;
   }
 
   &__search-section {
-    @apply mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm p-4;
+    @include m.notion-card;
+    margin-bottom: 1rem;
+    padding: 1rem;
+
+    @include m.mobile {
+      padding: 0.75rem;
+    }
   }
 
   &__search-form {
-    @apply flex flex-col sm:flex-row gap-4;
+    @apply flex flex-col gap-3 sm:flex-row sm:gap-4;
   }
 
   &__sort-section {
-    @apply mt-4 pt-4 border-t border-gray-200 dark:border-gray-700;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid v.$notion-border-primary;
+
+    .dark & {
+      border-color: v.$notion-dark-border-primary;
+    }
   }
 
   &__search-input {
@@ -46,7 +63,7 @@
     width: 16px;
     height: 16px;
     border: 2px solid transparent;
-    border-top: 2px solid #3b82f6;
+    border-top: 2px solid v.$notion-accent-blue;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -65,108 +82,326 @@
   }
 
   &__table-container {
-    @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm overflow-hidden;
+    @include m.notion-card;
+    overflow: hidden;
+    padding: 0;
+
+    @include m.mobile {
+      margin: 0 -0.75rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
   }
 
   &__table {
-    @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
+    @apply min-w-full divide-y;
+    border-color: v.$notion-border-primary;
+
+    .dark & {
+      border-color: v.$notion-dark-border-primary;
+    }
   }
 
   &__table-header {
-    @apply bg-gray-50 dark:bg-gray-700;
+    background: v.$notion-bg-secondary;
+
+    .dark & {
+      background: v.$notion-dark-bg-secondary;
+    }
+
+    @include m.mobile {
+      display: none;
+    }
   }
 
   &__table-header-cell {
-    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider;
+    @apply px-4 py-3 text-left text-xs font-medium uppercase tracking-wider;
+    color: v.$notion-text-secondary;
+
+    .dark & {
+      color: v.$notion-dark-text-secondary;
+    }
+
+    @include m.mobile {
+      @apply px-3 py-2;
+    }
   }
 
   &__table-body {
-    @apply bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700;
+    background: v.$notion-bg-card;
+    border-color: v.$notion-border-primary;
+
+    .dark & {
+      background: v.$notion-dark-bg-card;
+      border-color: v.$notion-dark-border-primary;
+    }
   }
 
   &__table-row {
-    @apply hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: v.$notion-bg-hover;
+
+      .dark & {
+        background: v.$notion-dark-bg-hover;
+      }
+    }
+
+    @include m.mobile {
+      @apply block border-b;
+      border-color: v.$notion-border-primary;
+
+      .dark & {
+        border-color: v.$notion-dark-border-primary;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 
   &__table-cell {
-    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100;
+    @apply px-4 py-3 whitespace-nowrap text-sm;
+    color: v.$notion-text-primary;
+
+    .dark & {
+      color: v.$notion-dark-text-primary;
+    }
+
+    @include m.mobile {
+      @apply block px-3 py-2 whitespace-normal;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: v.$notion-text-secondary;
+        margin-right: 0.5rem;
+        min-width: 80px;
+
+        .dark & {
+          color: v.$notion-dark-text-secondary;
+        }
+      }
+    }
   }
 
   &__table-cell--name {
     @apply font-medium;
+
+    @include m.mobile {
+      @apply text-base font-semibold;
+      border-bottom: 1px solid v.$notion-border-primary;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+
+      .dark & {
+        border-color: v.$notion-dark-border-primary;
+      }
+
+      &::before {
+        content: 'Nombre:';
+      }
+    }
   }
 
   &__table-cell--phone {
     @apply font-mono;
+
+    @include m.mobile {
+      &::before {
+        content: 'Teléfono:';
+      }
+    }
   }
 
   &__table-cell--birth-date {
-    @apply text-gray-500 dark:text-gray-400;
+    color: v.$notion-text-secondary;
+
+    .dark & {
+      color: v.$notion-dark-text-secondary;
+    }
+
+    @include m.mobile {
+      &::before {
+        content: 'Nacimiento:';
+      }
+    }
   }
 
   &__table-cell--actions {
     @apply text-right;
+
+    @include m.mobile {
+      @apply text-left justify-start;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid v.$notion-border-primary;
+
+      .dark & {
+        border-color: v.$notion-dark-border-primary;
+      }
+
+      &::before {
+        content: 'Acciones:';
+      }
+    }
   }
 
   &__action-buttons {
-    @apply flex items-center justify-end gap-2;
+    @apply flex items-center gap-2;
+
+    @include m.mobile {
+      @apply flex-wrap;
+      gap: 0.5rem;
+    }
   }
 
   &__action-button {
-    @apply inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200;
+    @include m.notion-button-ghost;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+
+    @include m.mobile {
+      @apply text-xs px-2 py-1;
+    }
   }
 
   &__action-link {
-    @apply inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md transition-colors duration-200 no-underline;
+    @include m.notion-button-ghost;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    text-decoration: none;
+
+    @include m.mobile {
+      @apply text-xs px-2 py-1;
+    }
   }
 
   &__action-link--view {
-    @apply text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300;
+    color: v.$notion-accent-green;
+
+    &:hover {
+      color: v.$notion-accent-green;
+    }
+
+    .dark & {
+      color: v.$notion-accent-green;
+
+      &:hover {
+        color: v.$notion-accent-green;
+      }
+    }
   }
 
   &__action-link--edit {
-    @apply text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+    color: v.$notion-accent-blue;
+
+    &:hover {
+      color: v.$notion-accent-blue;
+    }
+
+    .dark & {
+      color: v.$notion-accent-blue;
+
+      &:hover {
+        color: v.$notion-accent-blue;
+      }
+    }
   }
 
   &__action-button--delete {
-    @apply text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300;
+    color: v.$notion-accent-red;
+
+    &:hover {
+      color: v.$notion-accent-red;
+    }
+
+    .dark & {
+      color: v.$notion-accent-red;
+
+      &:hover {
+        color: v.$notion-accent-red;
+      }
+    }
   }
 
   &__empty-state {
-    @apply text-center py-12;
+    @apply text-center py-8;
+
+    @include m.mobile {
+      @apply py-6;
+    }
   }
 
   &__empty-state-icon {
-    @apply mx-auto h-12 w-12 text-gray-400;
+    @apply mx-auto h-10 w-10;
+    color: v.$notion-text-tertiary;
+
+    .dark & {
+      color: v.$notion-dark-text-tertiary;
+    }
+
+    @include m.mobile {
+      @apply h-8 w-8;
+    }
   }
 
   &__empty-state-text {
-    @apply mt-2 text-sm text-gray-500 dark:text-gray-400;
+    @apply mt-2 text-sm;
+    color: v.$notion-text-secondary;
+
+    .dark & {
+      color: v.$notion-dark-text-secondary;
+    }
   }
 
   &__loading {
-    @apply flex justify-center items-center py-12;
+    @apply flex justify-center items-center py-8;
+
+    @include m.mobile {
+      @apply py-6;
+    }
   }
 
   &__loading-spinner {
-    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+    @apply animate-spin rounded-full h-6 w-6 border-b-2;
+    border-color: v.$notion-border-primary;
+    border-bottom-color: v.$notion-accent-blue;
+
+    .dark & {
+      border-color: v.$notion-dark-border-primary;
+      border-bottom-color: v.$notion-accent-blue;
+    }
   }
 
   // Modal de confirmación de eliminación
   &__delete-modal {
-    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+    @apply fixed inset-0 flex items-center justify-center z-50;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
   }
 
   &__delete-modal-content {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6;
+    @include m.notion-card;
+    max-width: 28rem;
+    width: 100%;
+    margin: 0 1rem;
   }
 
   &__delete-modal-title {
-    @apply text-lg font-semibold text-gray-900 dark:text-white mb-4;
+    @include m.notion-heading-3;
+    margin-bottom: 1rem;
   }
 
   &__delete-modal-message {
-    @apply text-sm text-gray-600 dark:text-gray-300 mb-6;
+    @include m.notion-text-secondary;
+    margin-bottom: 1.5rem;
   }
 
   &__delete-modal-actions {
@@ -174,14 +409,35 @@
   }
 
   &__delete-modal-button {
-    @apply px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+    @include m.notion-button-base;
   }
 
   &__delete-modal-button--cancel {
-    @apply bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+    @include m.notion-button-secondary;
   }
 
   &__delete-modal-button--confirm {
-    @apply bg-red-600 text-white hover:bg-red-700;
+    background: v.$notion-accent-red;
+    color: white;
+    border-color: v.$notion-accent-red;
+
+    &:hover {
+      background: color.adjust(v.$notion-accent-red, $lightness: -5%);
+      border-color: color.adjust(v.$notion-accent-red, $lightness: -5%);
+    }
+  }
+
+  // Pagination responsive
+  .pagination {
+    @include m.mobile {
+      @apply flex-col gap-2;
+    }
+  }
+
+  // Sort controls responsive
+  .sort-controls {
+    @include m.mobile {
+      @apply flex-col gap-2;
+    }
   }
 }

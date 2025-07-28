@@ -1,5 +1,8 @@
+@use '../../assets/styles/variables' as v;
+@use '../../assets/styles/mixins' as m;
+
 .dashboard-page {
-  @apply p-6;
+  @include m.notion-padding;
 
   &__content {
     @apply max-w-6xl mx-auto;
@@ -9,11 +12,12 @@
     @apply text-center mb-8;
 
     .dashboard-page__title {
-      @apply text-3xl font-bold text-gray-900 dark:text-white mb-2;
+      margin-bottom: 0.5rem;
+      @include m.notion-heading-1;
     }
 
     .dashboard-page__subtitle {
-      @apply text-lg text-gray-600 dark:text-gray-400;
+      @include m.notion-text-secondary;
     }
   }
 
@@ -22,26 +26,31 @@
   }
 
   &__stat-card {
-    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center;
+    text-align: center;
+    @include m.notion-card;
 
     h3 {
-      @apply text-lg font-semibold text-gray-900 dark:text-white mb-2;
+      margin-bottom: 0.5rem;
+      @include m.notion-heading-3;
     }
 
     .dashboard-page__stat-number {
-      @apply text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1;
+      color: v.$notion-accent-blue;
+      margin-bottom: 0.25rem;
+      @include m.notion-heading-1;
     }
 
     .dashboard-page__stat-label {
-      @apply text-sm text-gray-600 dark:text-gray-400;
+      @include m.notion-text-secondary;
     }
   }
 
   &__quick-actions {
-    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md;
+    @include m.notion-card;
 
     h2 {
-      @apply text-xl font-semibold text-gray-900 dark:text-white mb-4;
+      margin-bottom: 1rem;
+      @include m.notion-heading-3;
     }
   }
 
@@ -50,6 +59,9 @@
   }
 
   &__action-button {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    @include m.notion-button-primary;
   }
 }

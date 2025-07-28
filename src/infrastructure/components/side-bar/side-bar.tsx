@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Icon } from '../icons'
 import { SideBarItem } from './side-bar-item'
 import { useSideBar } from './side-bar.hook'
@@ -10,12 +10,9 @@ const version = __APP_VERSION__
 
 export interface SidebarProps {
   items: RouteItem[]
-  isOpen?: boolean
   isVisible?: boolean
   title?: string
-  onClose?: () => void
   onNavigate?: (path: string) => void
-  onToggle?: (isOpen: boolean) => void
 }
 
 export interface SidebarRef {
@@ -26,63 +23,47 @@ export interface SidebarRef {
 }
 
 export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
-  const {
-    items,
-    isOpen = false,
-    isVisible = true,
-    title = 'Barber App',
-    onClose,
-    onNavigate,
-    onToggle,
-  } = props
+  const { items, isVisible = true, title = 'Barber App', onNavigate } = props
 
-  const internalIsOpen = useRef(isOpen)
+  // Estado interno autónomo
+  const [isOpen, setIsOpen] = useState(false)
 
   function handleClose() {
-    internalIsOpen.current = false
-    onToggle?.(false)
-    onClose?.()
+    setIsOpen(false)
+  }
+
+  function handleToggle() {
+    setIsOpen(!isOpen)
+  }
+
+  function handleNavigate(path: string) {
+    onNavigate?.(path)
+    // Cerrar automáticamente en móvil
+    if (window.innerWidth < 1024) {
+      handleClose()
+    }
   }
 
   const sideBarState = useSideBar({
     sidebarItems: items,
     onClose: handleClose,
-    onNavigate,
+    onNavigate: handleNavigate,
   })
 
   // Exponer métodos a través de ref
   useImperativeHandle(
     ref,
     () => ({
-      open: () => {
-        internalIsOpen.current = true
-        onToggle?.(true)
-      },
-      close: () => {
-        internalIsOpen.current = false
-        onToggle?.(false)
-        onClose?.()
-      },
-      toggle: () => {
-        const newState = !internalIsOpen.current
-        internalIsOpen.current = newState
-        onToggle?.(newState)
-        if (!newState) {
-          onClose?.()
-        }
-      },
-      isOpen: () => internalIsOpen.current,
+      open: () => setIsOpen(true),
+      close: () => setIsOpen(false),
+      toggle: () => handleToggle(),
+      isOpen: () => isOpen,
     }),
-    [onClose, onToggle]
+    [isOpen]
   )
 
   function handleOverlayClick() {
     handleClose()
-  }
-
-  // Sincronizar estado interno con props
-  if (isOpen !== internalIsOpen.current) {
-    internalIsOpen.current = isOpen
   }
 
   if (!isVisible) {
@@ -92,14 +73,14 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
   return (
     <>
       {/* Overlay para móvil */}
-      {internalIsOpen.current && (
+      {isOpen && (
         <div className='side-bar__overlay' onClick={handleOverlayClick} />
       )}
 
       <aside
         className={`
           side-bar__container
-          ${internalIsOpen.current ? 'side-bar__container--open' : 'side-bar__container--closed'}
+          ${isOpen ? 'side-bar__container--open' : 'side-bar__container--closed'}
         `}
       >
         {/* Header del sidebar */}
@@ -128,6 +109,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
                 key={item.id}
                 item={item}
                 sideBarState={sideBarState}
+                onNavigate={handleNavigate}
               />
             ))}
           </nav>

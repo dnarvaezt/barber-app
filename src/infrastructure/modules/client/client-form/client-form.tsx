@@ -1,30 +1,24 @@
 import { useEffect } from 'react'
-import { useLayout } from '../../../components'
 import { useClientForm } from './client-form.hook'
 import './client-form.scss'
 
-export const ClientFormPage = () => {
-  const { headerCommands } = useLayout()
+export const ClientForm = () => {
   const {
     loading,
     isValidating,
     isValidClient,
-    isSuccess,
-    formData,
-    errors,
+    client,
     isEditing,
+    formData,
     handleSubmit,
-    handleInputChange,
     handleCancel,
+    handleInputChange,
   } = useClientForm()
 
   useEffect(() => {
-    headerCommands.setTitle(isEditing ? 'Editar Cliente' : 'Nuevo Cliente')
-    headerCommands.setActions(undefined)
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands, isEditing])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   // Mostrar loading mientras valida el clientId
   if (isValidating) {
@@ -61,10 +55,16 @@ export const ClientFormPage = () => {
   return (
     <div className='client-form-page'>
       <div className='client-form-page__content'>
+        <div className='client-form-page__header'>
+          <h1 className='client-form-page__title'>
+            {isEditing ? 'Editar Cliente' : 'Nuevo Cliente'}
+          </h1>
+        </div>
+
         <div className='client-form-page__form-container'>
           <form onSubmit={handleSubmit} className='client-form-page__form'>
             {/* Mensaje de éxito */}
-            {isSuccess && (
+            {client && (
               <div className='client-form-page__success-message'>
                 <div className='client-form-page__success-icon'>✅</div>
                 <p>
@@ -72,23 +72,13 @@ export const ClientFormPage = () => {
                     ? '¡Cliente actualizado exitosamente!'
                     : '¡Cliente creado exitosamente!'}
                 </p>
-                <p className='client-form-page__success-subtitle'>
-                  Redirigiendo al detalle del cliente...
-                </p>
               </div>
             )}
 
-            {/* Error general */}
-            {errors.general && (
-              <div className='client-form-page__error-message'>
-                {errors.general}
-              </div>
-            )}
-
-            {/* Nombre */}
-            <div className='client-form-page__form-group'>
+            {/* Campo Nombre */}
+            <div className='client-form-page__field'>
               <label htmlFor='name' className='client-form-page__label'>
-                Nombre Completo *
+                Nombre *
               </label>
               <input
                 type='text'
@@ -96,20 +86,17 @@ export const ClientFormPage = () => {
                 value={formData.name}
                 onChange={e => handleInputChange('name', e.target.value)}
                 className={`client-form-page__input ${
-                  errors.name ? 'client-form-page__input--error' : ''
+                  formData.name ? 'client-form-page__input--filled' : ''
                 }`}
-                placeholder='Ingrese el nombre completo'
-                disabled={loading}
+                placeholder='Ingresa el nombre del cliente'
+                required
               />
-              {errors.name && (
-                <p className='client-form-page__error-text'>{errors.name}</p>
-              )}
             </div>
 
-            {/* Teléfono */}
-            <div className='client-form-page__form-group'>
+            {/* Campo Teléfono */}
+            <div className='client-form-page__field'>
               <label htmlFor='phoneNumber' className='client-form-page__label'>
-                Número de Teléfono *
+                Teléfono *
               </label>
               <input
                 type='tel'
@@ -117,25 +104,17 @@ export const ClientFormPage = () => {
                 value={formData.phoneNumber}
                 onChange={e => handleInputChange('phoneNumber', e.target.value)}
                 className={`client-form-page__input ${
-                  errors.phoneNumber ? 'client-form-page__input--error' : ''
+                  formData.phoneNumber ? 'client-form-page__input--filled' : ''
                 }`}
-                placeholder='+573001234567'
-                disabled={loading}
+                placeholder='Ingresa el número de teléfono'
+                required
               />
-              {errors.phoneNumber && (
-                <p className='client-form-page__error-text'>
-                  {errors.phoneNumber}
-                </p>
-              )}
-              <p className='client-form-page__help-text'>
-                Formato: +57 seguido de 10 dígitos
-              </p>
             </div>
 
-            {/* Fecha de Cumpleaños */}
-            <div className='client-form-page__form-group'>
+            {/* Campo Fecha de Nacimiento */}
+            <div className='client-form-page__field'>
               <label htmlFor='birthDate' className='client-form-page__label'>
-                Fecha de Cumpleaños *
+                Fecha de Nacimiento *
               </label>
               <input
                 type='date'
@@ -143,15 +122,10 @@ export const ClientFormPage = () => {
                 value={formData.birthDate}
                 onChange={e => handleInputChange('birthDate', e.target.value)}
                 className={`client-form-page__input ${
-                  errors.birthDate ? 'client-form-page__input--error' : ''
+                  formData.birthDate ? 'client-form-page__input--filled' : ''
                 }`}
-                disabled={loading}
+                required
               />
-              {errors.birthDate && (
-                <p className='client-form-page__error-text'>
-                  {errors.birthDate}
-                </p>
-              )}
             </div>
 
             {/* Botones de acción */}
@@ -159,7 +133,6 @@ export const ClientFormPage = () => {
               <button
                 type='button'
                 onClick={handleCancel}
-                disabled={loading}
                 className='client-form-page__button client-form-page__button--secondary'
               >
                 Cancelar

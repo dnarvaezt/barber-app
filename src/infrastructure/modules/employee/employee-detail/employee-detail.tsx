@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
-import { useLayout } from '../../../components'
 import { useEmployeeDetail } from './employee-detail.hook'
 import './employee-detail.scss'
 
 export const EmployeeDetail = () => {
-  const { headerCommands } = useLayout()
   const {
     loading,
     isValidating,
@@ -20,27 +18,9 @@ export const EmployeeDetail = () => {
   } = useEmployeeDetail()
 
   useEffect(() => {
-    headerCommands.setTitle('Detalle del Empleado')
-    headerCommands.setActions(
-      <div className='employee-detail-page__header-actions'>
-        <button
-          onClick={handleBack}
-          className='employee-detail-page__button employee-detail-page__button--secondary'
-        >
-          ← Volver
-        </button>
-        <button
-          onClick={handleEdit}
-          className='employee-detail-page__button employee-detail-page__button--primary'
-        >
-          ✏️ Editar
-        </button>
-      </div>
-    )
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands, handleBack, handleEdit])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   // Mostrar loading mientras valida el employeeId
   if (isValidating) {

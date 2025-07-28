@@ -1,17 +1,11 @@
 import { useEffect } from 'react'
-import { useLayout } from '../../components'
 import './dashboard.scss'
 
 export const DashboardPage = () => {
-  const { headerCommands } = useLayout()
-
   useEffect(() => {
-    headerCommands.setTitle('Dashboard - Barber App')
-    headerCommands.setActions(undefined)
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   return (
     <div className='dashboard-page'>

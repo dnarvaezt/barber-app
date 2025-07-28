@@ -1,22 +1,30 @@
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Footer } from '../footer'
 import { Header } from '../header'
-import { Sidebar } from '../side-bar'
-import { useLayout, useLayoutVisibility } from './layout.hook'
+import { Sidebar, type SidebarRef } from '../side-bar'
 import './layout.scss'
 
 // ============================================================================
-// LAYOUT COMPONENT - Componente principal desacoplado
+// LAYOUT COMPONENT - Componente autónomo y desacoplado
 // ============================================================================
 
 interface LayoutProps {
   children: React.ReactNode
+  sidebarItems?: any[]
 }
 
-export const Layout = ({ children }: LayoutProps) => {
+export const Layout = ({ children, sidebarItems = [] }: LayoutProps) => {
   const navigate = useNavigate()
-  const { sidebar, sidebarCommands } = useLayout()
-  const { headerVisible, sidebarVisible, sidebarOpen } = useLayoutVisibility()
+  const headerRef = useRef<any>(null)
+  const sidebarRef = useRef<SidebarRef>(null)
+  const [headerTitle] = useState('Barber App')
+
+  // Coordinación entre componentes autónomos
+  useEffect(() => {
+    // Los componentes son autónomos y se comunican a través de refs
+    // El header puede controlar el sidebar cuando sea necesario
+  }, [])
 
   const handleNavigate = (path: string) => {
     navigate(path)
@@ -24,27 +32,21 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className='layout'>
-      {sidebarVisible && (
-        <Sidebar
-          items={sidebar.items} // Obtener items del store
-          isOpen={sidebarOpen}
-          isVisible={sidebarVisible}
-          onClose={sidebarCommands.close}
-          onToggle={sidebarCommands.toggle}
-          onNavigate={handleNavigate}
-        />
-      )}
+      <Sidebar
+        ref={sidebarRef}
+        items={sidebarItems}
+        isVisible={true}
+        onNavigate={handleNavigate}
+      />
 
       <div className='layout__container'>
-        {headerVisible && (
-          <Header
-            title='' // El título se maneja internamente en el store
-            visible={headerVisible}
-            actions={undefined} // Las acciones se manejan internamente
-            onMenuToggle={sidebarCommands.toggle}
-            showMenuButton={sidebarVisible}
-          />
-        )}
+        <Header
+          ref={headerRef}
+          title={headerTitle}
+          visible={true}
+          actions={undefined}
+          showMenuButton={true}
+        />
         <main className='layout__main'>{children}</main>
         <Footer />
       </div>

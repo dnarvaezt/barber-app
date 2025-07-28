@@ -34,6 +34,17 @@ export const useRoutes = () => {
     return routesService.findRouteById(routeId)
   }
 
+  const buildRoutePath = (routeId: string): string | undefined => {
+    return routesService.buildRoutePath(routeId)
+  }
+
+  const buildRoutePathWithParams = (
+    routeId: string,
+    params: Record<string, string>
+  ): string => {
+    return routesService.buildRoutePathWithParams(routeId, params)
+  }
+
   return {
     routes: appRoutes,
     getPages,
@@ -43,5 +54,7 @@ export const useRoutes = () => {
     routeExists,
     getRoutePathById,
     findRouteById,
+    buildRoutePath,
+    buildRoutePathWithParams,
   }
 }

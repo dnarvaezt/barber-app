@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
-import { useLayout } from '../../../components'
 import { useClientDetail } from './client-detail.hook'
 import './client-detail.scss'
 
-export const ClientDetailPage = () => {
-  const { headerCommands } = useLayout()
+export const ClientDetail = () => {
   const {
     loading,
     isValidating,
@@ -20,27 +18,9 @@ export const ClientDetailPage = () => {
   } = useClientDetail()
 
   useEffect(() => {
-    headerCommands.setTitle('Detalle del Cliente')
-    headerCommands.setActions(
-      <div className='client-detail-page__header-actions'>
-        <button
-          onClick={handleBack}
-          className='client-detail-page__button client-detail-page__button--secondary'
-        >
-          ← Volver
-        </button>
-        <button
-          onClick={handleEdit}
-          className='client-detail-page__button client-detail-page__button--primary'
-        >
-          ✏️ Editar
-        </button>
-      </div>
-    )
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands, handleBack, handleEdit])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   // Mostrar loading mientras valida el clientId
   if (isValidating) {

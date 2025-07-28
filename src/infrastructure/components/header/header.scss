@@ -1,8 +1,14 @@
+@use '../../assets/styles/variables' as v;
+
 .header {
-  @apply bg-bg-primary border-b border-border-primary shadow-sm sticky top-0 z-30;
+  @apply sticky top-0 z-30;
+  background: v.$notion-bg-primary;
+  border-bottom: 1px solid v.$notion-border-primary;
+  backdrop-filter: blur(8px);
 
   .dark & {
-    @apply bg-dark-bg-primary border-dark-border-primary;
+    background: v.$notion-dark-bg-primary;
+    border-color: v.$notion-dark-border-primary;
   }
 
   &__container {
@@ -18,10 +24,23 @@
   }
 
   &__menu-button {
-    @apply lg:hidden p-2 rounded-md text-text-secondary hover:text-text-primary hover:bg-bg-secondary mr-2 sm:mr-3 transition-colors duration-200 cursor__area cursor__area--pointer;
+    @apply lg:hidden mr-2 sm:mr-3 transition-colors duration-200 cursor-pointer;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    color: v.$notion-text-secondary;
+
+    &:hover {
+      color: v.$notion-text-primary;
+      background: v.$notion-bg-hover;
+    }
 
     .dark & {
-      @apply text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-secondary;
+      color: v.$notion-dark-text-secondary;
+
+      &:hover {
+        color: v.$notion-dark-text-primary;
+        background: v.$notion-dark-bg-hover;
+      }
     }
   }
 
@@ -30,10 +49,11 @@
   }
 
   &__title {
-    @apply text-text-primary text-lg font-semibold tracking-tight;
+    @apply text-lg font-semibold tracking-tight;
+    color: v.$notion-text-primary;
 
     .dark & {
-      @apply text-dark-text-primary;
+      color: v.$notion-dark-text-primary;
     }
   }
 

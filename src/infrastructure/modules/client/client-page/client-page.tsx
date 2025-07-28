@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Pagination, SortControls, useLayout } from '../../../components'
-import { useSearchInput } from '../../../hooks'
+import { Pagination, SortControls } from '../../../components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
 
 export const ClientPage = () => {
   const navigate = useNavigate()
-  const { headerCommands } = useLayout()
-  const { getRoutePathById } = useRoutes()
+  const { buildRoutePathWithParams } = useRoutes()
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  )
   const {
     clients,
     loading,
@@ -18,7 +19,6 @@ export const ClientPage = () => {
     searchTerm,
     sortBy,
     sortOrder,
-
     handleSearch,
     clearFilters,
     handlePageChange,
@@ -30,49 +30,16 @@ export const ClientPage = () => {
     getMonthName,
   } = useClientPage()
 
-  // Hook para manejar la búsqueda con debounce y eventos de teclado
-  const searchInput = useSearchInput({
-    onSearch: handleSearch,
-    debounceMs: 300,
-    initialValue: searchTerm,
-  })
-
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
-    null
-  )
-
-  // Monitorear cambios en el estado del modal
   useEffect(() => {
-    console.log('🔍 Modal state changed:', showDeleteConfirm)
-  }, [showDeleteConfirm])
-
-  useEffect(() => {
-    headerCommands.setTitle('Gestión de Clientes')
-    headerCommands.setActions(
-      <button
-        onClick={() => {
-          const newClientPath = getRoutePathById(RouteIds.CLIENT_FORM_NEW)
-          if (newClientPath) {
-            navigate(newClientPath)
-          }
-        }}
-        className='client-page__action-button client-page__action-button--edit'
-      >
-        ➕ Nuevo Cliente
-      </button>
-    )
-
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands, navigate, getRoutePathById])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   const handleDeleteClick = (clientId: string) => {
-    console.log('🗑️ Delete button clicked for client:', clientId)
     setShowDeleteConfirm(clientId)
   }
 
-  const handleDeleteConfirm = async (clientId: string) => {
+  const handleConfirmDelete = async (clientId: string) => {
     try {
       console.log('🗑️ Attempting to delete client:', clientId)
       await deleteClient(clientId)
@@ -80,31 +47,29 @@ export const ClientPage = () => {
       setShowDeleteConfirm(null)
     } catch (error) {
       console.error('❌ Error deleting client:', error)
-      alert(`Error al eliminar cliente: ${error}`)
+      // Aquí podrías mostrar un mensaje de error al usuario
     }
   }
 
-  const handleDeleteCancel = () => {
+  const handleCancelDelete = () => {
     setShowDeleteConfirm(null)
   }
 
-  // Obtener rutas dinámicas
-  const getClientDetailPath = (clientId: string) => {
-    return (
-      getRoutePathById(RouteIds.CLIENT_DETAIL)?.replace(
-        ':clientId',
-        clientId
-      ) || '#'
-    )
-  }
+  // Función para calcular la edad
+  const getAge = (birthDate: Date) => {
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
 
-  const getClientEditPath = (clientId: string) => {
-    return (
-      getRoutePathById(RouteIds.CLIENT_FORM_EDIT)?.replace(
-        ':clientId',
-        clientId
-      ) || '#'
-    )
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--
+    }
+
+    return age
   }
 
   if (loading) {
@@ -113,6 +78,7 @@ export const ClientPage = () => {
         <div className='client-page__content'>
           <div className='client-page__loading'>
             <div className='client-page__loading-spinner'></div>
+            <p>Cargando clientes...</p>
           </div>
         </div>
       </div>
@@ -124,7 +90,15 @@ export const ClientPage = () => {
       <div className='client-page'>
         <div className='client-page__content'>
           <div className='client-page__error'>
-            <p className='client-page__error-message'>Error: {error}</p>
+            <div className='client-page__error-icon'>⚠️</div>
+            <h3 className='client-page__error-title'>Error</h3>
+            <p className='client-page__error-message'>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className='client-page__button client-page__button--primary'
+            >
+              Reintentar
+            </button>
           </div>
         </div>
       </div>
@@ -134,29 +108,42 @@ export const ClientPage = () => {
   return (
     <div className='client-page'>
       <div className='client-page__content'>
-        {/* Sección de búsqueda y filtros */}
-        <div className='client-page__search-section'>
-          <div className='client-page__search-form'>
-            <div className='client-page__search-input'>
-              <input
-                type='text'
-                placeholder='Buscar por nombre o teléfono... (Enter para buscar, Esc para limpiar)'
-                value={searchInput.searchValue}
-                onChange={e => searchInput.handleInputChange(e.target.value)}
-                onKeyDown={searchInput.handleKeyDown}
-                className='w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-              />
-              {searchInput.isSearching && (
-                <div className='client-page__search-loading'>
-                  <div className='client-page__search-loading-spinner'></div>
-                </div>
-              )}
-            </div>
-
-            {searchInput.searchValue && (
+        {/* Header de la página */}
+        <div className='client-page__header'>
+          <div className='client-page__header-content'>
+            <h1 className='client-page__title'>Gestión de Clientes</h1>
+            <div className='client-page__header-actions'>
               <button
                 onClick={() => {
-                  searchInput.clearSearch()
+                  const newClientPath = buildRoutePathWithParams(
+                    RouteIds.CLIENT_FORM_NEW,
+                    {}
+                  )
+                  if (newClientPath) {
+                    navigate(newClientPath)
+                  }
+                }}
+                className='client-page__action-button client-page__action-button--edit'
+              >
+                ➕ Nuevo Cliente
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros y búsqueda */}
+        <div className='client-page__filters'>
+          <div className='client-page__search-section'>
+            <input
+              type='text'
+              placeholder='Buscar clientes...'
+              value={searchTerm}
+              onChange={e => handleSearch(e.target.value)}
+              className='client-page__search-input'
+            />
+            {searchTerm && (
+              <button
+                onClick={() => {
                   clearFilters()
                 }}
                 className='px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
@@ -166,7 +153,6 @@ export const ClientPage = () => {
             )}
           </div>
 
-          {/* Controles de ordenamiento */}
           <div className='client-page__sort-section'>
             <SortControls
               currentSortBy={sortBy}
@@ -177,47 +163,57 @@ export const ClientPage = () => {
           </div>
         </div>
 
-        {/* Tabla de clientes */}
-        <div className='client-page__table-container'>
+        {/* Lista de clientes */}
+        <div className='client-page__list'>
           {clients.length === 0 ? (
-            <div className='client-page__empty-state'>
-              <div className='client-page__empty-state-icon'>
-                <svg fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-                  />
-                </svg>
-              </div>
-              <p className='client-page__empty-state-text'>
-                {searchInput.searchValue
-                  ? 'No se encontraron clientes con los filtros aplicados'
-                  : 'No hay clientes registrados'}
+            <div className='client-page__empty'>
+              <div className='client-page__empty-icon'>👥</div>
+              <h3 className='client-page__empty-title'>No hay clientes</h3>
+              <p className='client-page__empty-message'>
+                {searchTerm
+                  ? 'No se encontraron clientes con esa búsqueda.'
+                  : 'Aún no hay clientes registrados.'}
               </p>
+              {!searchTerm && (
+                <button
+                  onClick={() => {
+                    const newClientPath = buildRoutePathWithParams(
+                      RouteIds.CLIENT_FORM_NEW,
+                      {}
+                    )
+                    if (newClientPath) {
+                      navigate(newClientPath)
+                    }
+                  }}
+                  className='client-page__button client-page__button--primary'
+                >
+                  ➕ Agregar Primer Cliente
+                </button>
+              )}
             </div>
           ) : (
-            <>
+            <div className='client-page__table-container'>
               <table className='client-page__table'>
                 <thead className='client-page__table-header'>
                   <tr>
-                    <th className='client-page__table-header-cell'>Nombre</th>
-                    <th className='client-page__table-header-cell'>Teléfono</th>
-                    <th className='client-page__table-header-cell'>
-                      Fecha de Nacimiento
-                    </th>
-                    <th className='client-page__table-header-cell'>Edad</th>
-                    <th className='client-page__table-header-cell'>
-                      Mes de Cumpleaños
-                    </th>
-                    <th className='client-page__table-header-cell'>Acciones</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Mes de Nacimiento</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody className='client-page__table-body'>
                   {clients.map(client => (
                     <tr key={client.id} className='client-page__table-row'>
-                      <td className='client-page__table-cell'>{client.name}</td>
+                      <td className='client-page__table-cell'>
+                        <div className='client-page__client-info'>
+                          <span className='client-page__client-name'>
+                            {client.name}
+                          </span>
+                        </div>
+                      </td>
                       <td className='client-page__table-cell'>
                         {formatPhone(client.phoneNumber)}
                       </td>
@@ -225,25 +221,31 @@ export const ClientPage = () => {
                         {formatDate(client.birthDate)}
                       </td>
                       <td className='client-page__table-cell'>
-                        {Math.floor(
-                          (Date.now() - client.birthDate.getTime()) /
-                            (1000 * 60 * 60 * 24 * 365.25)
-                        )}{' '}
-                        años
+                        {getAge(client.birthDate)}
                       </td>
                       <td className='client-page__table-cell'>
-                        {getMonthName(client.birthDate.getMonth() + 1)}
+                        {getMonthName(new Date(client.birthDate).getMonth())}
                       </td>
                       <td className='client-page__table-cell'>
-                        <div className='client-page__table-actions'>
+                        <div className='client-page__actions'>
                           <Link
-                            to={getClientDetailPath(client.id)}
+                            to={buildRoutePathWithParams(
+                              RouteIds.CLIENT_DETAIL,
+                              {
+                                clientId: client.id,
+                              }
+                            )}
                             className='client-page__action-button client-page__action-button--view'
                           >
                             👁️ Ver
                           </Link>
                           <Link
-                            to={getClientEditPath(client.id)}
+                            to={buildRoutePathWithParams(
+                              RouteIds.CLIENT_FORM_EDIT,
+                              {
+                                clientId: client.id,
+                              }
+                            )}
                             className='client-page__action-button client-page__action-button--edit'
                           >
                             ✏️ Editar
@@ -260,40 +262,40 @@ export const ClientPage = () => {
                   ))}
                 </tbody>
               </table>
-
-              {/* Componente de paginación */}
-              <Pagination
-                meta={meta}
-                onPageChange={handlePageChange}
-                onLimitChange={handleLimitChange}
-                showLimitSelector={true}
-                className='client-page__pagination'
-              />
-            </>
+            </div>
           )}
         </div>
 
+        {/* Componente de paginación */}
+        <Pagination
+          meta={meta}
+          onPageChange={handlePageChange}
+          onLimitChange={handleLimitChange}
+          showLimitSelector={true}
+          className='client-page__pagination'
+        />
+
         {/* Modal de confirmación de eliminación */}
         {showDeleteConfirm && (
-          <div className='client-page__delete-modal'>
-            <div className='client-page__delete-modal-content'>
-              <h3 className='client-page__delete-modal-title'>
-                Confirmar eliminación
-              </h3>
-              <p className='client-page__delete-modal-message'>
-                ¿Estás seguro de que quieres eliminar este cliente? Esta acción
-                no se puede deshacer.
-              </p>
-              <div className='client-page__delete-modal-actions'>
+          <div className='client-page__modal-overlay'>
+            <div className='client-page__modal'>
+              <div className='client-page__modal-header'>
+                <h3>Confirmar Eliminación</h3>
+              </div>
+              <div className='client-page__modal-body'>
+                <p>¿Estás seguro de que quieres eliminar este cliente?</p>
+                <p>Esta acción no se puede deshacer.</p>
+              </div>
+              <div className='client-page__modal-actions'>
                 <button
-                  onClick={handleDeleteCancel}
-                  className='client-page__delete-modal-button client-page__delete-modal-button--cancel'
+                  onClick={handleCancelDelete}
+                  className='client-page__button client-page__button--secondary'
                 >
                   Cancelar
                 </button>
                 <button
-                  onClick={() => handleDeleteConfirm(showDeleteConfirm)}
-                  className='client-page__delete-modal-button client-page__delete-modal-button--confirm'
+                  onClick={() => handleConfirmDelete(showDeleteConfirm)}
+                  className='client-page__button client-page__button--danger'
                 >
                   Eliminar
                 </button>

@@ -1,21 +1,16 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLayout } from '../../components'
 import { RouteIds, useRoutes } from '../../routes'
 import './not-found.scss'
 
 export const NotFoundPage = () => {
   const navigate = useNavigate()
-  const { headerCommands } = useLayout()
   const { getRoutePathById } = useRoutes()
 
   useEffect(() => {
-    headerCommands.setTitle('Página No Encontrada')
-    headerCommands.setActions(undefined)
-    return () => {
-      headerCommands.setActions(undefined)
-    }
-  }, [headerCommands])
+    // El componente es autónomo, no necesita configurar el header
+    // El header maneja su propio estado internamente
+  }, [])
 
   return (
     <div className='not-found-page'>

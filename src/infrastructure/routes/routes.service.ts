@@ -162,4 +162,35 @@ export class RoutesService {
 
     return undefined
   }
+
+  /**
+   * Construye el path completo de una ruta por su ID
+   */
+  buildRoutePath(routeId: string): string | undefined {
+    return this.getRoutePathById(routeId)
+  }
+
+  /**
+   * Construye el path completo de una ruta por su ID, reemplazando parámetros dinámicos
+   */
+  buildRoutePathWithParams(
+    routeId: string,
+    params: Record<string, string>
+  ): string {
+    const result = this.findRouteById(routeId)
+    if (!result) {
+      // Si no encuentra la ruta, retorna la ruta de 404
+      const notFoundRoute = this.findRouteById('not-found')
+      return notFoundRoute?.fullPath || '/404'
+    }
+
+    let path = result.fullPath
+
+    // Reemplazar parámetros dinámicos
+    for (const [key, value] of Object.entries(params)) {
+      path = path.replace(`:${key}`, value)
+    }
+
+    return path
+  }
 }

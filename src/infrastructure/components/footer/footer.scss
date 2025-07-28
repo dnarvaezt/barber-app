@@ -1,5 +1,13 @@
+@use '../../assets/styles/variables' as v;
+
 .footer {
-  @apply bg-white border-t border-gray-300 shadow-sm dark:bg-gray-900 dark:border-gray-600;
+  background: v.$notion-bg-primary;
+  border-top: 1px solid v.$notion-border-primary;
+
+  .dark & {
+    background: v.$notion-dark-bg-primary;
+    border-color: v.$notion-dark-border-primary;
+  }
 
   &__container {
     @apply max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6;
@@ -10,11 +18,21 @@
   }
 
   &__brand {
-    @apply text-gray-600 text-sm font-medium dark:text-gray-400;
+    @apply text-sm font-medium;
+    color: v.$notion-text-secondary;
+
+    .dark & {
+      color: v.$notion-dark-text-secondary;
+    }
   }
 
   &__version {
-    @apply ml-2 text-gray-500 dark:text-gray-500;
+    @apply ml-2;
+    color: v.$notion-text-tertiary;
+
+    .dark & {
+      color: v.$notion-dark-text-tertiary;
+    }
   }
 
   &__links {
@@ -22,8 +40,21 @@
   }
 
   &__link {
-    @apply flex items-center text-gray-600 hover:text-gray-800 transition-colors duration-200 dark:text-gray-400 dark:hover:text-gray-200;
+    @apply flex items-center transition-colors duration-200;
+    color: v.$notion-text-secondary;
     cursor: var(--cursor-pointer);
+
+    &:hover {
+      color: v.$notion-text-primary;
+    }
+
+    .dark & {
+      color: v.$notion-dark-text-secondary;
+
+      &:hover {
+        color: v.$notion-dark-text-primary;
+      }
+    }
   }
 
   &__link-icon {

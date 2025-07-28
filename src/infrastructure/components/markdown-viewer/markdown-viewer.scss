@@ -1,3 +1,6 @@
+@use '../../assets/styles/variables' as v;
+@use '../../assets/styles/mixins' as m;
+@use 'sass:color';
 @use 'github-markdown-css';
 @use 'highlight.js/styles/atom-one-dark.css';
 
@@ -9,11 +12,11 @@
   }
 
   &__content {
-    @apply p-4 sm:p-6 lg:p-8;
+    @include m.notion-padding;
   }
 
   &__loading {
-    @apply bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-6 dark:bg-gray-800 dark:border-gray-600;
+    @include m.notion-card;
   }
 
   &__loading-content {
@@ -21,15 +24,31 @@
   }
 
   &__spinner {
-    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+    @apply animate-spin rounded-full h-8 w-8 border-b-2;
+    border-color: v.$notion-border-primary;
+    border-bottom-color: v.$notion-accent-blue;
+
+    .dark & {
+      border-color: v.$notion-dark-border-primary;
+      border-bottom-color: v.$notion-accent-blue;
+    }
   }
 
   &__loading-text {
-    @apply ml-3 text-gray-600 dark:text-gray-400;
+    @include m.notion-text-secondary;
+    margin-left: 0.75rem;
   }
 
   &__error {
-    @apply bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 dark:bg-red-900/20 dark:border-red-800;
+    @apply p-4 sm:p-6 rounded-lg;
+    background: rgba(255, 115, 105, 0.1);
+    border: 1px solid rgba(255, 115, 105, 0.2);
+    color: v.$notion-accent-red;
+
+    .dark & {
+      background: rgba(255, 115, 105, 0.15);
+      border-color: rgba(255, 115, 105, 0.3);
+    }
   }
 
   &__error-content {
@@ -41,7 +60,8 @@
   }
 
   &__error-icon-svg {
-    @apply h-5 w-5 text-red-400;
+    @apply h-5 w-5;
+    color: v.$notion-accent-red;
   }
 
   &__error-message {
@@ -49,11 +69,21 @@
   }
 
   &__error-title {
-    @apply text-sm font-medium text-red-800 dark:text-red-200;
+    @apply text-sm font-medium;
+    color: v.$notion-accent-red;
+
+    .dark & {
+      color: v.$notion-accent-red;
+    }
   }
 
   &__error-description {
-    @apply mt-2 text-sm text-red-700 dark:text-red-300;
+    @apply mt-2 text-sm;
+    color: v.$notion-accent-red;
+
+    .dark & {
+      color: v.$notion-accent-red;
+    }
   }
 
   &__markdown-body {
@@ -86,21 +116,45 @@
 
   .copy-button {
     @apply absolute top-2 right-2 p-2 rounded-md transition-all duration-200 opacity-0;
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800;
-    @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-gray-100;
-    @apply border border-gray-200 dark:border-gray-600;
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-    @apply dark:focus:ring-offset-gray-900;
+    background: v.$notion-bg-secondary;
+    color: v.$notion-text-secondary;
+    border: 1px solid v.$notion-border-primary;
+
+    &:hover {
+      background: v.$notion-bg-hover;
+      color: v.$notion-text-primary;
+      border-color: v.$notion-border-secondary;
+    }
+
+    .dark & {
+      background: v.$notion-dark-bg-secondary;
+      color: v.$notion-dark-text-secondary;
+      border-color: v.$notion-dark-border-primary;
+
+      &:hover {
+        background: v.$notion-dark-bg-hover;
+        color: v.$notion-dark-text-primary;
+        border-color: v.$notion-dark-border-secondary;
+      }
+    }
 
     .copy-icon {
       @apply w-4 h-4;
     }
 
     &.copied {
-      @apply bg-green-100 text-green-700 border-green-300;
-      @apply dark:bg-green-900/30 dark:text-green-400 dark:border-green-600;
+      background: rgba(76, 183, 130, 0.1);
+      color: v.$notion-accent-green;
+      border-color: v.$notion-accent-green;
+
+      .dark & {
+        background: rgba(76, 183, 130, 0.15);
+        color: v.$notion-accent-green;
+        border-color: v.$notion-accent-green;
+      }
     }
   }
+
   .code-block-wrapper {
     @apply relative;
 
@@ -381,8 +435,8 @@
   max-width: 980px;
   margin: 0 auto;
   padding: 1rem;
-  color: #24292f;
-  background-color: #ffffff;
+  color: v.$notion-text-primary;
+  background-color: v.$notion-bg-primary;
 
   // Responsive padding para mobile
   @media (min-width: 640px) {
@@ -399,19 +453,19 @@
 
   // Ajustar colores de enlaces en modo light
   a {
-    color: #0969da;
+    color: v.$notion-accent-blue;
 
     &:hover {
-      color: #1a7f37;
+      color: color.adjust(v.$notion-accent-blue, $lightness: -10%);
     }
   }
 
   // Ajustar colores de código inline en modo light
   code {
-    background-color: rgba(175, 184, 193, 0.2);
-    color: #24292f;
+    background-color: v.$notion-bg-tertiary;
+    color: v.$notion-text-primary;
     padding: 0.2em 0.4em;
-    border-radius: 6px;
+    border-radius: 0.375rem;
     font-size: 85%;
     font-family:
       'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
@@ -419,12 +473,12 @@
 
   // Ajustar colores de bloques de código en modo light
   pre {
-    background-color: #f6f8fa;
-    border: 1px solid #d0d7de;
-    border-radius: 8px;
-    padding: 16px;
+    background-color: v.$notion-bg-tertiary;
+    border: 1px solid v.$notion-border-primary;
+    border-radius: 0.5rem;
+    padding: 1rem;
     overflow: auto;
-    margin: 16px 0;
+    margin: 1rem 0;
     position: relative;
 
     // Mejorar la apariencia del scrollbar
@@ -433,16 +487,16 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: v.$notion-bg-secondary;
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: v.$notion-border-primary;
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: v.$notion-text-tertiary;
       }
     }
 
@@ -452,7 +506,7 @@
       border-radius: 0;
       font-size: 14px;
       line-height: 1.45;
-      color: #24292f;
+      color: v.$notion-text-primary;
     }
   }
 
@@ -464,32 +518,33 @@
     overflow: auto;
     break-inside: auto;
     text-align: left;
-    border: 1px solid #d0d7de;
+    border: 1px solid v.$notion-border-primary;
 
     th,
     td {
-      padding: 6px 13px;
-      border: 1px solid #d0d7de;
+      padding: 0.75rem;
+      border: 1px solid v.$notion-border-primary;
     }
 
     th {
-      background-color: #f6f8fa;
+      background-color: v.$notion-bg-secondary;
       font-weight: 600;
+      color: v.$notion-text-primary;
     }
   }
 
   // Ajustar colores de bloques de cita en modo light
   blockquote {
-    padding: 0 1em;
-    color: #656d76;
-    border-left: 0.25em solid #d0d7de;
-    margin: 0 0 16px 0;
+    padding: 0 1rem;
+    color: v.$notion-text-secondary;
+    border-left: 0.25rem solid v.$notion-border-primary;
+    margin: 0 0 1rem 0;
   }
 
   // Ajustar colores de listas en modo light
   ul,
   ol {
-    color: #24292f;
+    color: v.$notion-text-primary;
   }
 
   // Ajustar colores de encabezados en modo light
@@ -499,22 +554,22 @@
   h4,
   h5,
   h6 {
-    color: #24292f;
+    color: v.$notion-text-primary;
     font-weight: 600;
     line-height: 1.25;
-    margin-top: 24px;
-    margin-bottom: 16px;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   h1 {
     font-size: 2em;
-    border-bottom: 1px solid #d0d7de;
+    border-bottom: 1px solid v.$notion-border-primary;
     padding-bottom: 0.3em;
   }
 
   h2 {
     font-size: 1.5em;
-    border-bottom: 1px solid #d0d7de;
+    border-bottom: 1px solid v.$notion-border-primary;
     padding-bottom: 0.3em;
   }
 
@@ -532,7 +587,7 @@
 
   h6 {
     font-size: 0.85em;
-    color: #656d76;
+    color: v.$notion-text-secondary;
   }
 }
 
@@ -540,72 +595,73 @@
 .dark {
   .markdown-body {
     color-scheme: dark;
-    color: #e6edf3;
-    background-color: #0d1117;
+    color: v.$notion-dark-text-primary;
+    background-color: v.$notion-dark-bg-primary;
 
     // Ajustar colores de enlaces en dark mode
     a {
-      color: #58a6ff;
+      color: v.$notion-accent-blue;
 
       &:hover {
-        color: #79c0ff;
+        color: color.adjust(v.$notion-accent-blue, $lightness: 10%);
       }
     }
 
     // Ajustar colores de código inline en dark mode
     code {
-      background-color: rgba(110, 118, 129, 0.4);
-      color: #e6edf3;
+      background-color: v.$notion-dark-bg-tertiary;
+      color: v.$notion-dark-text-primary;
     }
 
     // Ajustar colores de bloques de código en dark mode
     pre {
-      background-color: #161b22;
-      border-color: #30363d;
+      background-color: v.$notion-dark-bg-tertiary;
+      border-color: v.$notion-dark-border-primary;
 
       // Mejorar la apariencia del scrollbar en dark mode
       &::-webkit-scrollbar-track {
-        background: #21262d;
+        background: v.$notion-dark-bg-secondary;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: #484f58;
+        background: v.$notion-dark-border-primary;
 
         &:hover {
-          background: #5a6169;
+          background: v.$notion-dark-text-tertiary;
         }
       }
 
       code {
         background-color: transparent;
-        color: #e6edf3;
+        color: v.$notion-dark-text-primary;
       }
     }
 
     // Ajustar colores de tablas en dark mode
     table {
-      border-color: #30363d;
+      border-color: v.$notion-dark-border-primary;
 
       th,
       td {
-        border-color: #30363d;
+        border-color: v.$notion-dark-border-primary;
       }
 
       th {
-        background-color: #161b22;
+        background-color: v.$notion-dark-bg-secondary;
+        color: v.$notion-dark-text-primary;
       }
     }
 
     // Ajustar colores de bloques de cita en dark mode
     blockquote {
-      color: #8b949e;
-      border-left-color: #30363d;
+      color: v.$notion-dark-text-secondary;
+      border-left-color: v.$notion-dark-border-primary;
     }
 
     // Ajustar colores de listas en dark mode
     ul,
     ol {
-      color: #e6edf3;
+      color: v.$notion-dark-text-primary;
     }
 
     // Ajustar colores de encabezados en dark mode
@@ -615,12 +671,12 @@
     h4,
     h5,
     h6 {
-      color: #f0f6fc;
-      border-bottom-color: #30363d;
+      color: v.$notion-dark-text-primary;
+      border-bottom-color: v.$notion-dark-border-primary;
     }
 
     h6 {
-      color: #8b949e;
+      color: v.$notion-dark-text-secondary;
     }
   }
 }
@@ -641,12 +697,12 @@ pre.hljs {
 
   // Ajustes para modo light
   .markdown-body:not(.dark) & {
-    color: #24292f;
+    color: v.$notion-text-primary;
   }
 
   // Ajustes para modo dark
   .dark .markdown-body & {
-    color: #e6edf3;
+    color: v.$notion-dark-text-primary;
   }
 
   // Mejorar la apariencia del scrollbar para highlight.js
@@ -655,30 +711,30 @@ pre.hljs {
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: v.$notion-bg-secondary;
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: v.$notion-border-primary;
     border-radius: 4px;
 
     &:hover {
-      background: #a8a8a8;
+      background: v.$notion-text-tertiary;
     }
   }
 
   // Scrollbar para modo dark
   .dark & {
     &::-webkit-scrollbar-track {
-      background: #21262d;
+      background: v.$notion-dark-bg-secondary;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #484f58;
+      background: v.$notion-dark-border-primary;
 
       &:hover {
-        background: #5a6169;
+        background: v.$notion-dark-text-tertiary;
       }
     }
   }
@@ -697,45 +753,46 @@ pre.hljs {
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: v.$notion-bg-secondary;
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: v.$notion-border-primary;
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: v.$notion-text-tertiary;
       }
     }
 
     // Scrollbar para modo dark
     .dark & {
       &::-webkit-scrollbar-track {
-        background: #21262d;
+        background: v.$notion-dark-bg-secondary;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: #484f58;
+        background: v.$notion-dark-border-primary;
 
         &:hover {
-          background: #5a6169;
+          background: v.$notion-dark-text-tertiary;
         }
       }
     }
   }
+
   // Estilos para bloques de código bash/shell
   pre.language-bash,
   pre.language-shell,
   pre[class*='language-bash'],
   pre[class*='language-shell'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #28a745;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-green;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #3fb950;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-green;
     }
   }
 
@@ -748,8 +805,8 @@ pre.hljs {
   pre[class*='language-javascript'],
   pre[class*='language-js'],
   pre[class*='language-ts'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #007acc;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-blue;
     overflow-x: auto;
 
     // Mejorar la apariencia del scrollbar
@@ -758,32 +815,32 @@ pre.hljs {
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: v.$notion-bg-secondary;
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: v.$notion-border-primary;
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: v.$notion-text-tertiary;
       }
     }
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #58a6ff;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-blue;
 
       &::-webkit-scrollbar-track {
-        background: #21262d;
+        background: v.$notion-dark-bg-secondary;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: #484f58;
+        background: v.$notion-dark-border-primary;
 
         &:hover {
-          background: #5a6169;
+          background: v.$notion-dark-text-tertiary;
         }
       }
     }
@@ -792,12 +849,12 @@ pre.hljs {
   // Estilos para bloques de código JSON
   pre.language-json,
   pre[class*='language-json'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #f39c12;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-orange;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #fbb040;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-orange;
     }
   }
 
@@ -806,48 +863,48 @@ pre.hljs {
   pre.language-scss,
   pre[class*='language-css'],
   pre[class*='language-scss'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #e74c3c;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-red;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #ff7b72;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-red;
     }
   }
 
   // Estilos para bloques de código HTML
   pre.language-html,
   pre[class*='language-html'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #e67e22;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-orange;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #ffa657;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-orange;
     }
   }
 
   // Estilos para bloques de código Python
   pre.language-python,
   pre[class*='language-python'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #3776ab;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-blue;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #4a9eff;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-blue;
     }
   }
 
   // Estilos para bloques de código SQL
   pre.language-sql,
   pre[class*='language-sql'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #336791;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-blue;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #4a9eff;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-blue;
     }
   }
 
@@ -856,12 +913,12 @@ pre.hljs {
   pre.language-yml,
   pre[class*='language-yaml'],
   pre[class*='language-yml'] {
-    background: linear-gradient(135deg, #f6f8fa 0%, #f1f3f4 100%);
-    border-left: 4px solid #cb171e;
+    background: v.$notion-bg-tertiary;
+    border-left: 4px solid v.$notion-accent-red;
 
     .dark & {
-      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
-      border-left-color: #ff6b6b;
+      background: v.$notion-dark-bg-tertiary;
+      border-left-color: v.$notion-accent-red;
     }
   }
 
@@ -869,8 +926,8 @@ pre.hljs {
   .code-container,
   .code-wrapper {
     overflow-x: auto;
-    border-radius: 8px;
-    margin: 16px 0;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
 
     // Mejorar la apariencia del scrollbar
     &::-webkit-scrollbar {
@@ -878,30 +935,30 @@ pre.hljs {
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: v.$notion-bg-secondary;
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: v.$notion-border-primary;
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: v.$notion-text-tertiary;
       }
     }
 
     // Scrollbar para modo dark
     .dark & {
       &::-webkit-scrollbar-track {
-        background: #21262d;
+        background: v.$notion-dark-bg-secondary;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: #484f58;
+        background: v.$notion-dark-border-primary;
 
         &:hover {
-          background: #5a6169;
+          background: v.$notion-dark-text-tertiary;
         }
       }
     }
