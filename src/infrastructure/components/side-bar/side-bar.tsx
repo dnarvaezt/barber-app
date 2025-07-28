@@ -1,10 +1,9 @@
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
+import type { RouteItem } from '../../routes/routes.types'
 import { Icon } from '../icons'
 import { SideBarItem } from './side-bar-item'
 import { useSideBar } from './side-bar.hook'
 import './side-bar.scss'
-
-import type { RouteItem } from '../../routes'
 
 const version = __APP_VERSION__
 
@@ -32,9 +31,9 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
     setIsOpen(false)
   }
 
-  function handleToggle() {
+  const handleToggle = useCallback(() => {
     setIsOpen(!isOpen)
-  }
+  }, [isOpen])
 
   function handleNavigate(path: string) {
     onNavigate?.(path)
@@ -59,7 +58,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
       toggle: () => handleToggle(),
       isOpen: () => isOpen,
     }),
-    [isOpen]
+    [isOpen, handleToggle]
   )
 
   function handleOverlayClick() {

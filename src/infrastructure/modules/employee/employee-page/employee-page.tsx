@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Pagination, SortControls } from '../../../components'
+import { EntityList } from '../../../components/entity/entity-list'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeePage } from './employee-page.hook'
 import './employee-page.scss'
@@ -164,105 +165,117 @@ export const EmployeePage = () => {
         </div>
 
         {/* Lista de empleados */}
-        <div className='employee-page__list'>
-          {employees.length === 0 ? (
+        <div className='employee-page__content'>
+          {loading ? (
+            <div className='employee-page__loading'>
+              <p>Cargando empleados...</p>
+            </div>
+          ) : error ? (
+            <div className='employee-page__error'>
+              <p>Error: {error}</p>
+            </div>
+          ) : employees.length === 0 ? (
             <div className='employee-page__empty'>
-              <div className='employee-page__empty-icon'>👥</div>
-              <h3 className='employee-page__empty-title'>No hay empleados</h3>
-              <p className='employee-page__empty-message'>
-                {searchTerm
-                  ? 'No se encontraron empleados con esa búsqueda.'
-                  : 'Aún no hay empleados registrados.'}
-              </p>
-              {!searchTerm && (
-                <button
-                  onClick={() => {
-                    const newEmployeePath = buildRoutePathWithParams(
-                      RouteIds.EMPLOYEE_FORM_NEW,
-                      {}
-                    )
-                    if (newEmployeePath) {
-                      navigate(newEmployeePath)
-                    }
-                  }}
-                  className='employee-page__button employee-page__button--primary'
-                >
-                  ➕ Agregar Primer Empleado
-                </button>
-              )}
+              <p>No se encontraron empleados.</p>
             </div>
           ) : (
-            <div className='employee-page__table-container'>
-              <table className='employee-page__table'>
-                <thead className='employee-page__table-header'>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Teléfono</th>
-                    <th>Fecha de Nacimiento</th>
-                    <th>Edad</th>
-                    <th>Mes de Nacimiento</th>
-                    <th>Porcentaje</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className='employee-page__table-body'>
-                  {employees.map(employee => (
-                    <tr key={employee.id} className='employee-page__table-row'>
-                      <td className='employee-page__table-cell'>
-                        <div className='employee-page__employee-info'>
-                          <span className='employee-page__employee-name'>
-                            {employee.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        {formatPhone(employee.phoneNumber)}
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        {formatDate(employee.birthDate)}
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        {getAge(employee.birthDate)}
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        {getMonthName(new Date(employee.birthDate).getMonth())}
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        {employee.percentage}%
-                      </td>
-                      <td className='employee-page__table-cell'>
-                        <div className='employee-page__actions'>
-                          <Link
-                            to={buildRoutePathWithParams(
-                              RouteIds.EMPLOYEE_DETAIL,
-                              { employeeId: employee.id }
-                            )}
-                            className='employee-page__action-button employee-page__action-button--view'
-                          >
-                            👁️ Ver
-                          </Link>
-                          <Link
-                            to={buildRoutePathWithParams(
-                              RouteIds.EMPLOYEE_FORM_EDIT,
-                              { employeeId: employee.id }
-                            )}
-                            className='employee-page__action-button employee-page__action-button--edit'
-                          >
-                            ✏️ Editar
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteClick(employee.id)}
-                            className='employee-page__action-button employee-page__action-button--delete'
-                          >
-                            🗑️ Eliminar
-                          </button>
-                        </div>
-                      </td>
+            <>
+              {/* Tabla para desktop */}
+              <div className='employee-page__table-container'>
+                <table className='employee-page__table'>
+                  <thead className='employee-page__table-header'>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Teléfono</th>
+                      <th>Fecha de Nacimiento</th>
+                      <th>Edad</th>
+                      <th>Mes de Nacimiento</th>
+                      <th>Porcentaje</th>
+                      <th>Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className='employee-page__table-body'>
+                    {employees.map(employee => (
+                      <tr
+                        key={employee.id}
+                        className='employee-page__table-row'
+                      >
+                        <td className='employee-page__table-cell'>
+                          <div className='employee-page__employee-info'>
+                            <span className='employee-page__employee-name'>
+                              {employee.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          {formatPhone(employee.phoneNumber)}
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          {formatDate(employee.birthDate)}
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          {getAge(employee.birthDate)}
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          {getMonthName(
+                            new Date(employee.birthDate).getMonth()
+                          )}
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          {employee.percentage}%
+                        </td>
+                        <td className='employee-page__table-cell'>
+                          <div className='employee-page__actions'>
+                            <Link
+                              to={buildRoutePathWithParams(
+                                RouteIds.EMPLOYEE_DETAIL,
+                                {
+                                  employeeId: employee.id,
+                                }
+                              )}
+                              className='employee-page__action-button employee-page__action-button--view'
+                            >
+                              👁️ Ver
+                            </Link>
+                            <Link
+                              to={buildRoutePathWithParams(
+                                RouteIds.EMPLOYEE_FORM_EDIT,
+                                {
+                                  employeeId: employee.id,
+                                }
+                              )}
+                              className='employee-page__action-button employee-page__action-button--edit'
+                            >
+                              ✏️ Editar
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteClick(employee.id)}
+                              className='employee-page__action-button employee-page__action-button--delete'
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Tarjetas para móviles */}
+              <EntityList
+                entities={employees}
+                entityType='employee'
+                loading={loading}
+                error={error}
+                onDeleteClick={handleDeleteClick}
+                formatPhone={formatPhone}
+                formatDate={formatDate}
+                getAge={getAge}
+                getMonthName={getMonthName}
+                className='employee-page__mobile-cards'
+              />
+            </>
           )}
         </div>
 

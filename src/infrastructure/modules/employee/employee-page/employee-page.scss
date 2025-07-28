@@ -1,453 +1,240 @@
-@use '../../../assets/styles/variables' as v;
-@use '../../../assets/styles/mixins' as m;
-@use 'sass:color';
+@use '../../../assets/styles/variables' as *;
 
 .employee-page {
-  @include m.notion-padding;
+  @apply min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800;
 
   &__content {
-    @apply max-w-7xl mx-auto;
+    @apply container mx-auto px-4 py-8 max-w-7xl;
   }
 
   &__header {
-    @apply mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
-  }
+    @apply mb-8;
 
-  &__title {
-    margin: 0;
-    @include m.notion-heading-2;
-  }
+    .employee-page__header-content {
+      @apply flex flex-col md:flex-row md:items-center md:justify-between gap-4;
 
-  &__actions {
-    @apply flex flex-col gap-2 sm:flex-row sm:gap-3;
-  }
-
-  &__search-section {
-    @include m.notion-card;
-    margin-bottom: 1rem;
-    padding: 1rem;
-
-    @include m.mobile {
-      padding: 0.75rem;
-    }
-  }
-
-  &__search-form {
-    @apply flex flex-col gap-3 sm:flex-row sm:gap-4;
-  }
-
-  &__sort-section {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid v.$notion-border-primary;
-
-    .dark & {
-      border-color: v.$notion-dark-border-primary;
-    }
-  }
-
-  &__search-input {
-    position: relative;
-    flex: 1;
-  }
-
-  &__search-loading {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-
-  &__search-loading-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid v.$notion-accent-blue;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  &__filter-select {
-    @apply w-full sm:w-48;
-  }
-
-  &__table-container {
-    @include m.notion-card;
-    overflow: hidden;
-    padding: 0;
-
-    @include m.mobile {
-      margin: 0 -0.75rem;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-    }
-  }
-
-  &__table {
-    @apply min-w-full divide-y;
-    border-color: v.$notion-border-primary;
-
-    .dark & {
-      border-color: v.$notion-dark-border-primary;
-    }
-  }
-
-  &__table-header {
-    background: v.$notion-bg-secondary;
-
-    .dark & {
-      background: v.$notion-dark-bg-secondary;
-    }
-
-    @include m.mobile {
-      display: none;
-    }
-  }
-
-  &__table-header-cell {
-    @apply px-4 py-3 text-left text-xs font-medium uppercase tracking-wider;
-    color: v.$notion-text-secondary;
-
-    .dark & {
-      color: v.$notion-dark-text-secondary;
-    }
-
-    @include m.mobile {
-      @apply px-3 py-2;
-    }
-  }
-
-  &__table-body {
-    background: v.$notion-bg-card;
-    border-color: v.$notion-border-primary;
-
-    .dark & {
-      background: v.$notion-dark-bg-card;
-      border-color: v.$notion-dark-border-primary;
-    }
-  }
-
-  &__table-row {
-    transition: background-color 0.15s ease;
-
-    &:hover {
-      background: v.$notion-bg-hover;
-
-      .dark & {
-        background: v.$notion-dark-bg-hover;
-      }
-    }
-
-    @include m.mobile {
-      @apply block border-b;
-      border-color: v.$notion-border-primary;
-
-      .dark & {
-        border-color: v.$notion-dark-border-primary;
+      .employee-page__title {
+        @apply text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200;
       }
 
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-  }
+      .employee-page__header-actions {
+        @apply flex gap-3;
 
-  &__table-cell {
-    @apply px-4 py-3 whitespace-nowrap text-sm;
-    color: v.$notion-text-primary;
+        .employee-page__action-button {
+          @apply btn btn-primary gap-2;
 
-    .dark & {
-      color: v.$notion-dark-text-primary;
-    }
-
-    @include m.mobile {
-      @apply block px-3 py-2 whitespace-normal;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      &::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: v.$notion-text-secondary;
-        margin-right: 0.5rem;
-        min-width: 80px;
-
-        .dark & {
-          color: v.$notion-dark-text-secondary;
+          &--edit {
+            @apply btn-success;
+          }
         }
       }
     }
   }
 
-  &__table-cell--name {
-    @apply font-medium;
+  &__filters {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6;
 
-    @include m.mobile {
-      @apply text-base font-semibold;
-      border-bottom: 1px solid v.$notion-border-primary;
-      margin-bottom: 0.5rem;
-      padding-bottom: 0.5rem;
+    .employee-page__search-section {
+      @apply flex items-center gap-4 mb-4;
 
-      .dark & {
-        border-color: v.$notion-dark-border-primary;
+      .employee-page__search-input {
+        @apply flex-1 input w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent;
       }
 
-      &::before {
-        content: 'Nombre:';
+      button {
+        @apply btn btn-ghost btn-sm;
       }
     }
-  }
 
-  &__table-cell--phone {
-    @apply font-mono;
+    .employee-page__sort-section {
+      @apply flex items-center justify-between;
 
-    @include m.mobile {
-      &::before {
-        content: 'Teléfono:';
+      .employee-page__sort-controls {
+        @apply flex-1;
       }
     }
   }
 
-  &__table-cell--birth-date {
-    color: v.$notion-text-secondary;
+  &__table-container {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6;
 
-    .dark & {
-      color: v.$notion-dark-text-secondary;
-    }
+    .employee-page__table {
+      @apply w-full;
 
-    @include m.mobile {
-      &::before {
-        content: 'Nacimiento:';
+      .employee-page__table-header {
+        @apply bg-gray-50 dark:bg-gray-700;
+
+        th {
+          @apply px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600;
+        }
+      }
+
+      .employee-page__table-body {
+        .employee-page__table-row {
+          @apply hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200;
+
+          .employee-page__table-cell {
+            @apply px-6 py-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-600;
+
+            .employee-page__employee-info {
+              @apply flex items-center;
+
+              .employee-page__employee-name {
+                @apply font-medium text-gray-900 dark:text-gray-100;
+              }
+            }
+
+            .employee-page__actions {
+              @apply flex items-center gap-2;
+
+              .employee-page__action-button {
+                @apply btn btn-sm gap-1;
+
+                &--view {
+                  @apply btn-info btn-outline;
+                }
+
+                &--edit {
+                  @apply btn-warning btn-outline;
+                }
+
+                &--delete {
+                  @apply btn-error btn-outline;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
 
-  &__table-cell--percentage {
-    @apply text-center;
-
-    @include m.mobile {
-      &::before {
-        content: 'Porcentaje:';
-      }
-    }
-  }
-
-  &__table-cell--actions {
-    @apply text-right;
-
-    @include m.mobile {
-      @apply text-left justify-start;
-      margin-top: 0.5rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid v.$notion-border-primary;
-
-      .dark & {
-        border-color: v.$notion-dark-border-primary;
-      }
-
-      &::before {
-        content: 'Acciones:';
-      }
-    }
-  }
-
-  &__action-buttons {
-    @apply flex items-center gap-2;
-
-    @include m.mobile {
-      @apply flex-wrap;
-      gap: 0.5rem;
-    }
-  }
-
-  &__action-button {
-    @include m.notion-button-ghost;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-
-    @include m.mobile {
-      @apply text-xs px-2 py-1;
-    }
-  }
-
-  &__action-link {
-    @include m.notion-button-ghost;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    text-decoration: none;
-
-    @include m.mobile {
-      @apply text-xs px-2 py-1;
-    }
-  }
-
-  &__action-link--view {
-    color: v.$notion-accent-green;
-
-    &:hover {
-      color: v.$notion-accent-green;
-    }
-
-    .dark & {
-      color: v.$notion-accent-green;
-
-      &:hover {
-        color: v.$notion-accent-green;
-      }
-    }
-  }
-
-  &__action-link--edit {
-    color: v.$notion-accent-blue;
-
-    &:hover {
-      color: v.$notion-accent-blue;
-    }
-
-    .dark & {
-      color: v.$notion-accent-blue;
-
-      &:hover {
-        color: v.$notion-accent-blue;
-      }
-    }
-  }
-
-  &__action-button--delete {
-    color: v.$notion-accent-red;
-
-    &:hover {
-      color: v.$notion-accent-red;
-    }
-
-    .dark & {
-      color: v.$notion-accent-red;
-
-      &:hover {
-        color: v.$notion-accent-red;
-      }
-    }
-  }
-
-  &__empty-state {
-    @apply text-center py-8;
-
-    @include m.mobile {
-      @apply py-6;
-    }
-  }
-
-  &__empty-state-icon {
-    @apply mx-auto h-10 w-10;
-    color: v.$notion-text-tertiary;
-
-    .dark & {
-      color: v.$notion-dark-text-tertiary;
-    }
-
-    @include m.mobile {
-      @apply h-8 w-8;
-    }
-  }
-
-  &__empty-state-text {
-    @apply mt-2 text-sm;
-    color: v.$notion-text-secondary;
-
-    .dark & {
-      color: v.$notion-dark-text-secondary;
-    }
+  &__mobile-cards {
+    @apply space-y-4 mb-6;
   }
 
   &__loading {
-    @apply flex justify-center items-center py-8;
+    @apply flex flex-col items-center justify-center py-12;
 
-    @include m.mobile {
-      @apply py-6;
+    .employee-page__loading-spinner {
+      @apply w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin mb-4;
+    }
+
+    p {
+      @apply text-gray-600 dark:text-gray-400;
     }
   }
 
-  &__loading-spinner {
-    @apply animate-spin rounded-full h-6 w-6 border-b-2;
-    border-color: v.$notion-border-primary;
-    border-bottom-color: v.$notion-accent-blue;
+  &__error {
+    @apply flex flex-col items-center justify-center py-12 text-center;
 
-    .dark & {
-      border-color: v.$notion-dark-border-primary;
-      border-bottom-color: v.$notion-accent-blue;
+    .employee-page__error-icon {
+      @apply text-4xl mb-4;
+    }
+
+    .employee-page__error-title {
+      @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2;
+    }
+
+    .employee-page__error-message {
+      @apply text-gray-600 dark:text-gray-400 mb-4;
+    }
+
+    .employee-page__button {
+      @apply btn;
+
+      &--primary {
+        @apply btn-primary;
+      }
     }
   }
 
-  // Modal de confirmación de eliminación
-  &__delete-modal {
-    @apply fixed inset-0 flex items-center justify-center z-50;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-  }
+  &__empty {
+    @apply text-center py-12;
 
-  &__delete-modal-content {
-    @include m.notion-card;
-    max-width: 28rem;
-    width: 100%;
-    margin: 0 1rem;
-  }
-
-  &__delete-modal-title {
-    @include m.notion-heading-3;
-    margin-bottom: 1rem;
-  }
-
-  &__delete-modal-message {
-    @include m.notion-text-secondary;
-    margin-bottom: 1.5rem;
-  }
-
-  &__delete-modal-actions {
-    @apply flex justify-end gap-3;
-  }
-
-  &__delete-modal-button {
-    @include m.notion-button-base;
-  }
-
-  &__delete-modal-button--cancel {
-    @include m.notion-button-secondary;
-  }
-
-  &__delete-modal-button--confirm {
-    background: v.$notion-accent-red;
-    color: white;
-    border-color: v.$notion-accent-red;
-
-    &:hover {
-      background: color.adjust(v.$notion-accent-red, $lightness: -5%);
-      border-color: color.adjust(v.$notion-accent-red, $lightness: -5%);
+    p {
+      @apply text-gray-600 dark:text-gray-400 text-lg;
     }
   }
 
-  // Pagination responsive
-  .pagination {
-    @include m.mobile {
-      @apply flex-col gap-2;
-    }
+  &__pagination {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-6;
   }
 
-  // Sort controls responsive
-  .sort-controls {
-    @include m.mobile {
-      @apply flex-col gap-2;
+  &__modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+
+    .employee-page__modal {
+      @apply bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4;
+
+      .employee-page__modal-header {
+        @apply p-6 border-b border-gray-200 dark:border-gray-600;
+
+        h3 {
+          @apply text-lg font-semibold text-gray-800 dark:text-gray-200;
+        }
+      }
+
+      .employee-page__modal-body {
+        @apply p-6;
+
+        p {
+          @apply text-gray-600 dark:text-gray-400 mb-2;
+        }
+      }
+
+      .employee-page__modal-actions {
+        @apply flex gap-3 p-6 border-t border-gray-200 dark:border-gray-600;
+
+        .employee-page__button {
+          @apply btn flex-1;
+
+          &--secondary {
+            @apply btn-outline;
+          }
+
+          &--danger {
+            @apply btn-error;
+          }
+        }
+      }
     }
   }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .employee-page {
+    &__table-container {
+      @apply hidden;
+    }
+
+    &__mobile-cards {
+      @apply block;
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .employee-page {
+    &__mobile-cards {
+      @apply hidden;
+    }
+  }
+}
+
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.employee-page__content {
+  animation: slideInUp 0.5s ease-out;
 }

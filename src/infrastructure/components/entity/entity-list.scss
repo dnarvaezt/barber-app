@@ -1,0 +1,123 @@
+@use '../../assets/styles/variables' as *;
+
+.entity-list {
+  &__container {
+    @apply space-y-4;
+  }
+
+  &__mobile-card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+
+    .entity-list__mobile-header {
+      @apply flex items-center justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-600;
+
+      .entity-list__mobile-title {
+        @apply text-lg font-semibold text-gray-800 dark:text-gray-200;
+      }
+
+      .entity-list__mobile-actions {
+        @apply flex items-center gap-2;
+
+        .entity-list__mobile-action-button {
+          @apply btn btn-sm btn-circle;
+
+          &--view {
+            @apply btn-info btn-outline;
+          }
+
+          &--edit {
+            @apply btn-warning btn-outline;
+          }
+
+          &--delete {
+            @apply btn-error btn-outline;
+          }
+        }
+      }
+    }
+
+    .entity-list__mobile-content {
+      @apply space-y-3;
+
+      .entity-list__mobile-item {
+        @apply flex justify-between items-center py-2;
+
+        .entity-list__mobile-label {
+          @apply text-sm font-medium text-gray-600 dark:text-gray-400;
+        }
+
+        .entity-list__mobile-value {
+          @apply text-sm text-gray-800 dark:text-gray-200 font-medium;
+        }
+      }
+    }
+  }
+
+  &__loading {
+    @apply flex flex-col items-center justify-center py-12;
+
+    .entity-list__loading-spinner {
+      @apply w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4;
+    }
+
+    .entity-list__loading-text {
+      @apply text-gray-600 dark:text-gray-400;
+    }
+  }
+
+  &__error {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+
+    .entity-list__error-icon {
+      @apply text-4xl mb-4;
+    }
+
+    .entity-list__error-text {
+      @apply text-gray-600 dark:text-gray-400;
+    }
+  }
+
+  &__empty {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+
+    .entity-list__empty-icon {
+      @apply text-4xl mb-4;
+    }
+
+    .entity-list__empty-text {
+      @apply text-gray-600 dark:text-gray-400;
+    }
+  }
+}
+
+// Animaciones
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.entity-list__mobile-card {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.entity-list__mobile-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.entity-list__mobile-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.entity-list__mobile-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.entity-list__mobile-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.entity-list__mobile-card:nth-child(5) {
+  animation-delay: 0.5s;
+}

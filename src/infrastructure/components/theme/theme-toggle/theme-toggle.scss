@@ -1,27 +1,14 @@
-@use '../../../assets/styles/variables' as v;
+@use '../../../assets/styles/variables' as *;
 
 .theme-toggle {
-  @apply p-2 rounded-md transition-colors duration-200 flex items-center justify-center;
-  background: v.$notion-bg-secondary;
-  color: v.$notion-text-secondary;
-  border: 1px solid v.$notion-border-primary;
+  @apply btn btn-ghost btn-sm gap-2 p-2 rounded-lg transition-all duration-200;
 
   &:hover {
-    background: v.$notion-bg-hover;
-    color: v.$notion-text-primary;
-    border-color: v.$notion-border-secondary;
+    @apply bg-base-200;
   }
 
-  .dark & {
-    background: v.$notion-dark-bg-secondary;
-    color: v.$notion-dark-text-secondary;
-    border-color: v.$notion-dark-border-primary;
-
-    &:hover {
-      background: v.$notion-dark-bg-hover;
-      color: v.$notion-dark-text-primary;
-      border-color: v.$notion-dark-border-secondary;
-    }
+  &:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
   }
 
   &__icon {

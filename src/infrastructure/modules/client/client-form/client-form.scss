@@ -1,162 +1,174 @@
-@use '../../../assets/styles/variables' as v;
-@use '../../../assets/styles/mixins' as m;
+@use '../../../assets/styles/variables' as *;
 
-.client-form-page {
-  @apply min-h-screen;
-  background: v.$notion-bg-secondary;
+.client-form {
+  @apply min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8;
 
-  .dark & {
-    background: v.$notion-dark-bg-secondary;
+  &__container {
+    @apply container mx-auto px-4 max-w-2xl;
   }
 
-  &__content {
-    @apply max-w-2xl mx-auto;
-    @include m.notion-padding;
-  }
+  &__header {
+    @apply text-center mb-8;
 
-  &__form-container {
-    @include m.notion-card;
+    .client-form__title {
+      @apply text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4;
+    }
+
+    .client-form__subtitle {
+      @apply text-lg text-gray-600 dark:text-gray-400;
+    }
   }
 
   &__form {
-    @apply space-y-6;
-  }
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700;
 
-  &__form-group {
-    @apply space-y-2;
-  }
+    .client-form__success-message {
+      @apply flex items-center gap-3 p-4 mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl;
 
-  &__label {
-    @apply block text-sm font-medium;
-    color: v.$notion-text-primary;
-
-    .dark & {
-      color: v.$notion-dark-text-primary;
-    }
-  }
-
-  &__input {
-    @include m.notion-input;
-
-    &--error {
-      border-color: v.$notion-accent-red;
-
-      &:focus {
-        border-color: v.$notion-accent-red;
-        box-shadow: 0 0 0 3px rgba(255, 115, 105, 0.1);
+      .client-form__success-icon {
+        @apply text-2xl;
       }
 
-      .dark & {
-        border-color: v.$notion-accent-red;
+      .client-form__success-text {
+        @apply text-green-800 dark:text-green-200 font-medium;
+      }
+    }
 
-        &:focus {
-          box-shadow: 0 0 0 3px rgba(255, 115, 105, 0.2);
+    .client-form__form-content {
+      @apply space-y-6;
+
+      .client-form__field {
+        @apply space-y-2;
+
+        .client-form__label {
+          @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
+        }
+
+        .client-form__input {
+          @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300;
+
+          &--filled {
+            @apply border-blue-500 dark:border-blue-400;
+          }
+
+          &:focus {
+            @apply shadow-lg transform scale-[1.02];
+          }
+
+          &::placeholder {
+            @apply text-gray-400 dark:text-gray-500;
+          }
         }
       }
-    }
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
+      .client-form__actions {
+        @apply flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-600;
 
-  &__error-text {
-    @apply text-sm;
-    color: v.$notion-accent-red;
+        .client-form__button {
+          @apply flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed;
 
-    .dark & {
-      color: v.$notion-accent-red;
-    }
-  }
+          &--secondary {
+            @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+          }
 
-  &__error-message {
-    @apply p-3 rounded-md;
-    background: rgba(255, 115, 105, 0.1);
-    border: 1px solid rgba(255, 115, 105, 0.2);
-    color: v.$notion-accent-red;
+          &--primary {
+            @apply bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl;
+          }
 
-    .dark & {
-      background: rgba(255, 115, 105, 0.15);
-      border-color: rgba(255, 115, 105, 0.3);
-    }
-  }
+          .client-form__loading-spinner {
+            @apply w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
 
-  &__success-message {
-    @apply p-4 rounded-md text-center;
-    background: rgba(76, 183, 130, 0.1);
-    border: 1px solid rgba(76, 183, 130, 0.2);
-    color: v.$notion-accent-green;
+            &--small {
+              @apply w-4 h-4;
+            }
+          }
 
-    .dark & {
-      background: rgba(76, 183, 130, 0.15);
-      border-color: rgba(76, 183, 130, 0.3);
-    }
-  }
-
-  &__success-icon {
-    @apply text-2xl mb-2;
-  }
-
-  &__success-subtitle {
-    @apply text-sm mt-1;
-    color: v.$notion-accent-green;
-
-    .dark & {
-      color: v.$notion-accent-green;
-    }
-  }
-
-  &__help-text {
-    @apply text-xs;
-    color: v.$notion-text-tertiary;
-
-    .dark & {
-      color: v.$notion-dark-text-tertiary;
-    }
-  }
-
-  &__actions {
-    @apply flex justify-end gap-3 pt-6;
-    border-top: 1px solid v.$notion-border-primary;
-
-    .dark & {
-      border-color: v.$notion-dark-border-primary;
-    }
-  }
-
-  &__button {
-    @include m.notion-button-base;
-
-    &--primary {
-      @include m.notion-button-primary;
-    }
-
-    &--secondary {
-      @include m.notion-button-secondary;
+          .client-form__button-text {
+            @apply font-medium;
+          }
+        }
+      }
     }
   }
 
   &__loading {
-    @apply flex flex-col items-center justify-center py-12 space-y-4;
+    @apply flex flex-col items-center justify-center py-12;
 
-    p {
-      @include m.notion-text-secondary;
+    .client-form__loading-spinner {
+      @apply w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4;
+    }
+
+    .client-form__loading-text {
+      @apply text-gray-600 dark:text-gray-400;
     }
   }
+}
 
-  &__loading-spinner {
-    @apply w-8 h-8 border-4 rounded-full animate-spin;
-    border-color: v.$notion-border-primary;
-    border-top-color: v.$notion-accent-blue;
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    &--small {
-      @apply w-4 h-4 border-2;
-      border-color: v.$notion-bg-primary;
-      border-top-color: transparent;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
-      .dark & {
-        border-color: v.$notion-dark-bg-primary;
+.client-form__container {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.client-form__form {
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.client-form__field {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.client-form__field:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.client-form__field:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.client-form__field:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.client-form__actions {
+  animation: fadeIn 0.6s ease-out 0.6s both;
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .client-form {
+    &__container {
+      @apply px-6;
+    }
+
+    &__form {
+      @apply p-6;
+    }
+
+    &__header {
+      .client-form__title {
+        @apply text-2xl;
+      }
+
+      .client-form__subtitle {
+        @apply text-base;
       }
     }
   }

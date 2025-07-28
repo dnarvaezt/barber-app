@@ -1,61 +1,70 @@
-@use '../../assets/styles/variables' as v;
-@use '../../assets/styles/mixins' as m;
+@use '../../assets/styles/variables' as *;
 
 .sort-controls {
-  @apply flex items-center gap-2;
+  @apply flex items-center gap-4;
 
   &__container {
-    @apply flex items-center gap-3;
+    @apply flex flex-col sm:flex-row items-start sm:items-center gap-3;
   }
 
   &__label {
-    @apply text-sm font-medium;
-    color: v.$notion-text-primary;
-
-    .dark & {
-      color: v.$notion-dark-text-primary;
-    }
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap;
   }
 
   &__buttons {
-    @apply flex gap-2;
-  }
+    @apply flex flex-wrap gap-2;
 
-  &__button {
-    @include m.notion-button-secondary;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
+    .sort-controls__button {
+      @apply px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center gap-2;
 
-    &--active {
-      background: rgba(46, 170, 220, 0.1);
-      color: v.$notion-accent-blue;
-      border-color: v.$notion-accent-blue;
-
-      &:hover {
-        background: rgba(46, 170, 220, 0.15);
-        color: v.$notion-accent-blue;
-        border-color: v.$notion-accent-blue;
+      &--active {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
       }
 
-      .dark & {
-        background: rgba(46, 170, 220, 0.15);
-        color: v.$notion-accent-blue;
-        border-color: v.$notion-accent-blue;
-
-        &:hover {
-          background: rgba(46, 170, 220, 0.2);
-          color: v.$notion-accent-blue;
-          border-color: v.$notion-accent-blue;
-        }
+      &:focus {
+        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
       }
     }
   }
 
   &__status {
-    @apply mt-2;
-  }
+    @apply flex-shrink-0;
 
-  &__status-text {
-    @include m.notion-text-caption;
+    .sort-controls__status-text {
+      @apply text-xs text-gray-500 dark:text-gray-400;
+    }
+  }
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sort-controls {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .sort-controls {
+    @apply gap-3;
+
+    &__container {
+      @apply gap-2;
+    }
+
+    &__buttons {
+      @apply gap-1;
+
+      .sort-controls__button {
+        @apply px-2 py-1 text-xs;
+      }
+    }
   }
 }

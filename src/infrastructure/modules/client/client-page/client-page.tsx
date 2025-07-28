@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Pagination, SortControls } from '../../../components'
+import { EntityList } from '../../../components/entity/entity-list'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
@@ -164,105 +165,108 @@ export const ClientPage = () => {
         </div>
 
         {/* Lista de clientes */}
-        <div className='client-page__list'>
-          {clients.length === 0 ? (
+        <div className='client-page__content'>
+          {loading ? (
+            <div className='client-page__loading'>
+              <p>Cargando clientes...</p>
+            </div>
+          ) : error ? (
+            <div className='client-page__error'>
+              <p>Error: {error}</p>
+            </div>
+          ) : clients.length === 0 ? (
             <div className='client-page__empty'>
-              <div className='client-page__empty-icon'>👥</div>
-              <h3 className='client-page__empty-title'>No hay clientes</h3>
-              <p className='client-page__empty-message'>
-                {searchTerm
-                  ? 'No se encontraron clientes con esa búsqueda.'
-                  : 'Aún no hay clientes registrados.'}
-              </p>
-              {!searchTerm && (
-                <button
-                  onClick={() => {
-                    const newClientPath = buildRoutePathWithParams(
-                      RouteIds.CLIENT_FORM_NEW,
-                      {}
-                    )
-                    if (newClientPath) {
-                      navigate(newClientPath)
-                    }
-                  }}
-                  className='client-page__button client-page__button--primary'
-                >
-                  ➕ Agregar Primer Cliente
-                </button>
-              )}
+              <p>No se encontraron clientes.</p>
             </div>
           ) : (
-            <div className='client-page__table-container'>
-              <table className='client-page__table'>
-                <thead className='client-page__table-header'>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Teléfono</th>
-                    <th>Fecha de Nacimiento</th>
-                    <th>Edad</th>
-                    <th>Mes de Nacimiento</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className='client-page__table-body'>
-                  {clients.map(client => (
-                    <tr key={client.id} className='client-page__table-row'>
-                      <td className='client-page__table-cell'>
-                        <div className='client-page__client-info'>
-                          <span className='client-page__client-name'>
-                            {client.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className='client-page__table-cell'>
-                        {formatPhone(client.phoneNumber)}
-                      </td>
-                      <td className='client-page__table-cell'>
-                        {formatDate(client.birthDate)}
-                      </td>
-                      <td className='client-page__table-cell'>
-                        {getAge(client.birthDate)}
-                      </td>
-                      <td className='client-page__table-cell'>
-                        {getMonthName(new Date(client.birthDate).getMonth())}
-                      </td>
-                      <td className='client-page__table-cell'>
-                        <div className='client-page__actions'>
-                          <Link
-                            to={buildRoutePathWithParams(
-                              RouteIds.CLIENT_DETAIL,
-                              {
-                                clientId: client.id,
-                              }
-                            )}
-                            className='client-page__action-button client-page__action-button--view'
-                          >
-                            👁️ Ver
-                          </Link>
-                          <Link
-                            to={buildRoutePathWithParams(
-                              RouteIds.CLIENT_FORM_EDIT,
-                              {
-                                clientId: client.id,
-                              }
-                            )}
-                            className='client-page__action-button client-page__action-button--edit'
-                          >
-                            ✏️ Editar
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteClick(client.id)}
-                            className='client-page__action-button client-page__action-button--delete'
-                          >
-                            🗑️ Eliminar
-                          </button>
-                        </div>
-                      </td>
+            <>
+              {/* Tabla para desktop */}
+              <div className='client-page__table-container'>
+                <table className='client-page__table'>
+                  <thead className='client-page__table-header'>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Teléfono</th>
+                      <th>Fecha de Nacimiento</th>
+                      <th>Edad</th>
+                      <th>Mes de Nacimiento</th>
+                      <th>Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className='client-page__table-body'>
+                    {clients.map(client => (
+                      <tr key={client.id} className='client-page__table-row'>
+                        <td className='client-page__table-cell'>
+                          <div className='client-page__client-info'>
+                            <span className='client-page__client-name'>
+                              {client.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className='client-page__table-cell'>
+                          {formatPhone(client.phoneNumber)}
+                        </td>
+                        <td className='client-page__table-cell'>
+                          {formatDate(client.birthDate)}
+                        </td>
+                        <td className='client-page__table-cell'>
+                          {getAge(client.birthDate)}
+                        </td>
+                        <td className='client-page__table-cell'>
+                          {getMonthName(new Date(client.birthDate).getMonth())}
+                        </td>
+                        <td className='client-page__table-cell'>
+                          <div className='client-page__actions'>
+                            <Link
+                              to={buildRoutePathWithParams(
+                                RouteIds.CLIENT_DETAIL,
+                                {
+                                  clientId: client.id,
+                                }
+                              )}
+                              className='client-page__action-button client-page__action-button--view'
+                            >
+                              👁️ Ver
+                            </Link>
+                            <Link
+                              to={buildRoutePathWithParams(
+                                RouteIds.CLIENT_FORM_EDIT,
+                                {
+                                  clientId: client.id,
+                                }
+                              )}
+                              className='client-page__action-button client-page__action-button--edit'
+                            >
+                              ✏️ Editar
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteClick(client.id)}
+                              className='client-page__action-button client-page__action-button--delete'
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Tarjetas para móviles */}
+              <EntityList
+                entities={clients}
+                entityType='client'
+                loading={loading}
+                error={error}
+                onDeleteClick={handleDeleteClick}
+                formatPhone={formatPhone}
+                formatDate={formatDate}
+                getAge={getAge}
+                getMonthName={getMonthName}
+                className='client-page__mobile-cards'
+              />
+            </>
           )}
         </div>
 

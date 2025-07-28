@@ -1,4 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import { Icon } from '../icons'
 import { ThemeToggle } from '../theme'
 import './header.scss'
@@ -28,9 +34,9 @@ export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
     setCurrentTitle(title)
   }, [title])
 
-  function handleMenuToggle() {
+  const handleMenuToggle = useCallback(() => {
     setIsMenuOpen(!isMenuOpen)
-  }
+  }, [isMenuOpen])
 
   // Exponer métodos a través de ref
   useImperativeHandle(
@@ -40,7 +46,7 @@ export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
       setTitle: (newTitle: string) => setCurrentTitle(newTitle),
       isMenuOpen: () => isMenuOpen,
     }),
-    [isMenuOpen]
+    [isMenuOpen, handleMenuToggle]
   )
 
   if (!visible) {

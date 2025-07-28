@@ -1,63 +1,78 @@
-@use '../../assets/styles/variables' as v;
+@use '../../assets/styles/variables' as *;
 
 .header {
-  @apply sticky top-0 z-30;
-  background: v.$notion-bg-primary;
-  border-bottom: 1px solid v.$notion-border-primary;
-  backdrop-filter: blur(8px);
-
-  .dark & {
-    background: v.$notion-dark-bg-primary;
-    border-color: v.$notion-dark-border-primary;
-  }
+  @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-40;
 
   &__container {
-    @apply max-w-7xl mx-auto px-3 sm:px-4 lg:px-8;
+    @apply container mx-auto px-4;
   }
 
   &__content {
-    @apply flex items-center justify-between h-14;
+    @apply flex items-center justify-between h-16;
   }
 
   &__left-section {
-    @apply flex items-center;
-  }
+    @apply flex items-center gap-4;
 
-  &__menu-button {
-    @apply lg:hidden mr-2 sm:mr-3 transition-colors duration-200 cursor-pointer;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    color: v.$notion-text-secondary;
+    .header__menu-button {
+      @apply p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200;
 
-    &:hover {
-      color: v.$notion-text-primary;
-      background: v.$notion-bg-hover;
+      &:focus {
+        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+      }
     }
 
-    .dark & {
-      color: v.$notion-dark-text-secondary;
+    .header__title-container {
+      @apply flex items-center;
 
-      &:hover {
-        color: v.$notion-dark-text-primary;
-        background: v.$notion-dark-bg-hover;
+      .header__title {
+        @apply text-xl font-bold text-gray-800 dark:text-gray-200;
+
+        @media (max-width: 640px) {
+          @apply text-lg;
+        }
       }
     }
   }
 
-  &__title-container {
-    @apply flex-shrink-0;
-  }
-
-  &__title {
-    @apply text-lg font-semibold tracking-tight;
-    color: v.$notion-text-primary;
-
-    .dark & {
-      color: v.$notion-dark-text-primary;
-    }
-  }
-
   &__right-section {
-    @apply flex items-center space-x-2 sm:space-x-4;
+    @apply flex items-center gap-3;
+  }
+}
+
+// Animaciones
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  animation: slideDown 0.3s ease-out;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .header {
+    &__container {
+      @apply px-6;
+    }
+
+    &__content {
+      @apply h-14;
+    }
+
+    &__left-section {
+      .header__title-container {
+        .header__title {
+          @apply text-lg;
+        }
+      }
+    }
   }
 }

@@ -164,6 +164,9 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
     urlState.pagination.sortOrder,
     urlState.pagination.page,
     urlState.pagination.limit,
+    data.length,
+    loading,
+    loadData,
   ]) // Dependencies are intentionally included to trigger reloads
 
   // Actualizar filtros

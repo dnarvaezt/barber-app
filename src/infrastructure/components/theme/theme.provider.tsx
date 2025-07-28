@@ -29,6 +29,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const root = document.documentElement
 
+    // Configurar tema para daisyUI
+    root.setAttribute('data-theme', state.theme)
+
+    // Configurar tema para Tailwind (clases dark:)
     if (state.isDark) {
       root.classList.add('dark')
     } else {

@@ -1,361 +1,42 @@
-@use 'sass:color';
-@use 'variables' as v;
-@use 'mixins' as m;
+// Importar estilos personalizados usando @use (debe ir antes que @tailwind)
+@use 'variables' as *;
+@use 'base';
 
+// Importar Tailwind CSS
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-// Base styles
-html,
-body {
-  background: v.$notion-bg-primary;
-  color: v.$notion-text-primary;
-  font-family: v.$font-family-base;
-  line-height: v.$line-height-base;
-  margin: 0;
-  padding: 0;
-}
+// Estilos adicionales del proyecto
+@layer components {
+  // Componentes personalizados que se integran con Tailwind
+  // Usar nombres más específicos para evitar conflictos con daisyUI
+  .btn-custom-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300;
+  }
 
-// Base typography
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0 0 1rem 0;
-  @include m.notion-heading-1;
-}
+  .btn-custom-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300;
+  }
 
-h2 {
-  @include m.notion-heading-2;
-}
+  .card-custom {
+    @apply bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
 
-h3 {
-  @include m.notion-heading-3;
-}
-
-p {
-  margin: 0 0 1rem 0;
-  @include m.notion-text-body;
-}
-
-a {
-  color: v.$notion-accent-blue;
-  text-decoration: none;
-  transition: color 0.15s ease;
-  @include m.notion-text-body;
-
-  &:hover {
-    color: color.adjust(v.$notion-accent-blue, $lightness: -10%);
+  .input-custom {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300;
   }
 }
 
-// Component styles
-.notion-card {
-  @include m.notion-card;
-}
-
-.notion-button {
-  @include m.notion-button-primary;
-}
-
-.notion-input {
-  @include m.notion-input;
-}
-
-.notion-section {
-  margin-bottom: 2rem;
-  @include m.notion-padding;
-}
-
-.notion-text-primary {
-  @include m.notion-text-body;
-}
-
-.notion-text-secondary {
-  @include m.notion-text-secondary;
-}
-
-.notion-border {
-  border: 1px solid v.$notion-border-primary;
-  border-radius: 0.375rem;
-}
-
-// Additional component styles
-.notion-card-minimal {
-  @include m.notion-card-minimal;
-}
-
-.notion-button-ghost {
-  @include m.notion-button-ghost;
-}
-
-.notion-text-caption {
-  @include m.notion-text-caption;
-}
-
-// Notion-inspired block styles
-.notion-block {
-  @include m.notion-block;
-
-  &__menu {
-    @include m.notion-block-menu;
+@layer utilities {
+  // Utilidades personalizadas
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
   }
 
-  &__content {
-    @include m.notion-text-body;
-  }
-
-  &__title {
-    margin-bottom: 0.5rem;
-    @include m.notion-heading-2;
-  }
-
-  &__subtitle {
-    margin-bottom: 1rem;
-    @include m.notion-text-secondary;
-  }
-}
-
-// Notion-inspired list styles
-.notion-list {
-  padding-left: 1.5rem;
-  @include m.notion-text-body;
-
-  li {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-  }
-
-  ul,
-  ol {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-}
-
-// Notion-inspired code block styles
-.notion-code {
-  background: v.$notion-bg-tertiary;
-  border: 1px solid v.$notion-border-primary;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  overflow-x: auto;
-
-  .dark & {
-    background: v.$notion-dark-bg-tertiary;
-    border-color: v.$notion-dark-border-primary;
-  }
-}
-
-// Notion-inspired quote styles
-.notion-quote {
-  border-left: 3px solid v.$notion-border-primary;
-  padding-left: 1rem;
-  margin: 1rem 0;
-  font-style: italic;
-  color: v.$notion-text-secondary;
-
-  .dark & {
-    border-color: v.$notion-dark-border-primary;
-    color: v.$notion-dark-text-secondary;
-  }
-}
-
-// Notion-inspired divider styles
-.notion-divider {
-  height: 1px;
-  background: v.$notion-border-primary;
-  margin: 1.5rem 0;
-  border: none;
-
-  .dark & {
-    background: v.$notion-dark-border-primary;
-  }
-}
-
-// Notion-inspired table styles
-.notion-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-
-  th,
-  td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid v.$notion-border-primary;
-    @include m.notion-text-body;
-  }
-
-  th {
-    font-weight: 600;
-    background: v.$notion-bg-secondary;
-    color: v.$notion-text-primary;
-
-    .dark & {
-      background: v.$notion-dark-bg-secondary;
-      color: v.$notion-dark-text-primary;
-    }
-  }
-
-  td {
-    color: v.$notion-text-primary;
-
-    .dark & {
-      color: v.$notion-dark-text-primary;
-    }
-  }
-}
-
-// Notion-inspired checkbox styles
-.notion-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
-
-  input[type='checkbox'] {
-    width: 1rem;
-    height: 1rem;
-    border: 1px solid v.$notion-border-primary;
-    border-radius: 0.25rem;
-    background: v.$notion-bg-card;
-    cursor: pointer;
-
-    &:checked {
-      background: v.$notion-accent-blue;
-      border-color: v.$notion-accent-blue;
-    }
-
-    .dark & {
-      background: v.$notion-dark-bg-card;
-      border-color: v.$notion-dark-border-primary;
-
-      &:checked {
-        background: v.$notion-accent-blue;
-        border-color: v.$notion-accent-blue;
-      }
-    }
-  }
-
-  label {
-    cursor: pointer;
-    @include m.notion-text-body;
-  }
-}
-
-// Utility classes
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.mb-0 {
-  margin-bottom: 0;
-}
-
-.mb-1 {
-  margin-bottom: 0.25rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
-.mb-3 {
-  margin-bottom: 0.75rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mt-0 {
-  margin-top: 0;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.mt-3 {
-  margin-top: 0.75rem;
-}
-
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mt-5 {
-  margin-top: 1.25rem;
-}
-
-.mt-6 {
-  margin-top: 1.5rem;
-}
-
-.p-0 {
-  padding: 0;
-}
-
-.p-1 {
-  padding: 0.25rem;
-}
-
-.p-2 {
-  padding: 0.5rem;
-}
-
-.p-3 {
-  padding: 0.75rem;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
-.p-5 {
-  padding: 1.25rem;
-}
-
-.p-6 {
-  padding: 1.5rem;
-}
-
-// Responsive utilities
-@include m.mobile {
-  .hide-mobile {
-    display: none;
-  }
-}
-
-@include m.desktop {
-  .hide-desktop {
-    display: none;
+  .shadow-custom {
+    box-shadow:
+      0 10px 25px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 }

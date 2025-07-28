@@ -1,67 +1,163 @@
-@use '../../assets/styles/variables' as v;
-@use '../../assets/styles/mixins' as m;
+@use '../../assets/styles/variables' as *;
 
 .dashboard-page {
-  @include m.notion-padding;
+  @apply min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800;
 
   &__content {
-    @apply max-w-6xl mx-auto;
+    @apply container mx-auto px-4 py-8 max-w-7xl;
   }
 
   &__welcome {
-    @apply text-center mb-8;
+    @apply text-center mb-12;
 
     .dashboard-page__title {
-      margin-bottom: 0.5rem;
-      @include m.notion-heading-1;
+      @apply text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+
+      @media (max-width: 768px) {
+        @apply text-3xl;
+      }
     }
 
     .dashboard-page__subtitle {
-      @include m.notion-text-secondary;
+      @apply text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto;
+
+      @media (max-width: 768px) {
+        @apply text-lg;
+      }
     }
   }
 
   &__stats {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
-  }
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-12;
 
-  &__stat-card {
-    text-align: center;
-    @include m.notion-card;
+    .dashboard-page__stat-card {
+      @apply bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700;
 
-    h3 {
-      margin-bottom: 0.5rem;
-      @include m.notion-heading-3;
-    }
+      h3 {
+        @apply text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2;
+      }
 
-    .dashboard-page__stat-number {
-      color: v.$notion-accent-blue;
-      margin-bottom: 0.25rem;
-      @include m.notion-heading-1;
-    }
+      .dashboard-page__stat-number {
+        @apply text-4xl font-bold text-blue-600 dark:text-blue-400 mb-1;
+      }
 
-    .dashboard-page__stat-label {
-      @include m.notion-text-secondary;
+      .dashboard-page__stat-label {
+        @apply text-sm text-gray-500 dark:text-gray-400;
+      }
     }
   }
 
   &__quick-actions {
-    @include m.notion-card;
+    @apply mb-12;
 
     h2 {
-      margin-bottom: 1rem;
-      @include m.notion-heading-3;
+      @apply text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center;
+    }
+
+    .dashboard-page__actions-grid {
+      @apply grid grid-cols-2 md:grid-cols-4 gap-4;
+
+      @media (max-width: 640px) {
+        @apply grid-cols-1;
+      }
+    }
+
+    .dashboard-page__action-button {
+      @apply flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400;
+
+      .mr-2 {
+        @apply mr-3;
+      }
+
+      &:hover {
+        @apply bg-blue-50 dark:bg-gray-700;
+      }
     }
   }
 
-  &__actions-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+  &__recent-activity {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6;
+
+    h2 {
+      @apply text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6;
+    }
+
+    .dashboard-page__activity-list {
+      @apply space-y-4;
+    }
+
+    .dashboard-page__activity-item {
+      @apply flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-600;
+
+      .dashboard-page__activity-icon {
+        @apply flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full mr-4;
+
+        svg {
+          @apply w-6 h-6 text-blue-600 dark:text-blue-400;
+        }
+      }
+
+      .dashboard-page__activity-content {
+        @apply flex-1;
+
+        .dashboard-page__activity-title {
+          @apply font-semibold text-gray-800 dark:text-gray-200;
+        }
+
+        .dashboard-page__activity-time {
+          @apply text-sm text-gray-500 dark:text-gray-400;
+        }
+      }
+    }
   }
 
-  &__action-button {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    @include m.notion-button-primary;
+  &__empty-state {
+    @apply text-center py-12;
+
+    .dashboard-page__empty-icon {
+      @apply flex justify-center mb-4;
+
+      svg {
+        @apply w-16 h-16 text-gray-400 dark:text-gray-500;
+      }
+    }
+
+    .dashboard-page__empty-text {
+      @apply text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2;
+    }
+
+    .dashboard-page__empty-description {
+      @apply text-gray-500 dark:text-gray-500;
+    }
   }
+}
+
+// Animaciones personalizadas
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-page__stats,
+.dashboard-page__quick-actions,
+.dashboard-page__recent-activity {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.dashboard-page__stats {
+  animation-delay: 0.1s;
+}
+
+.dashboard-page__quick-actions {
+  animation-delay: 0.2s;
+}
+
+.dashboard-page__recent-activity {
+  animation-delay: 0.3s;
 }

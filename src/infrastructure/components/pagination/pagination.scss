@@ -1,134 +1,103 @@
-@use '../../assets/styles/variables' as v;
-@use '../../assets/styles/mixins' as m;
-@use 'sass:color';
+@use '../../assets/styles/variables' as *;
 
 .pagination {
-  @apply flex flex-col sm:flex-row items-center justify-between gap-4 p-4;
-  background: v.$notion-bg-card;
-  border-top: 1px solid v.$notion-border-primary;
-
-  .dark & {
-    background: v.$notion-dark-bg-card;
-    border-color: v.$notion-dark-border-primary;
-  }
+  @apply flex flex-col sm:flex-row items-center justify-between gap-4;
 
   &__info {
-    @apply flex items-center;
+    @apply flex-shrink-0;
 
-    &-text {
-      @include m.notion-text-secondary;
+    .pagination__info-text {
+      @apply text-sm text-gray-600 dark:text-gray-400;
     }
   }
 
   &__controls {
     @apply flex flex-col sm:flex-row items-center gap-4;
-  }
 
-  &__limit-selector {
-    @apply flex items-center gap-2;
+    .pagination__limit-selector {
+      @apply flex items-center gap-2;
 
-    &-label {
-      @apply text-sm whitespace-nowrap;
-      color: v.$notion-text-secondary;
+      .pagination__limit-label {
+        @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+      }
 
-      .dark & {
-        color: v.$notion-dark-text-secondary;
+      .pagination__limit-select {
+        @apply px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
       }
     }
 
-    &-select {
-      @include m.notion-input;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      width: auto;
-    }
-  }
+    .pagination__navigation {
+      @apply flex items-center gap-2;
 
-  &__navigation {
-    @apply flex items-center gap-2;
-  }
+      .pagination__button {
+        @apply px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
 
-  &__button {
-    @include m.notion-button-secondary;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-
-    &--prev {
-      @apply flex items-center gap-1;
-    }
-
-    &--next {
-      @apply flex items-center gap-1;
-    }
-  }
-
-  &__page-numbers {
-    @apply flex items-center gap-1;
-  }
-
-  &__page-button {
-    @include m.notion-button-secondary;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    min-width: 2.5rem;
-
-    &--active {
-      background: v.$notion-accent-blue;
-      color: white;
-      border-color: v.$notion-accent-blue;
-
-      &:hover {
-        background: color.adjust(v.$notion-accent-blue, $lightness: -5%);
-        border-color: color.adjust(v.$notion-accent-blue, $lightness: -5%);
-        color: white;
-      }
-    }
-
-    &--ellipsis {
-      cursor: default;
-      background: transparent;
-      border-color: transparent;
-      color: v.$notion-text-tertiary;
-
-      &:hover {
-        background: transparent;
-        border-color: transparent;
-        color: v.$notion-text-tertiary;
+        &--prev,
+        &--next {
+          @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+        }
       }
 
-      .dark & {
-        color: v.$notion-dark-text-tertiary;
+      .pagination__page-numbers {
+        @apply flex items-center gap-1;
 
-        &:hover {
-          color: v.$notion-dark-text-tertiary;
+        .pagination__page-button {
+          @apply w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-200;
+
+          &:not(.pagination__page-button--ellipsis) {
+            @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+          }
+
+          &--active {
+            @apply bg-blue-600 text-white hover:bg-blue-700;
+          }
+
+          &--ellipsis {
+            @apply text-gray-400 dark:text-gray-500 cursor-default;
+          }
         }
       }
     }
   }
 }
 
-// Responsive adjustments
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pagination {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Responsive design
 @media (max-width: 640px) {
   .pagination {
-    @apply text-xs;
+    @apply gap-3;
 
     &__controls {
-      @apply w-full justify-center;
-    }
+      @apply gap-3;
 
-    &__page-numbers {
-      @apply gap-0;
-    }
+      .pagination__navigation {
+        @apply gap-1;
 
-    &__page-button {
-      padding: 0.25rem 0.5rem;
-      min-width: 2rem;
-      font-size: 0.75rem;
-    }
+        .pagination__page-numbers {
+          @apply gap-1;
 
-    &__button {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
+          .pagination__page-button {
+            @apply w-7 h-7 text-xs;
+          }
+        }
+
+        .pagination__button {
+          @apply px-2 py-1 text-xs;
+        }
+      }
     }
   }
 }
