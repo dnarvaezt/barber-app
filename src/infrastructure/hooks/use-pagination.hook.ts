@@ -48,14 +48,14 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
     [] // Sin dependencias para evitar recreación
   )
 
-  // Cargar datos iniciales solo una vez al montar
+  // Cargar datos iniciales y cuando cambien los valores iniciales
   useEffect(() => {
     const initialPagination: PaginationParams = {
       page: config.initialPage || 1,
       limit: config.initialLimit || 10,
     }
     loadData(initialPagination)
-  }, []) // Solo se ejecuta al montar
+  }, [config.initialPage, config.initialLimit, loadData])
 
   // Cambiar página
   const handlePageChange = useCallback(
@@ -63,12 +63,12 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
       if (newPage === meta.page) return // Evitar llamadas innecesarias
 
       const newPagination: PaginationParams = {
-        ...meta,
         page: newPage,
+        limit: meta.limit,
       }
       loadData(newPagination)
     },
-    [meta, loadData]
+    [meta.page, meta.limit, loadData]
   )
 
   // Cambiar límite por página
@@ -77,13 +77,12 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
       if (newLimit === meta.limit) return // Evitar llamadas innecesarias
 
       const newPagination: PaginationParams = {
-        ...meta,
         page: 1, // Reset a la primera página cuando cambia el límite
         limit: newLimit,
       }
       loadData(newPagination)
     },
-    [meta, loadData]
+    [meta.limit, loadData]
   )
 
   // Recargar datos (útil para después de crear/actualizar/eliminar)
@@ -99,12 +98,13 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
   const loadDataWithFilters = useCallback(
     (filters: Partial<PaginationParams>) => {
       const newPagination: PaginationParams = {
-        ...meta,
+        page: meta.page,
+        limit: meta.limit,
         ...filters,
       }
       loadData(newPagination)
     },
-    [meta, loadData]
+    [meta.page, meta.limit, loadData]
   )
 
   return {

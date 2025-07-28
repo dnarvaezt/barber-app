@@ -6,6 +6,8 @@ import type {
 } from './employee.model'
 
 export interface EmployeeRepository {
+  // Método para obtener todos los empleados
+  findAll(pagination: PaginationParams): Promise<PaginatedResponse<Employee>>
   // Métodos heredados de UserRepository
   find(
     searchTerm: string,

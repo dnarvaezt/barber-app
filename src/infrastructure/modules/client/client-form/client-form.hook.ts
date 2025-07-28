@@ -1,11 +1,25 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { Client } from '../../../../application/domain/client'
-import { useEntityForm, useMockData, useValidation } from '../../../hooks'
+import { clientService } from '../../../../application/domain/client/client.provider'
+import { useEntityForm, useValidation } from '../../../hooks'
 import { RouteIds } from '../../../routes'
 
 export const useClientForm = () => {
-  const { loadMockClient } = useMockData()
   const { validateClientForm } = useValidation()
+
+  // Función para cargar un cliente usando el servicio
+  const loadClient = useCallback(async (id: string): Promise<Client | null> => {
+    try {
+      const response = await clientService.getClientById(id, {
+        page: 1,
+        limit: 1,
+      })
+      return response.data[0] || null
+    } catch (error) {
+      console.error('Error loading client:', error)
+      return null
+    }
+  }, [])
 
   const config = {
     entityName: 'cliente',
@@ -14,7 +28,7 @@ export const useClientForm = () => {
     detailRouteId: RouteIds.CLIENT_DETAIL,
     listRouteId: 'client',
     notFoundRouteId: RouteIds.NOT_FOUND,
-    loadEntity: loadMockClient,
+    loadEntity: loadClient,
     validateForm: validateClientForm,
     errorMessages: {
       notFound: 'Cliente no encontrado',
@@ -56,14 +70,31 @@ export const useClientForm = () => {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       const saveClient = async (): Promise<string> => {
-        let savedClientId: string
-        if (entityForm.isEditing) {
-          savedClientId = entityForm.entity!.id
-        } else {
-          savedClientId = `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        try {
+          if (entityForm.isEditing) {
+            // Actualizar cliente existente
+            const updatedClient = await clientService.updateClient({
+              id: entityForm.entity!.id,
+              name: entityForm.formData.name,
+              phoneNumber: entityForm.formData.phoneNumber,
+              birthDate: new Date(entityForm.formData.birthDate),
+              updatedBy: 'admin_001',
+            })
+            return updatedClient.id
+          } else {
+            // Crear nuevo cliente
+            const newClient = await clientService.createClient({
+              name: entityForm.formData.name,
+              phoneNumber: entityForm.formData.phoneNumber,
+              birthDate: new Date(entityForm.formData.birthDate),
+              createdBy: 'admin_001',
+            })
+            return newClient.id
+          }
+        } catch (error) {
+          console.error('Error saving client:', error)
+          throw error
         }
-
-        return savedClientId
       }
 
       await entityForm.handleSubmit(e, saveClient)

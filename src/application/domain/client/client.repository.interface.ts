@@ -6,6 +6,8 @@ import type {
 } from './client.model'
 
 export interface ClientRepository {
+  // Método para obtener todos los clientes
+  findAll(pagination: PaginationParams): Promise<PaginatedResponse<Client>>
   // Métodos heredados de UserRepository
   find(
     searchTerm: string,

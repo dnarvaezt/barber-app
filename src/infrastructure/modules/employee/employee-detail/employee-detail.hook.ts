@@ -1,9 +1,28 @@
-import { useEntityDetail, useMockData, useUtils } from '../../../hooks'
+import { useCallback } from 'react'
+import type { Employee } from '../../../../application/domain/employee'
+import { employeeService } from '../../../../application/domain/employee/employee.provider'
+import { useEntityDetail, useUtils } from '../../../hooks'
 import { RouteIds } from '../../../routes'
 
 export const useEmployeeDetail = () => {
-  const { loadMockEmployee } = useMockData()
   const { formatDate, formatPhone, getAge, getBirthMonth } = useUtils()
+
+  // Función para cargar un empleado usando el servicio
+  const loadEmployee = useCallback(
+    async (id: string): Promise<Employee | null> => {
+      try {
+        const response = await employeeService.getEmployeeById(id, {
+          page: 1,
+          limit: 1,
+        })
+        return response.data[0] || null
+      } catch (error) {
+        console.error('Error loading employee:', error)
+        return null
+      }
+    },
+    []
+  )
 
   const config = {
     entityName: 'empleado',
@@ -11,7 +30,7 @@ export const useEmployeeDetail = () => {
     editRouteId: RouteIds.EMPLOYEE_FORM_EDIT,
     listRouteId: 'employees',
     notFoundRouteId: RouteIds.NOT_FOUND,
-    loadEntity: loadMockEmployee,
+    loadEntity: loadEmployee,
     errorMessages: {
       notFound: 'Empleado no encontrado',
       loadError: 'Error al cargar el empleado',

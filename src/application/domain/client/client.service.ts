@@ -14,6 +14,22 @@ export class ClientService {
     this.clientRepository = clientRepository
   }
 
+  // Método para obtener todos los clientes
+  async getAllClients(
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Client>> {
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+
+    // Aplicar ordenamiento por nombre por defecto si no se especifica
+    const paginationWithSort = {
+      ...validatedPagination,
+      sortBy: validatedPagination.sortBy || 'name',
+      sortOrder: validatedPagination.sortOrder || 'asc',
+    }
+
+    return this.clientRepository.findAll(paginationWithSort)
+  }
+
   // Métodos heredados de UserService
   async findClients(
     searchTerm: string,

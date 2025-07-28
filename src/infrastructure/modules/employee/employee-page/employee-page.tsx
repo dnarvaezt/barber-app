@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Pagination, useLayout } from '../../../components'
+import { useSearchInput } from '../../../hooks'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeePage } from './employee-page.hook'
 import './employee-page.scss'
@@ -15,9 +16,8 @@ export const EmployeePage = () => {
     error,
     meta,
     searchTerm,
-    birthMonthFilter,
+
     handleSearch,
-    handleBirthMonthFilter,
     clearFilters,
     handlePageChange,
     handleLimitChange,
@@ -26,6 +26,13 @@ export const EmployeePage = () => {
     formatPhone,
     getMonthName,
   } = useEmployeePage()
+
+  // Hook para manejar la búsqueda con debounce y eventos de teclado
+  const searchInput = useSearchInput({
+    onSearch: handleSearch,
+    debounceMs: 300,
+    initialValue: searchTerm,
+  })
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
     null
@@ -117,33 +124,24 @@ export const EmployeePage = () => {
             <div className='employee-page__search-input'>
               <input
                 type='text'
-                placeholder='Buscar por nombre o teléfono...'
-                value={searchTerm}
-                onChange={e => handleSearch(e.target.value)}
+                placeholder='Buscar por nombre o teléfono... (Enter para buscar, Esc para limpiar)'
+                value={searchInput.searchValue}
+                onChange={e => searchInput.handleInputChange(e.target.value)}
+                onKeyDown={searchInput.handleKeyDown}
                 className='w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
+              {searchInput.isSearching && (
+                <div className='employee-page__search-loading'>
+                  <div className='employee-page__search-loading-spinner'></div>
+                </div>
+              )}
             </div>
-            <div className='employee-page__filter-select'>
-              <select
-                value={birthMonthFilter}
-                onChange={e =>
-                  handleBirthMonthFilter(
-                    e.target.value ? Number(e.target.value) : ''
-                  )
-                }
-                className='w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-              >
-                <option value=''>Todos los meses</option>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                  <option key={month} value={month}>
-                    {getMonthName(month)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {(searchTerm || birthMonthFilter !== '') && (
+            {searchInput.searchValue && (
               <button
-                onClick={clearFilters}
+                onClick={() => {
+                  searchInput.clearSearch()
+                  clearFilters()
+                }}
                 className='px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               >
                 Limpiar
@@ -167,7 +165,7 @@ export const EmployeePage = () => {
                 </svg>
               </div>
               <p className='employee-page__empty-state-text'>
-                {searchTerm || birthMonthFilter !== ''
+                {searchInput.searchValue
                   ? 'No se encontraron empleados con los filtros aplicados'
                   : 'No hay empleados registrados'}
               </p>

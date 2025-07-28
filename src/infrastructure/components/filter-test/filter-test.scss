@@ -1,0 +1,270 @@
+.filter-test {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  h2 {
+    color: #1f2937;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 2rem;
+  }
+
+  h3 {
+    color: #374151;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+
+  &-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &-search {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  &-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  &-loading-indicator {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  &-results {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #f9fafb;
+  }
+
+  &-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    strong {
+      color: #1f2937;
+    }
+
+    small {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+  }
+
+  &-instructions {
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    h3 {
+      color: #0369a1;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e0f2fe;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: #0369a1;
+      }
+    }
+  }
+
+  &-stats {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 1.5rem;
+
+    h3 {
+      color: #92400e;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  &-stat {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid #fbbf24;
+
+    strong {
+      color: #92400e;
+    }
+  }
+
+  &-loading {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #6b7280;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Modo oscuro
+@media (prefers-color-scheme: dark) {
+  .filter-test {
+    background: #111827;
+    color: #f9fafb;
+
+    h2 {
+      color: #f9fafb;
+    }
+
+    h3 {
+      color: #e5e7eb;
+    }
+
+    &-section {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    &-input {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+
+      &:focus {
+        border-color: #60a5fa;
+      }
+
+      &::placeholder {
+        color: #9ca3af;
+      }
+    }
+
+    &-results {
+      background: #111827;
+      border-color: #374151;
+    }
+
+    &-item {
+      background: #1f2937;
+      border-color: #374151;
+
+      &:hover {
+        border-color: #60a5fa;
+      }
+
+      strong {
+        color: #f9fafb;
+      }
+
+      small {
+        color: #9ca3af;
+      }
+    }
+
+    &-instructions {
+      background: #1e3a8a;
+      border-color: #3b82f6;
+
+      h3 {
+        color: #93c5fd;
+      }
+
+      li {
+        border-color: #1e40af;
+
+        strong {
+          color: #93c5fd;
+        }
+      }
+    }
+
+    &-stats {
+      background: #92400e;
+      border-color: #f59e0b;
+
+      h3 {
+        color: #fef3c7;
+      }
+    }
+
+    &-stat {
+      background: #1f2937;
+      border-color: #f59e0b;
+
+      strong {
+        color: #fef3c7;
+      }
+    }
+
+    &-loading {
+      color: #9ca3af;
+    }
+  }
+}

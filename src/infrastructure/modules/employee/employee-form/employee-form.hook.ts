@@ -1,11 +1,28 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { Employee } from '../../../../application/domain/employee'
-import { useEntityForm, useMockData, useValidation } from '../../../hooks'
+import { employeeService } from '../../../../application/domain/employee/employee.provider'
+import { useEntityForm, useValidation } from '../../../hooks'
 import { RouteIds } from '../../../routes'
 
 export const useEmployeeForm = () => {
-  const { loadMockEmployee } = useMockData()
   const { validateEmployeeForm } = useValidation()
+
+  // Función para cargar un empleado usando el servicio
+  const loadEmployee = useCallback(
+    async (id: string): Promise<Employee | null> => {
+      try {
+        const response = await employeeService.getEmployeeById(id, {
+          page: 1,
+          limit: 1,
+        })
+        return response.data[0] || null
+      } catch (error) {
+        console.error('Error loading employee:', error)
+        return null
+      }
+    },
+    []
+  )
 
   const config = {
     entityName: 'empleado',
@@ -14,7 +31,7 @@ export const useEmployeeForm = () => {
     detailRouteId: RouteIds.EMPLOYEE_DETAIL,
     listRouteId: 'employees',
     notFoundRouteId: RouteIds.NOT_FOUND,
-    loadEntity: loadMockEmployee,
+    loadEntity: loadEmployee,
     validateForm: validateEmployeeForm,
     errorMessages: {
       notFound: 'Empleado no encontrado',
@@ -58,14 +75,33 @@ export const useEmployeeForm = () => {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       const saveEmployee = async (): Promise<string> => {
-        let savedEmployeeId: string
-        if (entityForm.isEditing) {
-          savedEmployeeId = entityForm.entity!.id
-        } else {
-          savedEmployeeId = `employee-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        try {
+          if (entityForm.isEditing) {
+            // Actualizar empleado existente
+            const updatedEmployee = await employeeService.updateEmployee({
+              id: entityForm.entity!.id,
+              name: entityForm.formData.name,
+              phoneNumber: entityForm.formData.phoneNumber,
+              birthDate: new Date(entityForm.formData.birthDate),
+              updatedBy: 'admin_001',
+              percentage: Number(entityForm.formData.percentage),
+            })
+            return updatedEmployee.id
+          } else {
+            // Crear nuevo empleado
+            const newEmployee = await employeeService.createEmployee({
+              name: entityForm.formData.name,
+              phoneNumber: entityForm.formData.phoneNumber,
+              birthDate: new Date(entityForm.formData.birthDate),
+              createdBy: 'admin_001',
+              percentage: Number(entityForm.formData.percentage),
+            })
+            return newEmployee.id
+          }
+        } catch (error) {
+          console.error('Error saving employee:', error)
+          throw error
         }
-
-        return savedEmployeeId
       }
 
       await entityForm.handleSubmit(e, saveEmployee)

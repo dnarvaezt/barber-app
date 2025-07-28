@@ -1,171 +1,181 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import type { PaginationParams } from '../../../../application/domain/common'
 import type { Employee } from '../../../../application/domain/employee'
-import { useMockData, usePagination, useUtils } from '../../../hooks'
-import { PaginationMockService } from '../../../services/pagination-mock.service'
+import { employeeService } from '../../../../application/domain/employee/employee.provider'
+import { usePaginatedList, useUtils } from '../../../hooks'
+
+// Tipos para los filtros de empleados
+interface EmployeeFilters {
+  birthMonth: number | null
+}
 
 export const useEmployeePage = () => {
-  const { loadMockEmployees } = useMockData()
   const { formatDate, formatPhone, getBirthMonthNumber, getMonthName } =
     useUtils()
 
-  // Estado para filtros
-  const [searchTerm, setSearchTerm] = useState('')
-  const [birthMonthFilter, setBirthMonthFilter] = useState<number | ''>('')
-
   // Función para cargar empleados con filtros y paginación
   const loadEmployeesWithFilters = useCallback(
-    async (pagination: PaginationParams) => {
-      const allEmployees = await loadMockEmployees()
-      let filteredEmployees = allEmployees
-
-      // Aplicar filtro de búsqueda
-      if (searchTerm) {
-        const searchResult = PaginationMockService.searchWithPagination(
-          allEmployees,
-          searchTerm,
-          pagination
-        )
-        filteredEmployees = searchResult.data
-      }
-
-      // Aplicar filtro de mes de nacimiento
-      if (birthMonthFilter !== '') {
-        const monthResult =
-          PaginationMockService.filterByBirthMonthWithPagination(
-            allEmployees,
-            birthMonthFilter,
+    async (
+      pagination: PaginationParams,
+      filters: Partial<EmployeeFilters>,
+      search: string
+    ) => {
+      try {
+        // Si hay búsqueda válida (no vacía), usar el método de búsqueda del servicio
+        if (search && search.trim().length > 0) {
+          const searchResponse = await employeeService.findEmployees(
+            search.trim(),
             pagination
           )
-        filteredEmployees = monthResult.data
+          return searchResponse
+        }
+
+        // Si hay filtro de mes de nacimiento, usar el método específico
+        if (filters.birthMonth && filters.birthMonth !== null) {
+          const monthResponse = await employeeService.getEmployeesByBirthMonth(
+            filters.birthMonth,
+            pagination
+          )
+          return monthResponse
+        }
+
+        // Si no hay filtros, obtener todos los empleados con paginación
+        const response = await employeeService.getAllEmployees(pagination)
+        return response
+      } catch (error) {
+        console.error('Error loading employees:', error)
+        return {
+          data: [],
+          meta: {
+            page: pagination.page,
+            limit: pagination.limit,
+            total: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
+        }
       }
-
-      // Si no hay filtros, usar paginación simple
-      if (!searchTerm && birthMonthFilter === '') {
-        return PaginationMockService.paginateData(allEmployees, pagination)
-      }
-
-      // Combinar filtros si ambos están activos
-      if (searchTerm && birthMonthFilter !== '') {
-        const searchFiltered = allEmployees.filter(employee => {
-          const searchableFields = ['name', 'phoneNumber']
-          return searchableFields.some(field => {
-            const value = (employee as any)[field]
-            if (value && typeof value === 'string') {
-              return value.toLowerCase().includes(searchTerm.toLowerCase())
-            }
-            return false
-          })
-        })
-
-        const monthFiltered = searchFiltered.filter(employee => {
-          const birthDate = employee.birthDate
-          if (!birthDate) return false
-          const itemMonth = new Date(birthDate).getMonth() + 1
-          return itemMonth === birthMonthFilter
-        })
-
-        return PaginationMockService.paginateData(monthFiltered, pagination)
-      }
-
-      // Retornar datos paginados
-      return PaginationMockService.paginateData(filteredEmployees, pagination)
     },
-    [loadMockEmployees, searchTerm, birthMonthFilter]
+    []
   )
 
-  // Hook de paginación
-  const pagination = usePagination<Employee>({
+  // Hook combinado de paginación y URL
+  const listState = usePaginatedList<Employee, EmployeeFilters>({
     loadEntities: loadEmployeesWithFilters,
-    initialPage: 1,
-    initialLimit: 10,
+    urlConfig: {
+      filters: {
+        birthMonth: {
+          type: 'number',
+          defaultValue: null,
+          transform: (value: string) => {
+            const num = Number(value)
+            return isNaN(num) ? null : num
+          },
+        },
+      },
+      pagination: {
+        page: { defaultValue: 1 },
+        limit: { defaultValue: 10 },
+        sortBy: { defaultValue: 'name' },
+        sortOrder: { defaultValue: 'asc' },
+      },
+      search: {
+        key: 'search',
+        defaultValue: '',
+      },
+    },
   })
 
-  // Manejadores de filtros
-  const handleSearch = useCallback(
-    (term: string) => {
-      setSearchTerm(term)
-      // Reset a la primera página cuando cambia la búsqueda
-      pagination.handlePageChange(1)
-    },
-    [pagination]
-  )
-
-  const handleBirthMonthFilter = useCallback(
-    (month: number | '') => {
-      setBirthMonthFilter(month)
-      // Reset a la primera página cuando cambia el filtro
-      pagination.handlePageChange(1)
-    },
-    [pagination]
-  )
-
-  const clearFilters = useCallback(() => {
-    setSearchTerm('')
-    setBirthMonthFilter('')
-    // Reset a la primera página cuando se limpian los filtros
-    pagination.handlePageChange(1)
-  }, [pagination])
-
-  // Crear empleado
+  // Crear empleado usando el servicio
   const createEmployee = useCallback(
     async (employeeData: any) => {
-      const newEmployee: Employee = {
-        id: Date.now().toString(),
-        ...employeeData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as Employee
+      try {
+        const newEmployee = await employeeService.createEmployee({
+          name: employeeData.name,
+          phoneNumber: employeeData.phoneNumber,
+          birthDate: new Date(employeeData.birthDate),
+          createdBy: 'admin_001',
+          percentage: Number(employeeData.percentage),
+        })
 
-      // Recargar datos después de crear
-      pagination.refresh()
-      return newEmployee
+        // Recargar datos después de crear
+        listState.refresh()
+        return newEmployee
+      } catch (error) {
+        console.error('Error creating employee:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
-  // Actualizar empleado
+  // Actualizar empleado usando el servicio
   const updateEmployee = useCallback(
     async (employeeData: any) => {
-      const updatedEmployee: Employee = {
-        ...employeeData,
-        updatedAt: new Date(),
-      } as Employee
+      try {
+        const updatedEmployee = await employeeService.updateEmployee({
+          id: employeeData.id,
+          name: employeeData.name,
+          phoneNumber: employeeData.phoneNumber,
+          birthDate: new Date(employeeData.birthDate),
+          updatedBy: 'admin_001',
+          percentage: Number(employeeData.percentage),
+        })
 
-      // Recargar datos después de actualizar
-      pagination.refresh()
-      return updatedEmployee
+        // Recargar datos después de actualizar
+        listState.refresh()
+        return updatedEmployee
+      } catch (error) {
+        console.error('Error updating employee:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
-  // Eliminar empleado
+  // Eliminar empleado usando el servicio
   const deleteEmployee = useCallback(
     async (employeeId: string) => {
-      // Simulación de eliminación
-      console.log('Eliminando empleado:', employeeId)
-
-      // Recargar datos después de eliminar
-      pagination.refresh()
+      try {
+        const success = await employeeService.deleteEmployee(employeeId)
+        if (success) {
+          // Recargar datos después de eliminar
+          listState.refresh()
+        } else {
+          throw new Error('Failed to delete employee')
+        }
+      } catch (error) {
+        console.error('Error deleting employee:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
   return {
-    employees: pagination.data,
-    loading: pagination.loading,
-    error: pagination.error,
-    meta: pagination.meta,
-    searchTerm,
-    birthMonthFilter,
-    handleSearch,
-    handleBirthMonthFilter,
-    clearFilters,
-    handlePageChange: pagination.handlePageChange,
-    handleLimitChange: pagination.handleLimitChange,
+    // Datos y estado
+    employees: listState.data,
+    loading: listState.loading,
+    error: listState.error,
+    meta: listState.meta,
+    // Filtros y búsqueda
+    searchTerm: listState.search,
+    birthMonthFilter: listState.filters.birthMonth || null,
+    // Métodos de actualización
+    handleSearch: listState.updateSearch,
+    handleBirthMonthFilter: (month: number | null) => {
+      listState.updateFilters({ birthMonth: month })
+    },
+    clearFilters: listState.clearFilters,
+    handlePageChange: (page: number) => listState.updatePagination({ page }),
+    handleLimitChange: (limit: number) =>
+      listState.updatePagination({ limit, page: 1 }),
+    // Métodos CRUD
     createEmployee,
     updateEmployee,
     deleteEmployee,
+    // Utilidades
     formatDate,
     formatPhone,
     getBirthMonth: getBirthMonthNumber,

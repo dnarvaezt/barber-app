@@ -14,6 +14,22 @@ export class EmployeeService {
     this.employeeRepository = employeeRepository
   }
 
+  // Método para obtener todos los empleados
+  async getAllEmployees(
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Employee>> {
+    const validatedPagination = PaginationHelper.validateParams(pagination)
+
+    // Aplicar ordenamiento por nombre por defecto si no se especifica
+    const paginationWithSort = {
+      ...validatedPagination,
+      sortBy: validatedPagination.sortBy || 'name',
+      sortOrder: validatedPagination.sortOrder || 'asc',
+    }
+
+    return this.employeeRepository.findAll(paginationWithSort)
+  }
+
   // Métodos heredados de UserService
   async findEmployees(
     searchTerm: string,

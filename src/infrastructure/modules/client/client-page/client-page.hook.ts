@@ -1,171 +1,179 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import type { Client } from '../../../../application/domain/client'
+import { clientService } from '../../../../application/domain/client/client.provider'
 import type { PaginationParams } from '../../../../application/domain/common'
-import { useMockData, usePagination, useUtils } from '../../../hooks'
-import { PaginationMockService } from '../../../services/pagination-mock.service'
+import { usePaginatedList, useUtils } from '../../../hooks'
+
+// Tipos para los filtros de clientes
+interface ClientFilters {
+  birthMonth: number | null
+}
 
 export const useClientPage = () => {
-  const { loadMockClients } = useMockData()
   const { formatDate, formatPhone, getBirthMonthNumber, getMonthName } =
     useUtils()
 
-  // Estado para filtros
-  const [searchTerm, setSearchTerm] = useState('')
-  const [birthMonthFilter, setBirthMonthFilter] = useState<number | ''>('')
-
   // Función para cargar clientes con filtros y paginación
   const loadClientsWithFilters = useCallback(
-    async (pagination: PaginationParams) => {
-      const allClients = await loadMockClients()
-      let filteredClients = allClients
-
-      // Aplicar filtro de búsqueda
-      if (searchTerm) {
-        const searchResult = PaginationMockService.searchWithPagination(
-          allClients,
-          searchTerm,
-          pagination
-        )
-        filteredClients = searchResult.data
-      }
-
-      // Aplicar filtro de mes de nacimiento
-      if (birthMonthFilter !== '') {
-        const monthResult =
-          PaginationMockService.filterByBirthMonthWithPagination(
-            allClients,
-            birthMonthFilter,
+    async (
+      pagination: PaginationParams,
+      filters: Partial<ClientFilters>,
+      search: string
+    ) => {
+      try {
+        // Si hay búsqueda válida (no vacía), usar el método de búsqueda del servicio
+        if (search && search.trim().length > 0) {
+          const searchResponse = await clientService.findClients(
+            search.trim(),
             pagination
           )
-        filteredClients = monthResult.data
+          return searchResponse
+        }
+
+        // Si hay filtro de mes de nacimiento, usar el método específico
+        if (filters.birthMonth && filters.birthMonth !== null) {
+          const monthResponse = await clientService.getClientsByBirthMonth(
+            filters.birthMonth,
+            pagination
+          )
+          return monthResponse
+        }
+
+        // Si no hay filtros, obtener todos los clientes con paginación
+        const response = await clientService.getAllClients(pagination)
+        return response
+      } catch (error) {
+        console.error('Error loading clients:', error)
+        return {
+          data: [],
+          meta: {
+            page: pagination.page,
+            limit: pagination.limit,
+            total: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
+        }
       }
-
-      // Si no hay filtros, usar paginación simple
-      if (!searchTerm && birthMonthFilter === '') {
-        return PaginationMockService.paginateData(allClients, pagination)
-      }
-
-      // Combinar filtros si ambos están activos
-      if (searchTerm && birthMonthFilter !== '') {
-        const searchFiltered = allClients.filter(client => {
-          const searchableFields = ['name', 'phoneNumber']
-          return searchableFields.some(field => {
-            const value = (client as any)[field]
-            if (value && typeof value === 'string') {
-              return value.toLowerCase().includes(searchTerm.toLowerCase())
-            }
-            return false
-          })
-        })
-
-        const monthFiltered = searchFiltered.filter(client => {
-          const birthDate = client.birthDate
-          if (!birthDate) return false
-          const itemMonth = new Date(birthDate).getMonth() + 1
-          return itemMonth === birthMonthFilter
-        })
-
-        return PaginationMockService.paginateData(monthFiltered, pagination)
-      }
-
-      // Retornar datos paginados
-      return PaginationMockService.paginateData(filteredClients, pagination)
     },
-    [loadMockClients, searchTerm, birthMonthFilter]
+    []
   )
 
-  // Hook de paginación
-  const pagination = usePagination<Client>({
+  // Hook combinado de paginación y URL
+  const listState = usePaginatedList<Client, ClientFilters>({
     loadEntities: loadClientsWithFilters,
-    initialPage: 1,
-    initialLimit: 10,
+    urlConfig: {
+      filters: {
+        birthMonth: {
+          type: 'number',
+          defaultValue: null,
+          transform: (value: string) => {
+            const num = Number(value)
+            return isNaN(num) ? null : num
+          },
+        },
+      },
+      pagination: {
+        page: { defaultValue: 1 },
+        limit: { defaultValue: 10 },
+        sortBy: { defaultValue: 'name' },
+        sortOrder: { defaultValue: 'asc' },
+      },
+      search: {
+        key: 'search',
+        defaultValue: '',
+      },
+    },
   })
 
-  // Manejadores de filtros
-  const handleSearch = useCallback(
-    (term: string) => {
-      setSearchTerm(term)
-      // Reset a la primera página cuando cambia la búsqueda
-      pagination.handlePageChange(1)
-    },
-    [pagination]
-  )
-
-  const handleBirthMonthFilter = useCallback(
-    (month: number | '') => {
-      setBirthMonthFilter(month)
-      // Reset a la primera página cuando cambia el filtro
-      pagination.handlePageChange(1)
-    },
-    [pagination]
-  )
-
-  const clearFilters = useCallback(() => {
-    setSearchTerm('')
-    setBirthMonthFilter('')
-    // Reset a la primera página cuando se limpian los filtros
-    pagination.handlePageChange(1)
-  }, [pagination])
-
-  // Crear cliente
+  // Crear cliente usando el servicio
   const createClient = useCallback(
     async (clientData: any) => {
-      const newClient: Client = {
-        id: Date.now().toString(),
-        ...clientData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as Client
+      try {
+        const newClient = await clientService.createClient({
+          name: clientData.name,
+          phoneNumber: clientData.phoneNumber,
+          birthDate: new Date(clientData.birthDate),
+          createdBy: 'admin_001',
+        })
 
-      // Recargar datos después de crear
-      pagination.refresh()
-      return newClient
+        // Recargar datos después de crear
+        listState.refresh()
+        return newClient
+      } catch (error) {
+        console.error('Error creating client:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
-  // Actualizar cliente
+  // Actualizar cliente usando el servicio
   const updateClient = useCallback(
     async (clientData: any) => {
-      const updatedClient: Client = {
-        ...clientData,
-        updatedAt: new Date(),
-      } as Client
+      try {
+        const updatedClient = await clientService.updateClient({
+          id: clientData.id,
+          name: clientData.name,
+          phoneNumber: clientData.phoneNumber,
+          birthDate: new Date(clientData.birthDate),
+          updatedBy: 'admin_001',
+        })
 
-      // Recargar datos después de actualizar
-      pagination.refresh()
-      return updatedClient
+        // Recargar datos después de actualizar
+        listState.refresh()
+        return updatedClient
+      } catch (error) {
+        console.error('Error updating client:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
-  // Eliminar cliente
+  // Eliminar cliente usando el servicio
   const deleteClient = useCallback(
     async (clientId: string) => {
-      // Simulación de eliminación
-      console.log('Eliminando cliente:', clientId)
-
-      // Recargar datos después de eliminar
-      pagination.refresh()
+      try {
+        const success = await clientService.deleteClient(clientId)
+        if (success) {
+          // Recargar datos después de eliminar
+          listState.refresh()
+        } else {
+          throw new Error('Failed to delete client')
+        }
+      } catch (error) {
+        console.error('Error deleting client:', error)
+        throw error
+      }
     },
-    [pagination]
+    [listState]
   )
 
   return {
-    clients: pagination.data,
-    loading: pagination.loading,
-    error: pagination.error,
-    meta: pagination.meta,
-    searchTerm,
-    birthMonthFilter,
-    handleSearch,
-    handleBirthMonthFilter,
-    clearFilters,
-    handlePageChange: pagination.handlePageChange,
-    handleLimitChange: pagination.handleLimitChange,
+    // Datos y estado
+    clients: listState.data,
+    loading: listState.loading,
+    error: listState.error,
+    meta: listState.meta,
+    // Filtros y búsqueda
+    searchTerm: listState.search,
+    birthMonthFilter: listState.filters.birthMonth || null,
+    // Métodos de actualización
+    handleSearch: listState.updateSearch,
+    handleBirthMonthFilter: (month: number | null) => {
+      listState.updateFilters({ birthMonth: month })
+    },
+    clearFilters: listState.clearFilters,
+    handlePageChange: (page: number) => listState.updatePagination({ page }),
+    handleLimitChange: (limit: number) =>
+      listState.updatePagination({ limit, page: 1 }),
+    // Métodos CRUD
     createClient,
     updateClient,
     deleteClient,
+    // Utilidades
     formatDate,
     formatPhone,
     getBirthMonth: getBirthMonthNumber,

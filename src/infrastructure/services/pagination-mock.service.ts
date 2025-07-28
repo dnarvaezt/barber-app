@@ -63,14 +63,49 @@ export class PaginationMockService {
     searchTerm: string,
     pagination: PaginationParams
   ): PaginatedResponse<T> {
+    // Normalizar el término de búsqueda
+    const normalizedSearchTerm = searchTerm.toLowerCase().trim()
+
+    if (!normalizedSearchTerm) {
+      return this.paginateData(data, pagination)
+    }
+
     // Filtrar por término de búsqueda
     const filteredData = data.filter(item => {
       const searchableFields = ['name', 'phoneNumber', 'email']
+
       return searchableFields.some(field => {
         const value = (item as any)[field]
-        if (value && typeof value === 'string') {
-          return value.toLowerCase().includes(searchTerm.toLowerCase())
+
+        if (!value) return false
+
+        // Convertir a string y normalizar
+        const stringValue = String(value).toLowerCase().trim()
+
+        // Búsqueda exacta o parcial
+        if (stringValue.includes(normalizedSearchTerm)) {
+          return true
         }
+
+        // Para números de teléfono, también buscar sin espacios ni guiones
+        if (field === 'phoneNumber') {
+          const cleanPhone = stringValue.replace(/[\s\-()]/g, '')
+          const cleanSearch = normalizedSearchTerm.replace(/[\s\-()]/g, '')
+          if (cleanPhone.includes(cleanSearch)) {
+            return true
+          }
+        }
+
+        // Para nombres, buscar palabras individuales
+        if (field === 'name') {
+          const nameWords = stringValue.split(/\s+/)
+          const searchWords = normalizedSearchTerm.split(/\s+/)
+
+          return searchWords.some(searchWord =>
+            nameWords.some(nameWord => nameWord.includes(searchWord))
+          )
+        }
+
         return false
       })
     })
