@@ -41,6 +41,11 @@ export const ClientPage = () => {
     null
   )
 
+  // Monitorear cambios en el estado del modal
+  useEffect(() => {
+    console.log('🔍 Modal state changed:', showDeleteConfirm)
+  }, [showDeleteConfirm])
+
   useEffect(() => {
     headerCommands.setTitle('Gestión de Clientes')
     headerCommands.setActions(
@@ -63,12 +68,20 @@ export const ClientPage = () => {
   }, [headerCommands, navigate, getRoutePathById])
 
   const handleDeleteClick = (clientId: string) => {
+    console.log('🗑️ Delete button clicked for client:', clientId)
     setShowDeleteConfirm(clientId)
   }
 
   const handleDeleteConfirm = async (clientId: string) => {
-    await deleteClient(clientId)
-    setShowDeleteConfirm(null)
+    try {
+      console.log('🗑️ Attempting to delete client:', clientId)
+      await deleteClient(clientId)
+      console.log('✅ Client deleted successfully:', clientId)
+      setShowDeleteConfirm(null)
+    } catch (error) {
+      console.error('❌ Error deleting client:', error)
+      alert(`Error al eliminar cliente: ${error}`)
+    }
   }
 
   const handleDeleteCancel = () => {

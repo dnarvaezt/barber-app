@@ -155,4 +155,37 @@
   &__loading-spinner {
     @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
   }
+
+  // Modal de confirmación de eliminación
+  &__delete-modal {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+
+  &__delete-modal-content {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6;
+  }
+
+  &__delete-modal-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-white mb-4;
+  }
+
+  &__delete-modal-message {
+    @apply text-sm text-gray-600 dark:text-gray-300 mb-6;
+  }
+
+  &__delete-modal-actions {
+    @apply flex justify-end gap-3;
+  }
+
+  &__delete-modal-button {
+    @apply px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+  }
+
+  &__delete-modal-button--cancel {
+    @apply bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+  }
+
+  &__delete-modal-button--confirm {
+    @apply bg-red-600 text-white hover:bg-red-700;
+  }
 }

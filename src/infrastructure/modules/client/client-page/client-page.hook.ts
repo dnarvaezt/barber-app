@@ -2,7 +2,9 @@ import { useCallback } from 'react'
 import type { Client } from '../../../../application/domain/client'
 import { clientService } from '../../../../application/domain/client/client.provider'
 import type { PaginationParams } from '../../../../application/domain/common'
-import { usePaginatedList, useURLState, useUtils } from '../../../hooks'
+import { usePaginatedList } from '../../../hooks/use-paginated-list.hook'
+import { useURLState } from '../../../hooks/use-url-state.hook'
+import { useUtils } from '../../../hooks/use-utils.hook'
 
 // Tipos para los filtros de clientes
 interface ClientFilters {

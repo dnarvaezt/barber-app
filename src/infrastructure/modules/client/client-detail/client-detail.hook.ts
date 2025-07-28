@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import type { Client } from '../../../../application/domain/client'
 import { clientService } from '../../../../application/domain/client/client.provider'
-import { useEntityDetail, useUtils } from '../../../hooks'
+import { useEntityDetail } from '../../../hooks/use-entity-detail.hook'
+import { useUtils } from '../../../hooks/use-utils.hook'
 import { RouteIds } from '../../../routes'
 
 export const useClientDetail = () => {
@@ -25,7 +26,7 @@ export const useClientDetail = () => {
     entityName: 'cliente',
     entityIdParam: 'clientId',
     editRouteId: RouteIds.CLIENT_FORM_EDIT,
-    listRouteId: 'client',
+    listRouteId: RouteIds.CLIENT,
     notFoundRouteId: RouteIds.NOT_FOUND,
     loadEntity: loadClient,
     errorMessages: {

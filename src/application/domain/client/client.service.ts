@@ -120,16 +120,22 @@ export class ClientService {
   }
 
   async deleteClient(id: string): Promise<boolean> {
+    console.log('🔍 ClientService: Deleting client with ID:', id)
+
     if (!id) {
       throw new Error('Client ID is required')
     }
 
     const clientExists = await this.clientRepository.exists(id)
+    console.log('🔍 ClientService: Client exists:', clientExists)
+
     if (!clientExists) {
       throw new Error('Client not found')
     }
 
-    return this.clientRepository.delete(id)
+    const result = await this.clientRepository.delete(id)
+    console.log('🔍 ClientService: Delete result:', result)
+    return result
   }
 
   private validateClientData(clientData: CreateClientRequest): void {

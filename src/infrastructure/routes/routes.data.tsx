@@ -5,7 +5,7 @@ import type { RouteItem } from './routes.types'
 
 const userIcon = <Icon name='user' />
 const employeeIcon = <Icon name='user' />
-const alertIcon = <Icon name='alert' />
+const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
 export const appRoutes: RouteItem[] = [

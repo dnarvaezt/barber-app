@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { Client } from '../../../../application/domain/client'
 import { clientService } from '../../../../application/domain/client/client.provider'
-import { useEntityForm, useValidation } from '../../../hooks'
+import { useEntityForm } from '../../../hooks/use-entity-form.hook'
+import { useValidation } from '../../../hooks/use-validation.hook'
 import { RouteIds } from '../../../routes'
 
 export const useClientForm = () => {
@@ -26,7 +27,7 @@ export const useClientForm = () => {
     entityIdParam: 'clientId',
     editRouteId: RouteIds.CLIENT_FORM_EDIT,
     detailRouteId: RouteIds.CLIENT_DETAIL,
-    listRouteId: 'client',
+    listRouteId: RouteIds.CLIENT,
     notFoundRouteId: RouteIds.NOT_FOUND,
     loadEntity: loadClient,
     validateForm: validateClientForm,

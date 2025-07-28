@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRoutes } from '../routes'
 
@@ -38,6 +38,7 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
   const [isValidating, setIsValidating] = useState(true)
   const [isValidEntity, setIsValidEntity] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const isValidatingRef = useRef(false)
 
   const loadEntity = useCallback(
     async (id: string) => {
@@ -51,6 +52,8 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
           const notFoundPath = getRoutePathById(config.notFoundRouteId)
           if (notFoundPath) {
             navigate(notFoundPath, { replace: true })
+          } else {
+            console.error(`Route not found for ID: ${config.notFoundRouteId}`)
           }
           return
         }
@@ -64,6 +67,8 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
         const listPath = getRoutePathById(config.listRouteId)
         if (listPath) {
           navigate(listPath, { replace: true })
+        } else {
+          console.error(`Route not found for ID: ${config.listRouteId}`)
         }
       } finally {
         setLoading(false)
@@ -74,6 +79,12 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
 
   const validateEntityId = useCallback(
     async (id: string) => {
+      // Evitar validación si ya se está validando usando useRef
+      if (isValidatingRef.current) {
+        return
+      }
+
+      isValidatingRef.current = true
       setIsValidating(true)
       try {
         const isValid = id && id !== 'new' && id.length > 0
@@ -83,6 +94,8 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
           const listPath = getRoutePathById(config.listRouteId)
           if (listPath) {
             navigate(listPath, { replace: true })
+          } else {
+            console.error(`Route not found for ID: ${config.listRouteId}`)
           }
           return
         }
@@ -95,9 +108,12 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
         const listPath = getRoutePathById(config.listRouteId)
         if (listPath) {
           navigate(listPath, { replace: true })
+        } else {
+          console.error(`Route not found for ID: ${config.listRouteId}`)
         }
       } finally {
         setIsValidating(false)
+        isValidatingRef.current = false
       }
     },
     [
@@ -135,6 +151,8 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
             savedEntityId
           )
           navigate(detailPathWithId)
+        } else {
+          console.error(`Route not found for ID: ${config.detailRouteId}`)
         }
       } catch (error) {
         console.error(`Error submitting ${config.entityName} form:`, error)
@@ -160,17 +178,23 @@ export const useEntityForm = <T>(config: EntityFormConfig<T>) => {
     const listPath = getRoutePathById(config.listRouteId)
     if (listPath) {
       navigate(listPath)
+    } else {
+      console.error(`Route not found for ID: ${config.listRouteId}`)
     }
   }, [navigate, getRoutePathById, config.listRouteId])
 
+  // Usar useRef para almacenar la función y evitar loops infinitos
+  const validateEntityIdRef = useRef(validateEntityId)
+  validateEntityIdRef.current = validateEntityId
+
   useEffect(() => {
     if (isEditing && entityId) {
-      validateEntityId(entityId)
+      validateEntityIdRef.current(entityId)
     } else if (!isEditing) {
       setIsValidating(false)
       setIsValidEntity(true)
     }
-  }, [entityId, isEditing, validateEntityId])
+  }, [entityId, isEditing])
 
   return {
     loading,

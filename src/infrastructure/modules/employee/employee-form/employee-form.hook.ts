@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { Employee } from '../../../../application/domain/employee'
 import { employeeService } from '../../../../application/domain/employee/employee.provider'
-import { useEntityForm, useValidation } from '../../../hooks'
+import { useEntityForm } from '../../../hooks/use-entity-form.hook'
+import { useValidation } from '../../../hooks/use-validation.hook'
 import { RouteIds } from '../../../routes'
 
 export const useEmployeeForm = () => {
@@ -29,7 +30,7 @@ export const useEmployeeForm = () => {
     entityIdParam: 'employeeId',
     editRouteId: RouteIds.EMPLOYEE_FORM_EDIT,
     detailRouteId: RouteIds.EMPLOYEE_DETAIL,
-    listRouteId: 'employees',
+    listRouteId: RouteIds.EMPLOYEES,
     notFoundRouteId: RouteIds.NOT_FOUND,
     loadEntity: loadEmployee,
     validateForm: validateEmployeeForm,

@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import type { Employee } from '../../../../application/domain/employee'
 import { employeeService } from '../../../../application/domain/employee/employee.provider'
-import { useEntityDetail, useUtils } from '../../../hooks'
+import { useEntityDetail } from '../../../hooks/use-entity-detail.hook'
+import { useUtils } from '../../../hooks/use-utils.hook'
 import { RouteIds } from '../../../routes'
 
 export const useEmployeeDetail = () => {
@@ -28,7 +29,7 @@ export const useEmployeeDetail = () => {
     entityName: 'empleado',
     entityIdParam: 'employeeId',
     editRouteId: RouteIds.EMPLOYEE_FORM_EDIT,
-    listRouteId: 'employees',
+    listRouteId: RouteIds.EMPLOYEES,
     notFoundRouteId: RouteIds.NOT_FOUND,
     loadEntity: loadEmployee,
     errorMessages: {

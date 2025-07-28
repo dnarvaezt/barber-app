@@ -2,7 +2,9 @@ import { useCallback } from 'react'
 import type { PaginationParams } from '../../../../application/domain/common'
 import type { Employee } from '../../../../application/domain/employee'
 import { employeeService } from '../../../../application/domain/employee/employee.provider'
-import { usePaginatedList, useURLState, useUtils } from '../../../hooks'
+import { usePaginatedList } from '../../../hooks/use-paginated-list.hook'
+import { useURLState } from '../../../hooks/use-url-state.hook'
+import { useUtils } from '../../../hooks/use-utils.hook'
 
 // Tipos para los filtros de empleados
 interface EmployeeFilters {

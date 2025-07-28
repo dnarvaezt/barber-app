@@ -120,16 +120,22 @@ export class EmployeeService {
   }
 
   async deleteEmployee(id: string): Promise<boolean> {
+    console.log('🔍 EmployeeService: Deleting employee with ID:', id)
+
     if (!id) {
       throw new Error('Employee ID is required')
     }
 
     const employeeExists = await this.employeeRepository.exists(id)
+    console.log('🔍 EmployeeService: Employee exists:', employeeExists)
+
     if (!employeeExists) {
       throw new Error('Employee not found')
     }
 
-    return this.employeeRepository.delete(id)
+    const result = await this.employeeRepository.delete(id)
+    console.log('🔍 EmployeeService: Delete result:', result)
+    return result
   }
 
   private validateEmployeeData(employeeData: CreateEmployeeRequest): void {

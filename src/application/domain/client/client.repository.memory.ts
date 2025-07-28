@@ -91,15 +91,36 @@ export class ClientRepositoryMemory
   }
 
   async delete(id: string): Promise<boolean> {
+    console.log('🔍 ClientRepository: Deleting client with ID:', id)
+    console.log(
+      '🔍 ClientRepository: Total clients before delete:',
+      this.data.length
+    )
+
     const index = this.data.findIndex(cli => cli.id === id)
+    console.log('🔍 ClientRepository: Found at index:', index)
+
     if (index === -1) {
+      console.log('🔍 ClientRepository: Client not found')
       return false
     }
+
     this.data.splice(index, 1)
+    console.log(
+      '🔍 ClientRepository: Total clients after delete:',
+      this.data.length
+    )
     return true
   }
 
   async exists(id: string): Promise<boolean> {
-    return this.data.some(cli => cli.id === id)
+    const exists = this.data.some(cli => cli.id === id)
+    console.log(
+      '🔍 ClientRepository: Checking if client exists:',
+      id,
+      'Result:',
+      exists
+    )
+    return exists
   }
 }

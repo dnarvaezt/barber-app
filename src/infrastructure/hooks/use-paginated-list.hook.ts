@@ -3,7 +3,7 @@ import type {
   PaginatedResponse,
   PaginationParams,
 } from '../../application/domain/common'
-import { useURLState } from './index'
+import { useURLState } from './use-url-state.hook'
 
 export interface PaginatedListConfig<T, F> {
   // Función para cargar datos
@@ -164,7 +164,7 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
     urlState.pagination.sortOrder,
     urlState.pagination.page,
     urlState.pagination.limit,
-  ])
+  ]) // Dependencies are intentionally included to trigger reloads
 
   // Actualizar filtros
   const updateFilters = useCallback(

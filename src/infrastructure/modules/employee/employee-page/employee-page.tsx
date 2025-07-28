@@ -41,6 +41,11 @@ export const EmployeePage = () => {
     null
   )
 
+  // Monitorear cambios en el estado del modal
+  useEffect(() => {
+    console.log('🔍 Modal state changed:', showDeleteConfirm)
+  }, [showDeleteConfirm])
+
   useEffect(() => {
     headerCommands.setTitle('Gestión de Empleados')
     headerCommands.setActions(
@@ -63,12 +68,20 @@ export const EmployeePage = () => {
   }, [headerCommands, navigate, getRoutePathById])
 
   const handleDeleteClick = (employeeId: string) => {
+    console.log('🗑️ Delete button clicked for employee:', employeeId)
     setShowDeleteConfirm(employeeId)
   }
 
   const handleDeleteConfirm = async (employeeId: string) => {
-    await deleteEmployee(employeeId)
-    setShowDeleteConfirm(null)
+    try {
+      console.log('🗑️ Attempting to delete employee:', employeeId)
+      await deleteEmployee(employeeId)
+      console.log('✅ Employee deleted successfully:', employeeId)
+      setShowDeleteConfirm(null)
+    } catch (error) {
+      console.error('❌ Error deleting employee:', error)
+      alert(`Error al eliminar empleado: ${error}`)
+    }
   }
 
   const handleDeleteCancel = () => {
