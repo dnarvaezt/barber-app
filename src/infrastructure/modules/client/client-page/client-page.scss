@@ -25,6 +25,10 @@
     @apply flex flex-col sm:flex-row gap-4;
   }
 
+  &__sort-section {
+    @apply mt-4 pt-4 border-t border-gray-200 dark:border-gray-700;
+  }
+
   &__search-input {
     position: relative;
     flex: 1;

@@ -1,5 +1,5 @@
-import { PaginationMockService } from '../../../infrastructure/services/pagination-mock.service'
 import type { PaginatedResponse, PaginationParams } from '../common'
+import { BaseRepository } from '../common/base.repository'
 import type {
   Client,
   CreateClientRequest,
@@ -7,35 +7,39 @@ import type {
 } from './client.model'
 import type { ClientRepository } from './client.repository.interface'
 
-export class ClientRepositoryMemory implements ClientRepository {
-  private clients: Client[]
+export class ClientRepositoryMemory
+  extends BaseRepository<Client>
+  implements ClientRepository
+{
+  protected data: Client[]
 
   constructor(initialClients: Client[] = []) {
-    this.clients = initialClients
+    super()
+    this.data = initialClients
   }
 
   async findAll(
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Client>> {
-    return PaginationMockService.paginateData(this.clients, pagination)
+    return this.paginateAndSort(this.data, pagination)
   }
 
   async find(
     searchTerm: string,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Client>> {
-    return PaginationMockService.searchWithPagination(
-      this.clients,
-      searchTerm,
-      pagination
-    )
+    const filteredClients = this.searchEntities(searchTerm, [
+      'name',
+      'phoneNumber',
+    ])
+    return this.paginateAndSort(filteredClients, pagination)
   }
 
   async findById(
     id: string,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Client>> {
-    const client = this.clients.find(cli => cli.id === id)
+    const client = this.data.find(cli => cli.id === id)
     return {
       data: client ? [client] : [],
       meta: {
@@ -53,11 +57,8 @@ export class ClientRepositoryMemory implements ClientRepository {
     month: number,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Client>> {
-    return PaginationMockService.filterByBirthMonthWithPagination(
-      this.clients,
-      month,
-      pagination
-    )
+    const filteredClients = this.filterByBirthMonth(month)
+    return this.paginateAndSort(filteredClients, pagination)
   }
 
   async create(clientData: CreateClientRequest): Promise<Client> {
@@ -69,36 +70,36 @@ export class ClientRepositoryMemory implements ClientRepository {
       createdBy: 'system',
       updatedBy: 'system',
     }
-    this.clients.push(newClient)
+    this.data.push(newClient)
     return newClient
   }
 
   async update(clientData: UpdateClientRequest): Promise<Client> {
-    const index = this.clients.findIndex(cli => cli.id === clientData.id)
+    const index = this.data.findIndex(cli => cli.id === clientData.id)
     if (index === -1) {
       throw new Error('Client not found')
     }
 
     const updatedClient: Client = {
-      ...this.clients[index],
+      ...this.data[index],
       ...clientData,
       updatedAt: new Date(),
       updatedBy: 'system',
     }
-    this.clients[index] = updatedClient
+    this.data[index] = updatedClient
     return updatedClient
   }
 
   async delete(id: string): Promise<boolean> {
-    const index = this.clients.findIndex(cli => cli.id === id)
+    const index = this.data.findIndex(cli => cli.id === id)
     if (index === -1) {
       return false
     }
-    this.clients.splice(index, 1)
+    this.data.splice(index, 1)
     return true
   }
 
   async exists(id: string): Promise<boolean> {
-    return this.clients.some(cli => cli.id === id)
+    return this.data.some(cli => cli.id === id)
   }
 }

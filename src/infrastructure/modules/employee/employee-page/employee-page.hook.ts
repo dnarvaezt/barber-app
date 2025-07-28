@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import type { PaginationParams } from '../../../../application/domain/common'
 import type { Employee } from '../../../../application/domain/employee'
 import { employeeService } from '../../../../application/domain/employee/employee.provider'
-import { usePaginatedList, useUtils } from '../../../hooks'
+import { usePaginatedList, useURLState, useUtils } from '../../../hooks'
 
 // Tipos para los filtros de empleados
 interface EmployeeFilters {
@@ -12,6 +12,30 @@ interface EmployeeFilters {
 export const useEmployeePage = () => {
   const { formatDate, formatPhone, getBirthMonthNumber, getMonthName } =
     useUtils()
+
+  // Hook para obtener parámetros de URL
+  const urlState = useURLState<EmployeeFilters>({
+    filters: {
+      birthMonth: {
+        type: 'number',
+        defaultValue: null,
+        transform: (value: string) => {
+          const num = Number(value)
+          return isNaN(num) ? null : num
+        },
+      },
+    },
+    pagination: {
+      page: { defaultValue: 1 },
+      limit: { defaultValue: 10 },
+      sortBy: { defaultValue: 'name' },
+      sortOrder: { defaultValue: 'asc' },
+    },
+    search: {
+      key: 'search',
+      defaultValue: '',
+    },
+  })
 
   // Función para cargar empleados con filtros y paginación
   const loadEmployeesWithFilters = useCallback(
@@ -171,6 +195,13 @@ export const useEmployeePage = () => {
     handlePageChange: (page: number) => listState.updatePagination({ page }),
     handleLimitChange: (limit: number) =>
       listState.updatePagination({ limit, page: 1 }),
+    // Métodos de ordenamiento
+    handleSortChange: (sortBy: string, sortOrder: 'asc' | 'desc') => {
+      listState.updatePagination({ sortBy, sortOrder, page: 1 })
+    },
+    // Estado de ordenamiento
+    sortBy: urlState.pagination.sortBy || 'name',
+    sortOrder: urlState.pagination.sortOrder || 'asc',
     // Métodos CRUD
     createEmployee,
     updateEmployee,

@@ -1,5 +1,5 @@
-import { PaginationMockService } from '../../../infrastructure/services/pagination-mock.service'
 import type { PaginatedResponse, PaginationParams } from '../common'
+import { BaseRepository } from '../common/base.repository'
 import type {
   CreateEmployeeRequest,
   Employee,
@@ -7,35 +7,39 @@ import type {
 } from './employee.model'
 import type { EmployeeRepository } from './employee.repository.interface'
 
-export class EmployeeRepositoryMemory implements EmployeeRepository {
-  private employees: Employee[]
+export class EmployeeRepositoryMemory
+  extends BaseRepository<Employee>
+  implements EmployeeRepository
+{
+  protected data: Employee[]
 
   constructor(initialEmployees: Employee[] = []) {
-    this.employees = initialEmployees
+    super()
+    this.data = initialEmployees
   }
 
   async findAll(
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Employee>> {
-    return PaginationMockService.paginateData(this.employees, pagination)
+    return this.paginateAndSort(this.data, pagination)
   }
 
   async find(
     searchTerm: string,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Employee>> {
-    return PaginationMockService.searchWithPagination(
-      this.employees,
-      searchTerm,
-      pagination
-    )
+    const filteredEmployees = this.searchEntities(searchTerm, [
+      'name',
+      'phoneNumber',
+    ])
+    return this.paginateAndSort(filteredEmployees, pagination)
   }
 
   async findById(
     id: string,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Employee>> {
-    const employee = this.employees.find(emp => emp.id === id)
+    const employee = this.data.find(emp => emp.id === id)
     return {
       data: employee ? [employee] : [],
       meta: {
@@ -53,11 +57,8 @@ export class EmployeeRepositoryMemory implements EmployeeRepository {
     month: number,
     pagination: PaginationParams
   ): Promise<PaginatedResponse<Employee>> {
-    return PaginationMockService.filterByBirthMonthWithPagination(
-      this.employees,
-      month,
-      pagination
-    )
+    const filteredEmployees = this.filterByBirthMonth(month)
+    return this.paginateAndSort(filteredEmployees, pagination)
   }
 
   async create(employeeData: CreateEmployeeRequest): Promise<Employee> {
@@ -69,36 +70,36 @@ export class EmployeeRepositoryMemory implements EmployeeRepository {
       createdBy: 'system',
       updatedBy: 'system',
     }
-    this.employees.push(newEmployee)
+    this.data.push(newEmployee)
     return newEmployee
   }
 
   async update(employeeData: UpdateEmployeeRequest): Promise<Employee> {
-    const index = this.employees.findIndex(emp => emp.id === employeeData.id)
+    const index = this.data.findIndex(emp => emp.id === employeeData.id)
     if (index === -1) {
       throw new Error('Employee not found')
     }
 
     const updatedEmployee: Employee = {
-      ...this.employees[index],
+      ...this.data[index],
       ...employeeData,
       updatedAt: new Date(),
       updatedBy: 'system',
     }
-    this.employees[index] = updatedEmployee
+    this.data[index] = updatedEmployee
     return updatedEmployee
   }
 
   async delete(id: string): Promise<boolean> {
-    const index = this.employees.findIndex(emp => emp.id === id)
+    const index = this.data.findIndex(emp => emp.id === id)
     if (index === -1) {
       return false
     }
-    this.employees.splice(index, 1)
+    this.data.splice(index, 1)
     return true
   }
 
   async exists(id: string): Promise<boolean> {
-    return this.employees.some(emp => emp.id === id)
+    return this.data.some(emp => emp.id === id)
   }
 }

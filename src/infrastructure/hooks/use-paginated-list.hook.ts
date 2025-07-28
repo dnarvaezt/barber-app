@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type {
   PaginatedResponse,
   PaginationParams,
 } from '../../application/domain/common'
-import { usePagination, useURLState } from './index'
+import { useURLState } from './index'
 
 export interface PaginatedListConfig<T, F> {
   // Función para cargar datos
@@ -79,33 +79,92 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
   // Función estable para cargar datos con filtros y búsqueda
   const loadDataWithFilters = useCallback(
     async (pagination: PaginationParams) => {
+      // Combinar parámetros de paginación con los de URL
+      const fullPagination: PaginationParams = {
+        page: pagination.page,
+        limit: pagination.limit,
+        sortBy: pagination.sortBy || urlState.pagination.sortBy,
+        sortOrder: pagination.sortOrder || urlState.pagination.sortOrder,
+      }
+
       return await loadDataWithFiltersRef.current!(
-        pagination,
+        fullPagination,
         urlState.filters,
         urlState.search
       )
     },
-    [urlState.filters, urlState.search]
+    [
+      urlState.filters,
+      urlState.search,
+      urlState.pagination.sortBy,
+      urlState.pagination.sortOrder,
+    ]
   )
 
-  // Hook de paginación
-  const pagination = usePagination<T>({
-    loadEntities: loadDataWithFilters,
-    initialPage: urlState.pagination.page,
-    initialLimit: urlState.pagination.limit,
+  // Estado interno para manejar la paginación
+  const [data, setData] = useState<T[]>([])
+  const [meta, setMeta] = useState({
+    page: urlState.pagination.page,
+    limit: urlState.pagination.limit,
+    total: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
   })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Referencia estable para pagination.refresh
-  const refreshRef = useRef(pagination.refresh)
-  refreshRef.current = pagination.refresh
+  // Función para cargar datos
+  const loadData = useCallback(
+    async (pagination: PaginationParams) => {
+      setLoading(true)
+      setError(null)
 
-  // Recargar datos cuando cambien los filtros o la búsqueda
+      try {
+        const response = await loadDataWithFilters(pagination)
+        setData(response.data)
+        setMeta(response.meta)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar datos')
+        console.error('Error loading paginated data:', err)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [loadDataWithFilters]
+  )
+
+  // Cargar datos iniciales con todos los parámetros de URL
+  useEffect(() => {
+    const initialPagination: PaginationParams = {
+      page: urlState.pagination.page,
+      limit: urlState.pagination.limit,
+      sortBy: urlState.pagination.sortBy,
+      sortOrder: urlState.pagination.sortOrder,
+    }
+    loadData(initialPagination)
+  }, [loadData]) // Solo ejecutar cuando cambie loadData
+
+  // Recargar datos cuando cambien los filtros, búsqueda o ordenamiento
   useEffect(() => {
     // Solo recargar si ya tenemos datos iniciales
-    if (pagination.data.length > 0 || pagination.loading) {
-      refreshRef.current()
+    if (data.length > 0 || loading) {
+      const currentPagination: PaginationParams = {
+        page: urlState.pagination.page,
+        limit: urlState.pagination.limit,
+        sortBy: urlState.pagination.sortBy,
+        sortOrder: urlState.pagination.sortOrder,
+      }
+      loadData(currentPagination)
     }
-  }, [urlState.filters, urlState.search])
+  }, [
+    urlState.filters,
+    urlState.search,
+    urlState.pagination.sortBy,
+    urlState.pagination.sortOrder,
+    urlState.pagination.page,
+    urlState.pagination.limit,
+  ])
 
   // Actualizar filtros
   const updateFilters = useCallback(
@@ -150,15 +209,21 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
 
   // Recargar datos
   const refresh = useCallback(() => {
-    pagination.refresh()
-  }, [pagination])
+    const currentPagination: PaginationParams = {
+      page: urlState.pagination.page,
+      limit: urlState.pagination.limit,
+      sortBy: urlState.pagination.sortBy,
+      sortOrder: urlState.pagination.sortOrder,
+    }
+    loadData(currentPagination)
+  }, [loadData, urlState.pagination])
 
   return {
     // Datos y estado
-    data: pagination.data,
-    loading: pagination.loading,
-    error: pagination.error,
-    meta: pagination.meta,
+    data,
+    loading,
+    error,
+    meta,
     // Filtros y búsqueda
     filters: urlState.filters,
     search: urlState.search,

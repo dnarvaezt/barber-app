@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Pagination, useLayout } from '../../../components'
+import { Pagination, SortControls, useLayout } from '../../../components'
 import { useSearchInput } from '../../../hooks'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeePage } from './employee-page.hook'
@@ -16,11 +16,14 @@ export const EmployeePage = () => {
     error,
     meta,
     searchTerm,
+    sortBy,
+    sortOrder,
 
     handleSearch,
     clearFilters,
     handlePageChange,
     handleLimitChange,
+    handleSortChange,
     deleteEmployee,
     formatDate,
     formatPhone,
@@ -147,6 +150,16 @@ export const EmployeePage = () => {
                 Limpiar
               </button>
             )}
+          </div>
+
+          {/* Controles de ordenamiento */}
+          <div className='employee-page__sort-section'>
+            <SortControls
+              currentSortBy={sortBy}
+              currentSortOrder={sortOrder}
+              onSortChange={handleSortChange}
+              className='employee-page__sort-controls'
+            />
           </div>
         </div>
 

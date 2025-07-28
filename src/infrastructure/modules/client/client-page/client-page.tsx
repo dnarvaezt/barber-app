@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Pagination, useLayout } from '../../../components'
+import { Pagination, SortControls, useLayout } from '../../../components'
 import { useSearchInput } from '../../../hooks'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
@@ -16,11 +16,14 @@ export const ClientPage = () => {
     error,
     meta,
     searchTerm,
+    sortBy,
+    sortOrder,
 
     handleSearch,
     clearFilters,
     handlePageChange,
     handleLimitChange,
+    handleSortChange,
     deleteClient,
     formatDate,
     formatPhone,
@@ -148,6 +151,16 @@ export const ClientPage = () => {
                 Limpiar
               </button>
             )}
+          </div>
+
+          {/* Controles de ordenamiento */}
+          <div className='client-page__sort-section'>
+            <SortControls
+              currentSortBy={sortBy}
+              currentSortOrder={sortOrder}
+              onSortChange={handleSortChange}
+              className='client-page__sort-controls'
+            />
           </div>
         </div>
 

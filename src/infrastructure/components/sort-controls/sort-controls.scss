@@ -1,0 +1,38 @@
+.sort-controls {
+  @apply flex items-center gap-2;
+
+  &__container {
+    @apply flex items-center gap-3;
+  }
+
+  &__label {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  &__buttons {
+    @apply flex gap-2;
+  }
+
+  &__button {
+    @apply px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400
+           bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+           rounded-md hover:bg-gray-50 dark:hover:bg-gray-600
+           hover:text-gray-800 dark:hover:text-gray-200
+           transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           dark:focus:ring-offset-gray-800;
+
+    &--active {
+      @apply bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600
+             text-blue-700 dark:text-blue-300;
+    }
+  }
+
+  &__status {
+    @apply mt-2;
+  }
+
+  &__status-text {
+    @apply text-xs text-gray-500 dark:text-gray-400;
+  }
+}

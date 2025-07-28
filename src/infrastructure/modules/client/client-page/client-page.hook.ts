@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import type { Client } from '../../../../application/domain/client'
 import { clientService } from '../../../../application/domain/client/client.provider'
 import type { PaginationParams } from '../../../../application/domain/common'
-import { usePaginatedList, useUtils } from '../../../hooks'
+import { usePaginatedList, useURLState, useUtils } from '../../../hooks'
 
 // Tipos para los filtros de clientes
 interface ClientFilters {
@@ -12,6 +12,30 @@ interface ClientFilters {
 export const useClientPage = () => {
   const { formatDate, formatPhone, getBirthMonthNumber, getMonthName } =
     useUtils()
+
+  // Hook para obtener parámetros de URL
+  const urlState = useURLState<ClientFilters>({
+    filters: {
+      birthMonth: {
+        type: 'number',
+        defaultValue: null,
+        transform: (value: string) => {
+          const num = Number(value)
+          return isNaN(num) ? null : num
+        },
+      },
+    },
+    pagination: {
+      page: { defaultValue: 1 },
+      limit: { defaultValue: 10 },
+      sortBy: { defaultValue: 'name' },
+      sortOrder: { defaultValue: 'asc' },
+    },
+    search: {
+      key: 'search',
+      defaultValue: '',
+    },
+  })
 
   // Función para cargar clientes con filtros y paginación
   const loadClientsWithFilters = useCallback(
@@ -169,6 +193,13 @@ export const useClientPage = () => {
     handlePageChange: (page: number) => listState.updatePagination({ page }),
     handleLimitChange: (limit: number) =>
       listState.updatePagination({ limit, page: 1 }),
+    // Métodos de ordenamiento
+    handleSortChange: (sortBy: string, sortOrder: 'asc' | 'desc') => {
+      listState.updatePagination({ sortBy, sortOrder, page: 1 })
+    },
+    // Estado de ordenamiento
+    sortBy: urlState.pagination.sortBy || 'name',
+    sortOrder: urlState.pagination.sortOrder || 'asc',
     // Métodos CRUD
     createClient,
     updateClient,
