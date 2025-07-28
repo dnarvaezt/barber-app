@@ -12,6 +12,7 @@ interface UsePaginationConfig<T> {
 }
 
 export const usePagination = <T>(config: UsePaginationConfig<T>) => {
+  // Estado interno
   const [data, setData] = useState<T[]>([])
   const [meta, setMeta] = useState<PaginationMeta>({
     page: config.initialPage || 1,
@@ -24,57 +25,58 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Usar useRef para mantener una referencia estable al config
+  // Referencias estables para evitar recreaciones
   const configRef = useRef(config)
+  const metaRef = useRef(meta)
+
+  // Actualizar refs cuando cambien los valores
   configRef.current = config
+  metaRef.current = meta
 
-  // Función para cargar datos con paginación
-  const loadData = useCallback(
-    async (pagination: PaginationParams) => {
-      setLoading(true)
-      setError(null)
+  // Función estable para cargar datos
+  const loadData = useCallback(async (pagination: PaginationParams) => {
+    setLoading(true)
+    setError(null)
 
-      try {
-        const response = await configRef.current.loadEntities(pagination)
-        setData(response.data)
-        setMeta(response.meta)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error al cargar datos')
-        console.error('Error loading paginated data:', err)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [] // Sin dependencias para evitar recreación
-  )
+    try {
+      const response = await configRef.current.loadEntities(pagination)
+      setData(response.data)
+      setMeta(response.meta)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cargar datos')
+      console.error('Error loading paginated data:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
-  // Cargar datos iniciales y cuando cambien los valores iniciales
+  // Cargar datos iniciales solo una vez
   useEffect(() => {
     const initialPagination: PaginationParams = {
       page: config.initialPage || 1,
       limit: config.initialLimit || 10,
     }
     loadData(initialPagination)
-  }, [config.initialPage, config.initialLimit, loadData])
+  }, [loadData, config.initialPage, config.initialLimit])
 
   // Cambiar página
   const handlePageChange = useCallback(
     (newPage: number) => {
-      if (newPage === meta.page) return // Evitar llamadas innecesarias
+      if (newPage === metaRef.current.page) return
 
       const newPagination: PaginationParams = {
         page: newPage,
-        limit: meta.limit,
+        limit: metaRef.current.limit,
       }
       loadData(newPagination)
     },
-    [meta.page, meta.limit, loadData]
+    [loadData]
   )
 
   // Cambiar límite por página
   const handleLimitChange = useCallback(
     (newLimit: number) => {
-      if (newLimit === meta.limit) return // Evitar llamadas innecesarias
+      if (newLimit === metaRef.current.limit) return
 
       const newPagination: PaginationParams = {
         page: 1, // Reset a la primera página cuando cambia el límite
@@ -82,29 +84,29 @@ export const usePagination = <T>(config: UsePaginationConfig<T>) => {
       }
       loadData(newPagination)
     },
-    [meta.limit, loadData]
+    [loadData]
   )
 
-  // Recargar datos (útil para después de crear/actualizar/eliminar)
+  // Recargar datos
   const refresh = useCallback(() => {
     const currentPagination: PaginationParams = {
-      page: meta.page,
-      limit: meta.limit,
+      page: metaRef.current.page,
+      limit: metaRef.current.limit,
     }
     loadData(currentPagination)
-  }, [meta.page, meta.limit, loadData])
+  }, [loadData])
 
-  // Función para cargar datos con filtros (útil para búsquedas)
+  // Función para cargar datos con filtros
   const loadDataWithFilters = useCallback(
     (filters: Partial<PaginationParams>) => {
       const newPagination: PaginationParams = {
-        page: meta.page,
-        limit: meta.limit,
+        page: metaRef.current.page,
+        limit: metaRef.current.limit,
         ...filters,
       }
       loadData(newPagination)
     },
-    [meta.page, meta.limit, loadData]
+    [loadData]
   )
 
   return {

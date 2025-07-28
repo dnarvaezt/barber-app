@@ -45,6 +45,19 @@ export const useSearchInput = ({
     setIsSearching(false)
   }, [])
 
+  // Función para limpiar la búsqueda
+  const clearSearch = useCallback(() => {
+    setSearchValue('')
+
+    // Limpiar debounce si existe
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+      debounceRef.current = null
+    }
+
+    performSearch('')
+  }, [performSearch])
+
   // Función para manejar cambios en el input con debounce
   const handleInputChange = useCallback(
     (value: string) => {
@@ -101,19 +114,6 @@ export const useSearchInput = ({
 
     performSearch(searchValue)
   }, [searchValue, performSearch])
-
-  // Función para limpiar la búsqueda
-  const clearSearch = useCallback(() => {
-    setSearchValue('')
-
-    // Limpiar debounce si existe
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-      debounceRef.current = null
-    }
-
-    performSearch('')
-  }, [performSearch])
 
   // Limpiar timeout al desmontar
   useEffect(() => {

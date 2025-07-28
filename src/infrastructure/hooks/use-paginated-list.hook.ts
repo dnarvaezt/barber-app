@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type {
   PaginatedResponse,
   PaginationParams,
@@ -72,16 +72,20 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
   // Hook para manejar el estado de la URL
   const urlState = useURLState<F>(config.urlConfig)
 
-  // Función para cargar datos con filtros y búsqueda
+  // Referencia estable para la función de carga
+  const loadDataWithFiltersRef = useRef(config.loadEntities)
+  loadDataWithFiltersRef.current = config.loadEntities
+
+  // Función estable para cargar datos con filtros y búsqueda
   const loadDataWithFilters = useCallback(
     async (pagination: PaginationParams) => {
-      return await config.loadEntities(
+      return await loadDataWithFiltersRef.current!(
         pagination,
         urlState.filters,
         urlState.search
       )
     },
-    [config, urlState.filters, urlState.search]
+    [urlState.filters, urlState.search]
   )
 
   // Hook de paginación
@@ -91,11 +95,17 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
     initialLimit: urlState.pagination.limit,
   })
 
+  // Referencia estable para pagination.refresh
+  const refreshRef = useRef(pagination.refresh)
+  refreshRef.current = pagination.refresh
+
   // Recargar datos cuando cambien los filtros o la búsqueda
   useEffect(() => {
-    // Recargar datos con los nuevos filtros/búsqueda
-    pagination.refresh()
-  }, [urlState.filters, urlState.search, pagination])
+    // Solo recargar si ya tenemos datos iniciales
+    if (pagination.data.length > 0 || pagination.loading) {
+      refreshRef.current()
+    }
+  }, [urlState.filters, urlState.search])
 
   // Actualizar filtros
   const updateFilters = useCallback(
