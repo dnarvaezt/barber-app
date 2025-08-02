@@ -38,3 +38,15 @@ lighthouse-comparison-*.json
 lighthouse-reports/
 lighthouse-build-report.*
 reports/
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+test-results/
+coverage-final.json
+coverage-summary.json
+*.test.js.map
+*.spec.js.map
+__snapshots__/

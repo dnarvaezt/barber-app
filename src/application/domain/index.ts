@@ -9,3 +9,6 @@ export * from './client'
 
 // Employee Domain
 export * from './employee'
+
+// Category Domain
+export * from './category'

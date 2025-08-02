@@ -9,6 +9,10 @@ export const RouteIds = {
   EMPLOYEE_FORM_NEW: 'employee-form-new',
   EMPLOYEE_DETAIL: 'employee-detail',
   EMPLOYEE_FORM_EDIT: 'employee-form-edit',
+  CATEGORIES: 'categories',
+  CATEGORY_FORM_NEW: 'category-form-new',
+  CATEGORY_DETAIL: 'category-detail',
+  CATEGORY_FORM_EDIT: 'category-form-edit',
   NOT_FOUND: 'not-found',
 } as const
 

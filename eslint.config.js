@@ -10,6 +10,11 @@ export default tseslint.config([
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
+    ignores: [
+      '**/*.test.{ts,tsx}',
+      '**/*.spec.{ts,tsx}',
+      '**/__tests__/**/*.{ts,tsx}',
+    ],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
