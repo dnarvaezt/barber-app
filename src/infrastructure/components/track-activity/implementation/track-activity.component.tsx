@@ -2,7 +2,7 @@
 // TRACK ACTIVITY COMPONENT - Componente principal de React
 // ============================================================================
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ActivityState, TimeValueObject } from '../application'
 
 import {
@@ -49,17 +49,6 @@ export function TrackActivityComponent({
   const { configuration } = useTrackActivityConfiguration()
 
   const [showDetails, setShowDetails] = useState(false)
-
-  // ============================================================================
-  // EFECTOS
-  // ============================================================================
-
-  useEffect(() => {
-    // Auto-iniciar monitoreo si no está activo
-    if (!isMonitoring) {
-      startMonitoring().catch(console.error)
-    }
-  }, [isMonitoring, startMonitoring])
 
   // ============================================================================
   // FUNCIONES AUXILIARES

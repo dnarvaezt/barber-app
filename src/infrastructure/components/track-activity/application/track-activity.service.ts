@@ -1,5 +1,5 @@
 // ============================================================================
-// TRACK ACTIVITY DOMAIN SERVICE - Lógica de negocio principal
+// TRACK ACTIVITY SERVICES - Servicios de aplicación
 // ============================================================================
 
 import {
@@ -29,17 +29,23 @@ import {
   ActivityRecordNotFoundException,
 } from './track-activity.exceptions'
 
+import { ActivityRecordFactory } from './track-activity.factory'
+
 // ============================================================================
 // ACTIVITY RECORD SERVICE - Servicio principal de registros
 // ============================================================================
 
 export class ActivityRecordService implements IActivityRecordService {
+  private readonly recordFactory: ActivityRecordFactory
+
   constructor(
     private readonly repository: IActivityRecordRepository,
     private readonly eventBus: IActivityEventBus,
     private readonly validator: IActivityValidator,
     private readonly configuration: IActivityConfiguration = DEFAULT_ACTIVITY_CONFIGURATION
-  ) {}
+  ) {
+    this.recordFactory = new ActivityRecordFactory()
+  }
 
   async startRecord(
     eventType: EventType,
@@ -55,23 +61,15 @@ export class ActivityRecordService implements IActivityRecordService {
       )
     }
 
-    // Crear nuevo registro
-    const record: Omit<IActivityRecord, 'id' | 'createdAt' | 'updatedAt'> = {
-      minimumTime: this.configuration.minimumTime,
-      activeTime: TimeValueObject.zero(),
-      idleTime: TimeValueObject.zero(),
-      totalTime: this.configuration.minimumTime,
-      state: ActivityState.ACTIVE,
-      lastInteractionTime: new Date(),
-      lastInteractionType: interactionType || null,
-      startEventType: eventType,
-      startTime: new Date(),
-      isVisible: true,
-      isFocused: true,
-    }
+    // Crear nuevo registro usando el factory
+    const record = this.recordFactory.createRecord(
+      eventType,
+      interactionType,
+      this.configuration
+    )
 
     // Validar registro antes de crear
-    const validation = this.validator.validateRecord(record as IActivityRecord)
+    const validation = this.validator.validateRecord(record)
     if (!validation.isValid) {
       throw new ActivityConfigurationInvalidException(
         `Invalid record: ${Object.values(validation.errors).join(', ')}`
