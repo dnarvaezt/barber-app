@@ -1,2 +1,3 @@
-// Category Module
-// TODO: Implement category module
+export * from './category-detail'
+export * from './category-form'
+export * from './category-page'

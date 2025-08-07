@@ -5,6 +5,7 @@ import type { RouteItem } from './routes.types'
 
 const userIcon = <Icon name='user' />
 const employeeIcon = <Icon name='user' />
+const categoryIcon = <Icon name='tag' />
 const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
@@ -101,6 +102,50 @@ export const appRoutes: RouteItem[] = [
         icon: userIcon,
         component: lazyRoute('employee-detail', 'default'),
         path: '/:employeeId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: RouteIds.CATEGORIES,
+    name: 'Categorías',
+    title: 'Gestión de Categorías',
+    icon: categoryIcon,
+    component: lazyRoute('category-page', 'default'),
+    path: '/categories',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.CATEGORY_FORM_NEW,
+        name: 'Nueva Categoría',
+        title: 'Crear Nueva Categoría',
+        icon: categoryIcon,
+        component: lazyRoute('category-form', 'default'),
+        path: '/form/new',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.CATEGORY_FORM_EDIT,
+        name: 'Editar Categoría',
+        title: 'Editar Categoría',
+        icon: categoryIcon,
+        component: lazyRoute('category-form', 'default'),
+        path: '/form/:categoryId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.CATEGORY_DETAIL,
+        name: 'Detalle Categoría',
+        title: 'Detalle de la Categoría',
+        icon: categoryIcon,
+        component: lazyRoute('category-detail', 'default'),
+        path: '/:categoryId',
         inheritPath: true,
         hideSidebar: true,
         children: [],

@@ -9,12 +9,12 @@ import './entity-list.scss'
 
 interface MobileCardProps {
   entity: any
-  entityType: 'client' | 'employee'
+  entityType: 'client' | 'employee' | 'category'
   onDeleteClick: (id: string) => void
-  formatPhone: (phone: string) => string
+  formatPhone?: (phone: string) => string
   formatDate: (date: Date) => string
-  getAge: (date: Date) => number
-  getMonthName: (month: number) => string
+  getAge?: (date: Date) => number
+  getMonthName?: (month: number) => string
   className?: string
 }
 
@@ -31,21 +31,42 @@ export const MobileCard: React.FC<MobileCardProps> = ({
   const { buildRoutePathWithParams } = useRoutes()
 
   const getDetailRoute = () => {
-    return entityType === 'client'
-      ? RouteIds.CLIENT_DETAIL
-      : RouteIds.EMPLOYEE_DETAIL
+    switch (entityType) {
+      case 'client':
+        return RouteIds.CLIENT_DETAIL
+      case 'employee':
+        return RouteIds.EMPLOYEE_DETAIL
+      case 'category':
+        return RouteIds.CATEGORY_DETAIL
+      default:
+        return RouteIds.CLIENT_DETAIL
+    }
   }
 
   const getEditRoute = () => {
-    return entityType === 'client'
-      ? RouteIds.CLIENT_FORM_EDIT
-      : RouteIds.EMPLOYEE_FORM_EDIT
+    switch (entityType) {
+      case 'client':
+        return RouteIds.CLIENT_FORM_EDIT
+      case 'employee':
+        return RouteIds.EMPLOYEE_FORM_EDIT
+      case 'category':
+        return RouteIds.CATEGORY_FORM_EDIT
+      default:
+        return RouteIds.CLIENT_FORM_EDIT
+    }
   }
 
   const getRouteParams = (): Record<string, string> => {
-    return entityType === 'client'
-      ? { clientId: entity.id }
-      : { employeeId: entity.id }
+    switch (entityType) {
+      case 'client':
+        return { clientId: entity.id }
+      case 'employee':
+        return { employeeId: entity.id }
+      case 'category':
+        return { categoryId: entity.id }
+      default:
+        return { clientId: entity.id }
+    }
   }
 
   return (
@@ -74,39 +95,64 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         </div>
       </div>
       <div className='entity-list__mobile-content'>
-        <div className='entity-list__mobile-item'>
-          <span className='entity-list__mobile-label'>Teléfono:</span>
-          <span className='entity-list__mobile-value'>
-            {formatPhone(entity.phoneNumber)}
-          </span>
-        </div>
-        <div className='entity-list__mobile-item'>
-          <span className='entity-list__mobile-label'>
-            Fecha de Nacimiento:
-          </span>
-          <span className='entity-list__mobile-value'>
-            {formatDate(entity.birthDate)}
-          </span>
-        </div>
-        <div className='entity-list__mobile-item'>
-          <span className='entity-list__mobile-label'>Edad:</span>
-          <span className='entity-list__mobile-value'>
-            {getAge(entity.birthDate)} años
-          </span>
-        </div>
-        <div className='entity-list__mobile-item'>
-          <span className='entity-list__mobile-label'>Mes de Nacimiento:</span>
-          <span className='entity-list__mobile-value'>
-            {getMonthName(new Date(entity.birthDate).getMonth())}
-          </span>
-        </div>
-        {entityType === 'employee' && (
-          <div className='entity-list__mobile-item'>
-            <span className='entity-list__mobile-label'>Porcentaje:</span>
-            <span className='entity-list__mobile-value'>
-              {entity.percentage}%
-            </span>
-          </div>
+        {entityType === 'category' ? (
+          <>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>
+                Fecha de Creación:
+              </span>
+              <span className='entity-list__mobile-value'>
+                {formatDate(entity.createdAt)}
+              </span>
+            </div>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>
+                Última Actualización:
+              </span>
+              <span className='entity-list__mobile-value'>
+                {formatDate(entity.updatedAt)}
+              </span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>Teléfono:</span>
+              <span className='entity-list__mobile-value'>
+                {formatPhone?.(entity.phoneNumber)}
+              </span>
+            </div>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>
+                Fecha de Nacimiento:
+              </span>
+              <span className='entity-list__mobile-value'>
+                {formatDate(entity.birthDate)}
+              </span>
+            </div>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>Edad:</span>
+              <span className='entity-list__mobile-value'>
+                {getAge?.(entity.birthDate)} años
+              </span>
+            </div>
+            <div className='entity-list__mobile-item'>
+              <span className='entity-list__mobile-label'>
+                Mes de Nacimiento:
+              </span>
+              <span className='entity-list__mobile-value'>
+                {getMonthName?.(new Date(entity.birthDate).getMonth())}
+              </span>
+            </div>
+            {entityType === 'employee' && (
+              <div className='entity-list__mobile-item'>
+                <span className='entity-list__mobile-label'>Porcentaje:</span>
+                <span className='entity-list__mobile-value'>
+                  {entity.percentage}%
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -119,14 +165,14 @@ export const MobileCard: React.FC<MobileCardProps> = ({
 
 interface EntityListProps {
   entities: any[]
-  entityType: 'client' | 'employee'
+  entityType: 'client' | 'employee' | 'category'
   loading?: boolean
   error?: string | null
   onDeleteClick: (id: string) => void
-  formatPhone: (phone: string) => string
+  formatPhone?: (phone: string) => string
   formatDate: (date: Date) => string
-  getAge: (date: Date) => number
-  getMonthName: (month: number) => string
+  getAge?: (date: Date) => number
+  getMonthName?: (month: number) => string
   className?: string
 }
 
@@ -147,7 +193,13 @@ export const EntityList: React.FC<EntityListProps> = ({
       <div className={`entity-list__loading ${className}`}>
         <div className='entity-list__loading-spinner'></div>
         <p className='entity-list__loading-text'>
-          Cargando {entityType === 'client' ? 'clientes' : 'empleados'}...
+          Cargando{' '}
+          {entityType === 'client'
+            ? 'clientes'
+            : entityType === 'employee'
+              ? 'empleados'
+              : 'categorías'}
+          ...
         </p>
       </div>
     )
@@ -167,7 +219,12 @@ export const EntityList: React.FC<EntityListProps> = ({
       <div className={`entity-list__empty ${className}`}>
         <div className='entity-list__empty-icon'>📭</div>
         <p className='entity-list__empty-text'>
-          No se encontraron {entityType === 'client' ? 'clientes' : 'empleados'}
+          No se encontraron{' '}
+          {entityType === 'client'
+            ? 'clientes'
+            : entityType === 'employee'
+              ? 'empleados'
+              : 'categorías'}
           .
         </p>
       </div>

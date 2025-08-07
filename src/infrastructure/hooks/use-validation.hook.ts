@@ -50,6 +50,19 @@ export const useValidation = () => {
     return ''
   }, [])
 
+  const validateCategoryName = useCallback((name: string) => {
+    if (!name.trim()) {
+      return 'El nombre de la categoría es requerido'
+    }
+    if (name.trim().length < 2) {
+      return 'El nombre debe tener al menos 2 caracteres'
+    }
+    if (name.trim().length > 50) {
+      return 'El nombre debe tener máximo 50 caracteres'
+    }
+    return ''
+  }, [])
+
   const validateClientForm = useCallback(
     (formData: { name: string; phoneNumber: string; birthDate: string }) => {
       const errors: Record<string, string> = {}
@@ -94,12 +107,26 @@ export const useValidation = () => {
     [validateRequired, validatePhone, validateBirthDate, validatePercentage]
   )
 
+  const validateCategoryForm = useCallback(
+    (formData: { name: string }) => {
+      const errors: Record<string, string> = {}
+
+      const nameError = validateCategoryName(formData.name)
+      if (nameError) errors.name = nameError
+
+      return errors
+    },
+    [validateCategoryName]
+  )
+
   return {
     validateRequired,
     validatePhone,
     validateBirthDate,
     validatePercentage,
+    validateCategoryName,
     validateClientForm,
     validateEmployeeForm,
+    validateCategoryForm,
   }
 }

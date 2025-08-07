@@ -16,6 +16,12 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'employee-detail': () =>
     import('../modules/employee/employee-detail/index.ts'),
 
+  // Categorías - dividir en chunks separados
+  'category-page': () => import('../modules/category/category-page/index.ts'),
+  'category-form': () => import('../modules/category/category-form/index.ts'),
+  'category-detail': () =>
+    import('../modules/category/category-detail/index.ts'),
+
   // Páginas de error - carga independiente
   'not-found': () => import('../modules/not-found/index.ts'),
 }
