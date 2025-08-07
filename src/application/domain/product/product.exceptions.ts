@@ -19,10 +19,10 @@ export class ProductValidationException extends Error {
   }
 }
 
-export class InvalidPriceException extends Error {
+export class InvalidProductPriceException extends Error {
   constructor(price: number) {
     super(`Invalid price: ${price}. Price must be between 0 and 999,999.99`)
-    this.name = 'InvalidPriceException'
+    this.name = 'InvalidProductPriceException'
   }
 }
 

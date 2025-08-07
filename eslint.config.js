@@ -31,6 +31,7 @@ export default tseslint.config([
       semi: 'off',
       '@typescript-eslint/semi': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
     languageOptions: {
       ecmaVersion: 2020,

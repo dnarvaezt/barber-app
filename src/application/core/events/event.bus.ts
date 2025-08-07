@@ -124,28 +124,23 @@ export class EntityEventHandler implements IEventHandler {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async onEntityCreated(_payload: any): Promise<void> {
+  protected async onEntityCreated(payload: any): Promise<void> {
     // Event handled
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async onEntityUpdated(_payload: any): Promise<void> {
+  protected async onEntityUpdated(payload: any): Promise<void> {
     // Event handled
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async onEntityDeleted(_payload: any): Promise<void> {
+  protected async onEntityDeleted(payload: any): Promise<void> {
     // Event handled
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async onValidationFailed(_payload: any): Promise<void> {
+  protected async onValidationFailed(payload: any): Promise<void> {
     // Validation failed event handled
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async onSearchPerformed(_payload: any): Promise<void> {
+  protected async onSearchPerformed(payload: any): Promise<void> {
     // Search performed event handled
   }
 }

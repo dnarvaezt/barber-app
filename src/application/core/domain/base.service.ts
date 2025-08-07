@@ -119,8 +119,7 @@ export abstract class BaseService<T extends IEntity>
 
   protected async validateUniqueConstraints(
     data: Partial<T>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _excludeId?: string
+    excludeId?: string
   ): Promise<void> {
     // Implementación base que valida campos únicos comunes
     // Las subclases pueden sobrescribir para validaciones específicas
