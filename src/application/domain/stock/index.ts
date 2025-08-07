@@ -1,0 +1,5 @@
+export * from './stock.model'
+export * from './stock.provider'
+export * from './stock.repository.interface'
+export * from './stock.repository.memory'
+export * from './stock.service'

@@ -15,3 +15,6 @@ export * from './category'
 
 // Activity Domain
 export * from './activity'
+
+// Stock Domain
+export * from './stock'

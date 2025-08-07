@@ -98,6 +98,17 @@ export const MobileCard: React.FC<MobileCardProps> = ({
           >
             ✏️
           </Link>
+          {entityType === 'product' && (
+            <Link
+              to={buildRoutePathWithParams(RouteIds.STOCK_MOVEMENTS, {
+                productId: entity.id,
+              })}
+              className='entity-list__mobile-action-button entity-list__mobile-action-button--stock'
+              title='Ver inventario'
+            >
+              📦
+            </Link>
+          )}
           <button
             onClick={() => onDeleteClick(entity.id)}
             className='entity-list__mobile-action-button entity-list__mobile-action-button--delete'

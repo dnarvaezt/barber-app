@@ -8,6 +8,7 @@ const employeeIcon = <Icon name='user' />
 const categoryIcon = <Icon name='tag' />
 const activityIcon = <Icon name='briefcase' />
 const productIcon = <Icon name='box' />
+const stockIcon = <Icon name='boxes-stacked' />
 const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
@@ -192,6 +193,28 @@ export const appRoutes: RouteItem[] = [
         icon: activityIcon,
         component: lazyRoute('activity-detail', 'default'),
         path: '/:activityId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: RouteIds.STOCK,
+    name: 'Stock',
+    title: 'Gestión de Stock',
+    icon: stockIcon,
+    component: lazyRoute('stock', 'default'),
+    path: '/stock',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.STOCK_MOVEMENTS,
+        name: 'Movimientos por Producto',
+        title: 'Movimientos por Producto',
+        icon: stockIcon,
+        component: lazyRoute('stock-movements', 'default'),
+        path: '/:productId',
         inheritPath: true,
         hideSidebar: true,
         children: [],

@@ -21,6 +21,8 @@ export const RouteIds = {
   PRODUCT_FORM_NEW: 'product-form-new',
   PRODUCT_DETAIL: 'product-detail',
   PRODUCT_FORM_EDIT: 'product-form-edit',
+  STOCK: 'stock',
+  STOCK_MOVEMENTS: 'stock-movements',
   NOT_FOUND: 'not-found',
 } as const
 

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useProductDetail } from './product-detail.hook'
 import './product-detail.scss'
 
@@ -201,6 +202,12 @@ export const ProductDetail = () => {
               >
                 ✏️ Editar Producto
               </button>
+              <Link
+                to={`/stock/${product.id}`}
+                className='product-detail-page__action-button product-detail-page__action-button--primary'
+              >
+                📦 Ver inventario
+              </Link>
             </div>
           </div>
         </div>

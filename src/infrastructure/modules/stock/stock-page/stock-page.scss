@@ -1,0 +1,41 @@
+.stock-page {
+  &__container {
+    @apply p-4;
+  }
+  &__header {
+    @apply flex items-center justify-between mb-4;
+  }
+  &__title {
+    @apply text-2xl font-bold;
+  }
+  &__subtitle {
+    @apply text-sm text-gray-500;
+  }
+  &__filters {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-3 mb-4;
+    label {
+      @apply block text-sm text-gray-600 mb-1;
+    }
+    input,
+    select {
+      @apply border rounded px-2 py-1 w-full;
+    }
+  }
+  &__table {
+    @apply w-full border-collapse;
+    th,
+    td {
+      @apply border p-2 text-left;
+    }
+    thead {
+      th {
+        @apply bg-gray-50;
+      }
+    }
+  }
+  &__empty,
+  &__error,
+  &__loading {
+    @apply p-6 text-center text-gray-600;
+  }
+}

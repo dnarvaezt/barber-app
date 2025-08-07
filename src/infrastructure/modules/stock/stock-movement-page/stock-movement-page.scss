@@ -1,0 +1,20 @@
+.stock-movement {
+  &__container {
+    @apply p-4;
+  }
+  &__title {
+    @apply text-2xl font-bold mb-2;
+  }
+  &__summary {
+    @apply text-lg mb-4;
+  }
+  &__actions {
+    @apply flex gap-2 mb-4;
+  }
+  &__table {
+    th,
+    td {
+      @apply border p-2;
+    }
+  }
+}

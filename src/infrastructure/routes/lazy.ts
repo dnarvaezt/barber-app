@@ -33,6 +33,11 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'product-form': () => import('../modules/product/product-form/index.ts'),
   'product-detail': () => import('../modules/product/product-detail/index.ts'),
 
+  // Stock - dividir en chunks separados
+  stock: () => import('../modules/stock/stock-page/index.ts'),
+  'stock-movements': () =>
+    import('../modules/stock/stock-movement-page/index.ts'),
+
   // Páginas de error - carga independiente
   'not-found': () => import('../modules/not-found/index.ts'),
 }
