@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test IndexedDB - Track Activity</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .test-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .success {
+        color: #28a745;
+        font-weight: bold;
+      }
+      .error {
+        color: #dc3545;
+        font-weight: bold;
+      }
+      .info {
+        color: #17a2b8;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+      .results {
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Test IndexedDB - Track Activity Repository</h1>
+      <p>
+        Esta página prueba la funcionalidad del repositorio IndexedDB para el
+        sistema de track-activity.
+      </p>
+
+      <div class="test-section">
+        <h3>1. Inicialización</h3>
+        <button onclick="testInitialization()">Probar Inicialización</button>
+        <div id="init-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>2. Crear Registros</h3>
+        <button onclick="testCreateRecords()">Crear Registros de Prueba</button>
+        <div id="create-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>3. Consultar Registros</h3>
+        <button onclick="testQueryRecords()">Consultar Registros</button>
+        <div id="query-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>4. Actualizar Registros</h3>
+        <button onclick="testUpdateRecords()">Actualizar Registros</button>
+        <div id="update-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>5. Estadísticas</h3>
+        <button onclick="testStatistics()">Obtener Estadísticas</button>
+        <div id="stats-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>6. Limpiar Base de Datos</h3>
+        <button onclick="testClearDatabase()">Limpiar Todo</button>
+        <div id="clear-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>7. Test Completo</h3>
+        <button onclick="runFullTest()">Ejecutar Test Completo</button>
+        <div id="full-test-results" class="results"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Importar las clases necesarias
+      import { ActivityRecordIndexedDBRepository } from './application/track-activity.repository.indexeddb.js'
+      import {
+        ActivityState,
+        EventType,
+        InteractionType,
+        TimeValueObject,
+      } from './application/track-activity.model.js'
+
+      let repository = null
+      let testRecords = []
+
+      // Función para mostrar resultados
+      function showResults(elementId, message, type = 'info') {
+        const element = document.getElementById(elementId)
+        element.innerHTML = `<div class="${type}">${message}</div>`
+      }
+
+      // Función para limpiar resultados
+      function clearResults(elementId) {
+        const element = document.getElementById(elementId)
+        element.innerHTML = ''
+      }
+
+      // Test 1: Inicialización
+      window.testInitialization = async function () {
+        try {
+          clearResults('init-results')
+          showResults('init-results', '🔄 Inicializando IndexedDB...', 'info')
+
+          repository = new ActivityRecordIndexedDBRepository()
+          await repository.initialize()
+
+          showResults(
+            'init-results',
+            '✅ IndexedDB inicializado correctamente',
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'init-results',
+            `❌ Error al inicializar: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 2: Crear registros
+      window.testCreateRecords = async function () {
+        try {
+          if (!repository) {
+            showResults(
+              'create-results',
+              '❌ Primero inicializa IndexedDB',
+              'error'
+            )
+            return
+          }
+
+          clearResults('create-results')
+          showResults(
+            'create-results',
+            '🔄 Creando registros de prueba...',
+            'info'
+          )
+
+          const recordData1 = {
+            minimumTime: TimeValueObject.fromSeconds(5),
+            activeTime: TimeValueObject.fromSeconds(30),
+            idleTime: TimeValueObject.fromSeconds(10),
+            totalTime: TimeValueObject.fromSeconds(45),
+            state: ActivityState.ACTIVE,
+            lastInteractionTime: new Date(),
+            lastInteractionType: InteractionType.CLICK,
+            startEventType: EventType.USER_INTERACTION,
+            startTime: new Date(),
+            isVisible: true,
+            isFocused: true,
+          }
+
+          const recordData2 = {
+            minimumTime: TimeValueObject.fromSeconds(5),
+            activeTime: TimeValueObject.fromSeconds(60),
+            idleTime: TimeValueObject.fromSeconds(20),
+            totalTime: TimeValueObject.fromSeconds(85),
+            state: ActivityState.FINISHED,
+            lastInteractionTime: new Date(),
+            lastInteractionType: InteractionType.SCROLL,
+            startEventType: EventType.PAGE_LOAD,
+            startTime: new Date(),
+            isVisible: true,
+            isFocused: true,
+          }
+
+          const record1 = await repository.create(recordData1)
+          const record2 = await repository.create(recordData2)
+
+          testRecords = [record1, record2]
+
+          showResults(
+            'create-results',
+            `
+                    ✅ Registros creados correctamente:<br>
+                    - Registro 1: ${record1.id} (${record1.state})<br>
+                    - Registro 2: ${record2.id} (${record2.state})
+                `,
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'create-results',
+            `❌ Error al crear registros: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 3: Consultar registros
+      window.testQueryRecords = async function () {
+        try {
+          if (!repository) {
+            showResults(
+              'query-results',
+              '❌ Primero inicializa IndexedDB',
+              'error'
+            )
+            return
+          }
+
+          clearResults('query-results')
+          showResults('query-results', '🔄 Consultando registros...', 'info')
+
+          const allRecords = await repository.findAll()
+          const activeRecord = await repository.findActive()
+          const activeRecords = await repository.findByState(
+            ActivityState.ACTIVE
+          )
+          const finishedRecords = await repository.findByState(
+            ActivityState.FINISHED
+          )
+
+          showResults(
+            'query-results',
+            `
+                    ✅ Consultas completadas:<br>
+                    - Total de registros: ${allRecords.length}<br>
+                    - Registro activo: ${activeRecord ? activeRecord.id : 'Ninguno'}<br>
+                    - Registros activos: ${activeRecords.length}<br>
+                    - Registros finalizados: ${finishedRecords.length}
+                `,
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'query-results',
+            `❌ Error al consultar registros: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 4: Actualizar registros
+      window.testUpdateRecords = async function () {
+        try {
+          if (!repository || testRecords.length === 0) {
+            showResults(
+              'update-results',
+              '❌ Primero crea algunos registros',
+              'error'
+            )
+            return
+          }
+
+          clearResults('update-results')
+          showResults('update-results', '🔄 Actualizando registros...', 'info')
+
+          const recordToUpdate = testRecords[0]
+          const updateData = {
+            state: ActivityState.FINISHED,
+            activeTime: TimeValueObject.fromSeconds(45),
+            endTime: new Date(),
+          }
+
+          const updatedRecord = await repository.update(
+            recordToUpdate.id,
+            updateData
+          )
+
+          showResults(
+            'update-results',
+            `
+                    ✅ Registro actualizado correctamente:<br>
+                    - ID: ${updatedRecord.id}<br>
+                    - Estado anterior: ${recordToUpdate.state}<br>
+                    - Estado nuevo: ${updatedRecord.state}<br>
+                    - Tiempo activo: ${updatedRecord.activeTime.seconds} segundos
+                `,
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'update-results',
+            `❌ Error al actualizar registros: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 5: Estadísticas
+      window.testStatistics = async function () {
+        try {
+          if (!repository) {
+            showResults(
+              'stats-results',
+              '❌ Primero inicializa IndexedDB',
+              'error'
+            )
+            return
+          }
+
+          clearResults('stats-results')
+          showResults('stats-results', '🔄 Calculando estadísticas...', 'info')
+
+          const stats = await repository.getStats()
+
+          showResults(
+            'stats-results',
+            `
+                    ✅ Estadísticas calculadas:<br>
+                    - Total de registros: ${stats.total}<br>
+                    - Registros activos: ${stats.active}<br>
+                    - Registros finalizados: ${stats.finished}<br>
+                    - Registros suspendidos: ${stats.suspended}<br>
+                    - Tiempo promedio de sesión: ${stats.averageSessionTime}ms<br>
+                    - Sesión más larga: ${stats.longestSession}ms<br>
+                    - Sesión más corta: ${stats.shortestSession}ms
+                `,
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'stats-results',
+            `❌ Error al calcular estadísticas: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 6: Limpiar base de datos
+      window.testClearDatabase = async function () {
+        try {
+          if (!repository) {
+            showResults(
+              'clear-results',
+              '❌ Primero inicializa IndexedDB',
+              'error'
+            )
+            return
+          }
+
+          clearResults('clear-results')
+          showResults('clear-results', '🔄 Limpiando base de datos...', 'info')
+
+          await repository.clear()
+
+          showResults(
+            'clear-results',
+            '✅ Base de datos limpiada correctamente',
+            'success'
+          )
+          testRecords = []
+        } catch (error) {
+          showResults(
+            'clear-results',
+            `❌ Error al limpiar base de datos: ${error.message}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 7: Test completo
+      window.runFullTest = async function () {
+        try {
+          clearResults('full-test-results')
+          showResults(
+            'full-test-results',
+            '🚀 Ejecutando test completo...',
+            'info'
+          )
+
+          // 1. Inicializar
+          repository = new ActivityRecordIndexedDBRepository()
+          await repository.initialize()
+
+          // 2. Crear registros
+          const recordData = {
+            minimumTime: TimeValueObject.fromSeconds(5),
+            activeTime: TimeValueObject.fromSeconds(30),
+            idleTime: TimeValueObject.fromSeconds(10),
+            totalTime: TimeValueObject.fromSeconds(45),
+            state: ActivityState.ACTIVE,
+            lastInteractionTime: new Date(),
+            lastInteractionType: InteractionType.CLICK,
+            startEventType: EventType.USER_INTERACTION,
+            startTime: new Date(),
+            isVisible: true,
+            isFocused: true,
+          }
+
+          const record = await repository.create(recordData)
+
+          // 3. Verificar que se guardó
+          const retrievedRecord = await repository.findById(record.id)
+          if (!retrievedRecord)
+            throw new Error('Registro no encontrado después de crear')
+
+          // 4. Actualizar registro
+          const updatedRecord = await repository.update(record.id, {
+            state: ActivityState.FINISHED,
+            endTime: new Date(),
+          })
+
+          // 5. Obtener estadísticas
+          const stats = await repository.getStats()
+
+          // 6. Limpiar
+          await repository.clear()
+
+          showResults(
+            'full-test-results',
+            `
+                    ✅ Test completo ejecutado exitosamente:<br>
+                    - ✅ Inicialización<br>
+                    - ✅ Creación de registros<br>
+                    - ✅ Recuperación de registros<br>
+                    - ✅ Actualización de registros<br>
+                    - ✅ Cálculo de estadísticas<br>
+                    - ✅ Limpieza de base de datos<br><br>
+                    <strong>Resumen:</strong><br>
+                    - Registro creado: ${record.id}<br>
+                    - Estado final: ${updatedRecord.state}<br>
+                    - Total de registros procesados: ${stats.total}
+                `,
+            'success'
+          )
+        } catch (error) {
+          showResults(
+            'full-test-results',
+            `❌ Error en test completo: ${error.message}`,
+            'error'
+          )
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test IndexedDB Simple - Track Activity</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .test-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .success {
+        color: #28a745;
+        font-weight: bold;
+      }
+      .error {
+        color: #dc3545;
+        font-weight: bold;
+      }
+      .info {
+        color: #17a2b8;
+      }
+      .results {
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+      }
+      pre {
+        background: #f1f3f4;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Test IndexedDB Simple - Track Activity</h1>
+      <p>
+        Esta página prueba la funcionalidad básica de IndexedDB para el sistema
+        de track-activity.
+      </p>
+
+      <div class="test-section">
+        <h3>1. Inicialización de IndexedDB</h3>
+        <button onclick="testIndexedDBInit()">Inicializar IndexedDB</button>
+        <div id="init-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>2. Crear Registros de Prueba</h3>
+        <button onclick="testCreateRecords()">Crear Registros</button>
+        <div id="create-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>3. Consultar Registros</h3>
+        <button onclick="testQueryRecords()">Consultar Registros</button>
+        <div id="query-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>4. Actualizar Registros</h3>
+        <button onclick="testUpdateRecords()">Actualizar Registros</button>
+        <div id="update-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>5. Limpiar Base de Datos</h3>
+        <button onclick="testClearDatabase()">Limpiar Todo</button>
+        <div id="clear-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>6. Test Completo</h3>
+        <button onclick="runFullTest()">Ejecutar Test Completo</button>
+        <div id="full-test-results" class="results"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>7. Verificar en DevTools</h3>
+        <p>Para verificar que los datos se guardan realmente en IndexedDB:</p>
+        <ol>
+          <li>Abre las herramientas de desarrollador (F12)</li>
+          <li>Ve a la pestaña "Application" (Chrome) o "Storage" (Firefox)</li>
+          <li>Busca "IndexedDB" → "TrackActivityDB"</li>
+          <li>Expande "activity_records" para ver los datos guardados</li>
+        </ol>
+      </div>
+    </div>
+
+    <script>
+      // Configuración de IndexedDB
+      const DB_NAME = 'TrackActivityDB'
+      const DB_VERSION = 1
+      const STORE_NAME = 'activity_records'
+
+      let db = null
+      let testRecords = []
+
+      // Función para mostrar resultados
+      function showResults(elementId, message, type = 'info') {
+        const element = document.getElementById(elementId)
+        element.innerHTML = `<div class="${type}">${message}</div>`
+      }
+
+      // Función para limpiar resultados
+      function clearResults(elementId) {
+        const element = document.getElementById(elementId)
+        element.innerHTML = ''
+      }
+
+      // Función para generar ID único
+      function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2)
+      }
+
+      // Función para crear TimeValueObject (solo datos, sin funciones)
+      function createTimeValue(seconds) {
+        return {
+          seconds: Math.floor(seconds),
+          milliseconds: Math.floor(seconds * 1000),
+        }
+      }
+
+      // Test 1: Inicialización de IndexedDB
+      window.testIndexedDBInit = function () {
+        clearResults('init-results')
+        showResults('init-results', '🔄 Inicializando IndexedDB...', 'info')
+
+        const request = indexedDB.open(DB_NAME, DB_VERSION)
+
+        request.onerror = function (event) {
+          showResults(
+            'init-results',
+            `❌ Error al abrir IndexedDB: ${event.target.error}`,
+            'error'
+          )
+        }
+
+        request.onsuccess = function (event) {
+          db = event.target.result
+          showResults(
+            'init-results',
+            '✅ IndexedDB inicializado correctamente',
+            'success'
+          )
+          console.log('IndexedDB abierto:', db)
+        }
+
+        request.onupgradeneeded = function (event) {
+          const db = event.target.result
+
+          // Crear object store si no existe
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            const store = db.createObjectStore(STORE_NAME, {
+              keyPath: 'id',
+            })
+
+            // Crear índices para búsquedas eficientes
+            store.createIndex('state', 'state', { unique: false })
+            store.createIndex('startTime', 'startTime', { unique: false })
+            store.createIndex('createdAt', 'createdAt', { unique: false })
+
+            console.log('✅ Object store creado:', store)
+          }
+        }
+      }
+
+      // Test 2: Crear registros
+      window.testCreateRecords = function () {
+        if (!db) {
+          showResults(
+            'create-results',
+            '❌ Primero inicializa IndexedDB',
+            'error'
+          )
+          return
+        }
+
+        clearResults('create-results')
+        showResults(
+          'create-results',
+          '🔄 Creando registros de prueba...',
+          'info'
+        )
+
+        const transaction = db.transaction([STORE_NAME], 'readwrite')
+        const store = transaction.objectStore(STORE_NAME)
+
+        const recordData1 = {
+          id: generateId(),
+          minimumTime: createTimeValue(5),
+          activeTime: createTimeValue(30),
+          idleTime: createTimeValue(10),
+          totalTime: createTimeValue(45),
+          state: 'active',
+          lastInteractionTime: new Date().toISOString(),
+          lastInteractionType: 'click',
+          startEventType: 'user_interaction',
+          startTime: new Date().toISOString(),
+          isVisible: true,
+          isFocused: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        const recordData2 = {
+          id: generateId(),
+          minimumTime: createTimeValue(5),
+          activeTime: createTimeValue(60),
+          idleTime: createTimeValue(20),
+          totalTime: createTimeValue(85),
+          state: 'finished',
+          lastInteractionTime: new Date().toISOString(),
+          lastInteractionType: 'scroll',
+          startEventType: 'page_load',
+          startTime: new Date().toISOString(),
+          isVisible: true,
+          isFocused: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        const addRequest1 = store.add(recordData1)
+        const addRequest2 = store.add(recordData2)
+
+        addRequest1.onsuccess = function () {
+          console.log('✅ Registro 1 creado:', recordData1.id)
+        }
+
+        addRequest2.onsuccess = function () {
+          console.log('✅ Registro 2 creado:', recordData2.id)
+          testRecords = [recordData1, recordData2]
+          showResults(
+            'create-results',
+            `
+            ✅ Registros creados correctamente:<br>
+            - Registro 1: ${recordData1.id} (${recordData1.state})<br>
+            - Registro 2: ${recordData2.id} (${recordData2.state})<br>
+            <br>
+            <strong>Verifica en DevTools → Application → IndexedDB → TrackActivityDB → activity_records</strong>
+          `,
+            'success'
+          )
+        }
+
+        addRequest1.onerror = function (event) {
+          showResults(
+            'create-results',
+            `❌ Error al crear registro 1: ${event.target.error}`,
+            'error'
+          )
+        }
+
+        addRequest2.onerror = function (event) {
+          showResults(
+            'create-results',
+            `❌ Error al crear registro 2: ${event.target.error}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 3: Consultar registros
+      window.testQueryRecords = function () {
+        if (!db) {
+          showResults(
+            'query-results',
+            '❌ Primero inicializa IndexedDB',
+            'error'
+          )
+          return
+        }
+
+        clearResults('query-results')
+        showResults('query-results', '🔄 Consultando registros...', 'info')
+
+        const transaction = db.transaction([STORE_NAME], 'readonly')
+        const store = transaction.objectStore(STORE_NAME)
+        const request = store.getAll()
+
+        request.onsuccess = function (event) {
+          const records = event.target.result
+          console.log('📊 Registros encontrados:', records)
+
+          const activeRecords = records.filter(r => r.state === 'active')
+          const finishedRecords = records.filter(r => r.state === 'finished')
+
+          showResults(
+            'query-results',
+            `
+            ✅ Consultas completadas:<br>
+            - Total de registros: ${records.length}<br>
+            - Registros activos: ${activeRecords.length}<br>
+            - Registros finalizados: ${finishedRecords.length}<br>
+            <br>
+            <strong>Datos encontrados:</strong><br>
+            <pre>${JSON.stringify(records, null, 2)}</pre>
+          `,
+            'success'
+          )
+        }
+
+        request.onerror = function (event) {
+          showResults(
+            'query-results',
+            `❌ Error al consultar registros: ${event.target.error}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 4: Actualizar registros
+      window.testUpdateRecords = function () {
+        if (!db || testRecords.length === 0) {
+          showResults(
+            'update-results',
+            '❌ Primero crea algunos registros',
+            'error'
+          )
+          return
+        }
+
+        clearResults('update-results')
+        showResults('update-results', '🔄 Actualizando registros...', 'info')
+
+        const recordToUpdate = testRecords[0]
+        const transaction = db.transaction([STORE_NAME], 'readwrite')
+        const store = transaction.objectStore(STORE_NAME)
+
+        // Primero obtener el registro existente
+        const getRequest = store.get(recordToUpdate.id)
+
+        getRequest.onsuccess = function (event) {
+          const existingRecord = event.target.result
+          if (!existingRecord) {
+            showResults('update-results', '❌ Registro no encontrado', 'error')
+            return
+          }
+
+          // Actualizar el registro
+          const updatedRecord = {
+            ...existingRecord,
+            state: 'finished',
+            activeTime: createTimeValue(45),
+            endTime: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+
+          const putRequest = store.put(updatedRecord)
+
+          putRequest.onsuccess = function () {
+            showResults(
+              'update-results',
+              `
+              ✅ Registro actualizado correctamente:<br>
+              - ID: ${updatedRecord.id}<br>
+              - Estado anterior: ${recordToUpdate.state}<br>
+              - Estado nuevo: ${updatedRecord.state}<br>
+              - Tiempo activo: ${updatedRecord.activeTime.seconds} segundos<br>
+              <br>
+              <strong>Verifica en DevTools que el registro se actualizó</strong>
+            `,
+              'success'
+            )
+          }
+
+          putRequest.onerror = function (event) {
+            showResults(
+              'update-results',
+              `❌ Error al actualizar registro: ${event.target.error}`,
+              'error'
+            )
+          }
+        }
+
+        getRequest.onerror = function (event) {
+          showResults(
+            'update-results',
+            `❌ Error al obtener registro: ${event.target.error}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 5: Limpiar base de datos
+      window.testClearDatabase = function () {
+        if (!db) {
+          showResults(
+            'clear-results',
+            '❌ Primero inicializa IndexedDB',
+            'error'
+          )
+          return
+        }
+
+        clearResults('clear-results')
+        showResults('clear-results', '🔄 Limpiando base de datos...', 'info')
+
+        const transaction = db.transaction([STORE_NAME], 'readwrite')
+        const store = transaction.objectStore(STORE_NAME)
+        const request = store.clear()
+
+        request.onsuccess = function () {
+          showResults(
+            'clear-results',
+            '✅ Base de datos limpiada correctamente',
+            'success'
+          )
+          testRecords = []
+        }
+
+        request.onerror = function (event) {
+          showResults(
+            'clear-results',
+            `❌ Error al limpiar base de datos: ${event.target.error}`,
+            'error'
+          )
+        }
+      }
+
+      // Test 6: Test completo
+      window.runFullTest = function () {
+        clearResults('full-test-results')
+        showResults(
+          'full-test-results',
+          '🚀 Ejecutando test completo...',
+          'info'
+        )
+
+        // 1. Inicializar
+        const initRequest = indexedDB.open(DB_NAME, DB_VERSION)
+
+        initRequest.onupgradeneeded = function (event) {
+          const db = event.target.result
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+            store.createIndex('state', 'state', { unique: false })
+          }
+        }
+
+        initRequest.onsuccess = function (event) {
+          db = event.target.result
+
+          // 2. Crear registro
+          const transaction = db.transaction([STORE_NAME], 'readwrite')
+          const store = transaction.objectStore(STORE_NAME)
+
+          const recordData = {
+            id: generateId(),
+            minimumTime: createTimeValue(5),
+            activeTime: createTimeValue(30),
+            idleTime: createTimeValue(10),
+            totalTime: createTimeValue(45),
+            state: 'active',
+            lastInteractionTime: new Date().toISOString(),
+            lastInteractionType: 'click',
+            startEventType: 'user_interaction',
+            startTime: new Date().toISOString(),
+            isVisible: true,
+            isFocused: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+
+          const addRequest = store.add(recordData)
+
+          addRequest.onsuccess = function () {
+            // 3. Verificar que se guardó
+            const getRequest = store.get(recordData.id)
+
+            getRequest.onsuccess = function (event) {
+              const retrievedRecord = event.target.result
+              if (!retrievedRecord) {
+                showResults(
+                  'full-test-results',
+                  '❌ Registro no encontrado después de crear',
+                  'error'
+                )
+                return
+              }
+
+              // 4. Actualizar registro
+              const updatedRecord = {
+                ...retrievedRecord,
+                state: 'finished',
+                endTime: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              }
+
+              const putRequest = store.put(updatedRecord)
+
+              putRequest.onsuccess = function () {
+                // 5. Limpiar
+                const clearRequest = store.clear()
+
+                clearRequest.onsuccess = function () {
+                  showResults(
+                    'full-test-results',
+                    `
+                    ✅ Test completo ejecutado exitosamente:<br>
+                    - ✅ Inicialización de IndexedDB<br>
+                    - ✅ Creación de registros<br>
+                    - ✅ Recuperación de registros<br>
+                    - ✅ Actualización de registros<br>
+                    - ✅ Limpieza de base de datos<br><br>
+                    <strong>Resumen:</strong><br>
+                    - Registro creado: ${recordData.id}<br>
+                    - Estado final: ${updatedRecord.state}<br>
+                    - Tiempo activo: ${updatedRecord.activeTime.seconds} segundos<br>
+                    <br>
+                    <strong>¡IndexedDB está funcionando correctamente!</strong>
+                  `,
+                    'success'
+                  )
+                }
+
+                clearRequest.onerror = function (event) {
+                  showResults(
+                    'full-test-results',
+                    `❌ Error al limpiar: ${event.target.error}`,
+                    'error'
+                  )
+                }
+              }
+
+              putRequest.onerror = function (event) {
+                showResults(
+                  'full-test-results',
+                  `❌ Error al actualizar: ${event.target.error}`,
+                  'error'
+                )
+              }
+            }
+
+            getRequest.onerror = function (event) {
+              showResults(
+                'full-test-results',
+                `❌ Error al recuperar: ${event.target.error}`,
+                'error'
+              )
+            }
+          }
+
+          addRequest.onerror = function (event) {
+            showResults(
+              'full-test-results',
+              `❌ Error al crear: ${event.target.error}`,
+              'error'
+            )
+          }
+        }
+
+        initRequest.onerror = function (event) {
+          showResults(
+            'full-test-results',
+            `❌ Error al inicializar: ${event.target.error}`,
+            'error'
+          )
+        }
+      }
+    </script>
+  </body>
+</html>
