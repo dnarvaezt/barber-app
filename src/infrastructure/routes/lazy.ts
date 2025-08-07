@@ -22,6 +22,12 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'category-detail': () =>
     import('../modules/category/category-detail/index.ts'),
 
+  // Actividades - dividir en chunks separados
+  'activity-page': () => import('../modules/activity/activity-page/index.ts'),
+  'activity-form': () => import('../modules/activity/activity-form/index.ts'),
+  'activity-detail': () =>
+    import('../modules/activity/activity-detail/index.ts'),
+
   // Páginas de error - carga independiente
   'not-found': () => import('../modules/not-found/index.ts'),
 }

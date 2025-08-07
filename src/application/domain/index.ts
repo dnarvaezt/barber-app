@@ -12,3 +12,6 @@ export * from './employee'
 
 // Category Domain
 export * from './category'
+
+// Activity Domain
+export * from './activity'

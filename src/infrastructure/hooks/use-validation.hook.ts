@@ -63,6 +63,43 @@ export const useValidation = () => {
     return ''
   }, [])
 
+  const validateActivityName = useCallback((name: string) => {
+    if (!name.trim()) {
+      return 'El nombre de la actividad es requerido'
+    }
+    if (name.trim().length < 2) {
+      return 'El nombre debe tener al menos 2 caracteres'
+    }
+    if (name.trim().length > 100) {
+      return 'El nombre debe tener máximo 100 caracteres'
+    }
+    return ''
+  }, [])
+
+  const validateActivityPrice = useCallback((price: string) => {
+    if (!price.trim()) {
+      return 'El precio es requerido'
+    }
+    const num = Number(price)
+    if (isNaN(num)) {
+      return 'El precio debe ser un número'
+    }
+    if (num < 0) {
+      return 'El precio no puede ser negativo'
+    }
+    if (num > 999999.99) {
+      return 'El precio no puede exceder 999,999.99'
+    }
+    return ''
+  }, [])
+
+  const validateActivityCategoryId = useCallback((categoryId: string) => {
+    if (!categoryId.trim()) {
+      return 'La categoría es requerida'
+    }
+    return ''
+  }, [])
+
   const validateClientForm = useCallback(
     (formData: { name: string; phoneNumber: string; birthDate: string }) => {
       const errors: Record<string, string> = {}
@@ -119,14 +156,36 @@ export const useValidation = () => {
     [validateCategoryName]
   )
 
+  const validateActivityForm = useCallback(
+    (formData: { name: string; price: string; categoryId: string }) => {
+      const errors: Record<string, string> = {}
+
+      const nameError = validateActivityName(formData.name)
+      if (nameError) errors.name = nameError
+
+      const priceError = validateActivityPrice(formData.price)
+      if (priceError) errors.price = priceError
+
+      const categoryIdError = validateActivityCategoryId(formData.categoryId)
+      if (categoryIdError) errors.categoryId = categoryIdError
+
+      return errors
+    },
+    [validateActivityName, validateActivityPrice, validateActivityCategoryId]
+  )
+
   return {
     validateRequired,
     validatePhone,
     validateBirthDate,
     validatePercentage,
     validateCategoryName,
+    validateActivityName,
+    validateActivityPrice,
+    validateActivityCategoryId,
     validateClientForm,
     validateEmployeeForm,
     validateCategoryForm,
+    validateActivityForm,
   }
 }

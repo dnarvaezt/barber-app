@@ -6,6 +6,7 @@ import type { RouteItem } from './routes.types'
 const userIcon = <Icon name='user' />
 const employeeIcon = <Icon name='user' />
 const categoryIcon = <Icon name='tag' />
+const activityIcon = <Icon name='briefcase' />
 const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
@@ -146,6 +147,50 @@ export const appRoutes: RouteItem[] = [
         icon: categoryIcon,
         component: lazyRoute('category-detail', 'default'),
         path: '/:categoryId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: RouteIds.ACTIVITIES,
+    name: 'Actividades',
+    title: 'Gestión de Actividades',
+    icon: activityIcon,
+    component: lazyRoute('activity-page', 'default'),
+    path: '/activities',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.ACTIVITY_FORM_NEW,
+        name: 'Nueva Actividad',
+        title: 'Crear Nueva Actividad',
+        icon: activityIcon,
+        component: lazyRoute('activity-form', 'default'),
+        path: '/form/new',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.ACTIVITY_FORM_EDIT,
+        name: 'Editar Actividad',
+        title: 'Editar Actividad',
+        icon: activityIcon,
+        component: lazyRoute('activity-form', 'default'),
+        path: '/form/:activityId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.ACTIVITY_DETAIL,
+        name: 'Detalle Actividad',
+        title: 'Detalle de la Actividad',
+        icon: activityIcon,
+        component: lazyRoute('activity-detail', 'default'),
+        path: '/:activityId',
         inheritPath: true,
         hideSidebar: true,
         children: [],

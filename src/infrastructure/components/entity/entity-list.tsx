@@ -9,7 +9,7 @@ import './entity-list.scss'
 
 interface MobileCardProps {
   entity: any
-  entityType: 'client' | 'employee' | 'category'
+  entityType: 'client' | 'employee' | 'category' | 'activity'
   onDeleteClick: (id: string) => void
   formatPhone?: (phone: string) => string
   formatDate: (date: Date) => string
@@ -38,6 +38,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return RouteIds.EMPLOYEE_DETAIL
       case 'category':
         return RouteIds.CATEGORY_DETAIL
+      case 'activity':
+        return RouteIds.ACTIVITY_DETAIL
       default:
         return RouteIds.CLIENT_DETAIL
     }
@@ -51,6 +53,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return RouteIds.EMPLOYEE_FORM_EDIT
       case 'category':
         return RouteIds.CATEGORY_FORM_EDIT
+      case 'activity':
+        return RouteIds.ACTIVITY_FORM_EDIT
       default:
         return RouteIds.CLIENT_FORM_EDIT
     }
@@ -64,6 +68,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return { employeeId: entity.id }
       case 'category':
         return { categoryId: entity.id }
+      case 'activity':
+        return { activityId: entity.id }
       default:
         return { clientId: entity.id }
     }
@@ -95,7 +101,7 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         </div>
       </div>
       <div className='entity-list__mobile-content'>
-        {entityType === 'category' ? (
+        {entityType === 'category' || entityType === 'activity' ? (
           <>
             <div className='entity-list__mobile-item'>
               <span className='entity-list__mobile-label'>
@@ -113,6 +119,24 @@ export const MobileCard: React.FC<MobileCardProps> = ({
                 {formatDate(entity.updatedAt)}
               </span>
             </div>
+            {entityType === 'activity' && (
+              <>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>Precio:</span>
+                  <span className='entity-list__mobile-value'>
+                    ${entity.price?.toLocaleString()}
+                  </span>
+                </div>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>
+                    Categoría ID:
+                  </span>
+                  <span className='entity-list__mobile-value'>
+                    {entity.categoryId}
+                  </span>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <>
@@ -165,7 +189,7 @@ export const MobileCard: React.FC<MobileCardProps> = ({
 
 interface EntityListProps {
   entities: any[]
-  entityType: 'client' | 'employee' | 'category'
+  entityType: 'client' | 'employee' | 'category' | 'activity'
   loading?: boolean
   error?: string | null
   onDeleteClick: (id: string) => void
@@ -198,7 +222,9 @@ export const EntityList: React.FC<EntityListProps> = ({
             ? 'clientes'
             : entityType === 'employee'
               ? 'empleados'
-              : 'categorías'}
+              : entityType === 'category'
+                ? 'categorías'
+                : 'actividades'}
           ...
         </p>
       </div>
@@ -224,7 +250,9 @@ export const EntityList: React.FC<EntityListProps> = ({
             ? 'clientes'
             : entityType === 'employee'
               ? 'empleados'
-              : 'categorías'}
+              : entityType === 'category'
+                ? 'categorías'
+                : 'actividades'}
           .
         </p>
       </div>

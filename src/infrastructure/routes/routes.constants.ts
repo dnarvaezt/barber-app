@@ -13,6 +13,10 @@ export const RouteIds = {
   CATEGORY_FORM_NEW: 'category-form-new',
   CATEGORY_DETAIL: 'category-detail',
   CATEGORY_FORM_EDIT: 'category-form-edit',
+  ACTIVITIES: 'activities',
+  ACTIVITY_FORM_NEW: 'activity-form-new',
+  ACTIVITY_DETAIL: 'activity-detail',
+  ACTIVITY_FORM_EDIT: 'activity-form-edit',
   NOT_FOUND: 'not-found',
 } as const
 

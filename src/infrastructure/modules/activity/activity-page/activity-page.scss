@@ -1,0 +1,253 @@
+@use '../../../assets/styles/variables' as *;
+
+.activity-page {
+  @apply min-h-screen bg-gradient-to-br from-orange-50 to-red-100 dark:from-gray-900 dark:to-gray-800 py-8;
+
+  .activity-page__container {
+    @apply container mx-auto px-4 max-w-7xl;
+  }
+
+  .activity-page__header {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8;
+
+    .activity-page__title-section {
+      @apply flex items-center gap-4;
+
+      .activity-page__title {
+        @apply text-3xl font-bold text-gray-900 dark:text-white;
+      }
+
+      .activity-page__subtitle {
+        @apply text-gray-600 dark:text-gray-400 text-lg;
+      }
+    }
+
+    .activity-page__actions {
+      @apply flex flex-col sm:flex-row gap-3;
+
+      .activity-page__button {
+        @apply flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg;
+
+        &--primary {
+          @apply bg-orange-600 hover:bg-orange-700 text-white;
+        }
+
+        .activity-page__button-icon {
+          @apply text-xl;
+        }
+
+        .activity-page__button-text {
+          @apply font-medium;
+        }
+      }
+    }
+  }
+
+  .activity-page__content {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden;
+
+    .activity-page__toolbar {
+      @apply p-6 border-b border-gray-200 dark:border-gray-600;
+
+      .activity-page__search-section {
+        @apply flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between;
+
+        .activity-page__search-container {
+          @apply flex-1 max-w-md;
+
+          .activity-page__search-input {
+            @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300;
+
+            &::placeholder {
+              @apply text-gray-400 dark:text-gray-500;
+            }
+          }
+        }
+
+        .activity-page__sort-controls {
+          @apply flex items-center gap-3;
+        }
+      }
+    }
+
+    .activity-page__list-section {
+      @apply p-6;
+
+      .activity-page__loading {
+        @apply flex flex-col items-center justify-center py-12;
+
+        .activity-page__loading-spinner {
+          @apply w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mb-4;
+        }
+
+        .activity-page__loading-text {
+          @apply text-gray-600 dark:text-gray-400 font-medium;
+        }
+      }
+
+      .activity-page__error {
+        @apply flex flex-col items-center justify-center py-12 text-center;
+
+        .activity-page__error-icon {
+          @apply text-4xl mb-4;
+        }
+
+        .activity-page__error-title {
+          @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2;
+        }
+
+        .activity-page__error-message {
+          @apply text-gray-600 dark:text-gray-400 mb-4;
+        }
+
+        .activity-page__button {
+          @apply btn;
+
+          &--primary {
+            @apply btn-primary;
+          }
+        }
+      }
+
+      .activity-page__empty {
+        @apply flex flex-col items-center justify-center py-12 text-center;
+
+        .activity-page__empty-icon {
+          @apply text-6xl mb-4 opacity-50;
+        }
+
+        .activity-page__empty-title {
+          @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2;
+        }
+
+        .activity-page__empty-message {
+          @apply text-gray-600 dark:text-gray-400 mb-6;
+        }
+
+        .activity-page__button {
+          @apply btn;
+
+          &--primary {
+            @apply btn-primary;
+          }
+        }
+      }
+
+      .activity-page__pagination {
+        @apply flex items-center justify-between mt-6 pt-6 border-t border-gray-200 dark:border-gray-600;
+
+        .activity-page__pagination-info {
+          @apply text-sm text-gray-600 dark:text-gray-400;
+        }
+
+        .activity-page__pagination-controls {
+          @apply flex items-center gap-2;
+
+          .activity-page__pagination-button {
+            @apply px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+
+            &--active {
+              @apply bg-orange-600 text-white border-orange-600;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.activity-page__container {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.activity-page__content {
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.activity-page__toolbar {
+  animation: fadeIn 0.6s ease-out 0.3s both;
+}
+
+.activity-page__list-section {
+  animation: fadeIn 0.6s ease-out 0.4s both;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .activity-page {
+    &__container {
+      @apply px-6;
+    }
+
+    &__header {
+      .activity-page__title-section {
+        .activity-page__title {
+          @apply text-2xl;
+        }
+
+        .activity-page__subtitle {
+          @apply text-base;
+        }
+      }
+
+      .activity-page__actions {
+        @apply w-full;
+
+        .activity-page__button {
+          @apply w-full justify-center;
+        }
+      }
+    }
+
+    &__content {
+      .activity-page__toolbar {
+        @apply p-4;
+
+        .activity-page__search-section {
+          @apply flex-col items-stretch;
+
+          .activity-page__search-container {
+            @apply max-w-none;
+          }
+
+          .activity-page__sort-controls {
+            @apply justify-center;
+          }
+        }
+      }
+
+      .activity-page__list-section {
+        @apply p-4;
+
+        .activity-page__pagination {
+          @apply flex-col gap-4;
+
+          .activity-page__pagination-controls {
+            @apply flex-wrap justify-center;
+          }
+        }
+      }
+    }
+  }
+}
