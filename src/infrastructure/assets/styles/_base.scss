@@ -20,34 +20,21 @@ body {
   line-height: 1.6;
 }
 
-// Utilidades personalizadas
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 $spacing-md;
-}
+html,
+body,
+#root {
+  display: block;
 
-.btn-custom {
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius-md;
-  transition: all $transition-normal;
-  font-weight: 600;
+  width: 100dvw;
+  height: 100dvh;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-md;
-  }
-}
+  position: initial;
 
-.card-custom {
-  background: white;
-  border-radius: $border-radius-lg;
-  box-shadow: $shadow-sm;
-  padding: $spacing-lg;
-  transition: all $transition-normal;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
 
-  &:hover {
-    box-shadow: $shadow-lg;
-    transform: translateY(-4px);
-  }
+  overflow: auto;
 }

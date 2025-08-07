@@ -1,4 +1,4 @@
-import { Icon } from '../icons'
+import { Icon } from '../../../icons'
 import { useFooter } from './footer.hook'
 import './footer.scss'
 
@@ -19,7 +19,7 @@ export const Footer = () => {
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
-                className='footer__link'
+                className={`footer__link ${link.external ? 'footer__link--external' : ''}`}
               >
                 <Icon name={link.icon} className='footer__link-icon' />
                 <span className='footer__link-text'>{link.label}</span>

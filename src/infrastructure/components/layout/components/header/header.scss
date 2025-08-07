@@ -1,7 +1,11 @@
-@use '../../assets/styles/variables' as *;
+@use '../../../../assets/styles/variables' as *;
 
 .header {
-  @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-40;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm top-0 z-40;
 
   &__container {
     @apply container mx-auto px-4;

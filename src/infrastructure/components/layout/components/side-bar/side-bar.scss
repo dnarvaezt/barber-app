@@ -1,0 +1,194 @@
+@use '../../../../assets/styles/variables' as *;
+
+.side-bar {
+  position: sticky;
+  top: 0;
+
+  @apply inset-y-0 left-0 z-50 flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg;
+
+  width: 250px;
+  height: 100vh;
+  max-height: 100dvh;
+
+  // Responsive: ocultar en móvil por defecto
+  @media (max-width: 1023px) {
+    @apply transform -translate-x-full transition-transform duration-300 ease-in-out;
+
+    &--open {
+      @apply translate-x-0;
+    }
+  }
+
+  // Desktop: siempre visible
+  @media (min-width: 1024px) {
+    @apply transform-none;
+  }
+
+  &__overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+
+    @media (min-width: 1024px) {
+      @apply hidden;
+    }
+  }
+
+  &__header {
+    @apply flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
+
+    &-content {
+      @apply flex items-center gap-3;
+    }
+
+    &-logo {
+      @apply flex items-center justify-center w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg;
+    }
+
+    &-title {
+      @apply text-lg font-semibold text-gray-900 dark:text-white;
+    }
+
+    &-close-button {
+      @apply p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200;
+
+      @media (min-width: 1024px) {
+        @apply hidden;
+      }
+
+      &:focus {
+        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+      }
+    }
+  }
+
+  &__content {
+    @apply flex flex-col flex-1 overflow-hidden;
+  }
+
+  &__navigation {
+    @apply flex-1 overflow-y-auto p-4 space-y-2;
+
+    // Scrollbar personalizado
+    &::-webkit-scrollbar {
+      @apply w-2;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @apply bg-gray-400 dark:bg-gray-500;
+    }
+  }
+
+  &__footer {
+    @apply p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
+  }
+
+  &__version {
+    @apply text-xs text-gray-500 dark:text-gray-400 text-center;
+  }
+}
+
+// Animaciones
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+// Estados de transición
+.side-bar {
+  &--entering {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  &--exiting {
+    animation: slideOut 0.3s ease-in;
+  }
+}
+
+// Mejoras de accesibilidad
+.side-bar {
+  &__navigation {
+    // Enfoque visible para navegación por teclado
+    &:focus-within {
+      @apply outline-none;
+    }
+  }
+
+  &__header-close-button,
+  &__navigation button {
+    &:focus-visible {
+      @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+    }
+  }
+}
+
+// Optimizaciones para pantallas pequeñas
+@media (max-width: 640px) {
+  .side-bar {
+    width: 100%;
+    max-width: 280px;
+    position: absolute;
+
+    &__header {
+      @apply p-3;
+    }
+
+    &__navigation {
+      @apply p-3;
+    }
+
+    &__footer {
+      @apply p-3;
+    }
+  }
+}
+
+// Soporte para modo de alto contraste
+@media (prefers-contrast: high) {
+  .side-bar {
+    @apply border-2 border-gray-900 dark:border-white;
+
+    &__header {
+      @apply border-b-2 border-gray-900 dark:border-white;
+    }
+
+    &__footer {
+      @apply border-t-2 border-gray-900 dark:border-white;
+    }
+  }
+}
+
+// Soporte para motion reduced
+@media (prefers-reduced-motion: reduce) {
+  .side-bar {
+    @apply transition-none;
+
+    &--entering,
+    &--exiting {
+      animation: none;
+    }
+  }
+}

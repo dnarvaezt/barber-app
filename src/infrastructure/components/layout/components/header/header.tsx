@@ -5,8 +5,8 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { Icon } from '../icons'
-import { ThemeToggle } from '../theme'
+import { Icon } from '../../../icons'
+import { ThemeToggle } from '../../../theme'
 import './header.scss'
 
 export interface HeaderProps {

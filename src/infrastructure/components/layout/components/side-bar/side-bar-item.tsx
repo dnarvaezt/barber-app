@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Icon } from '../icons'
+import { Icon } from '../../../icons'
 
-import type { RouteItem } from '../../routes'
+import type { RouteItem } from '../../../../routes'
+import './side-bar-item.scss'
 import type { SideBarState } from './side-bar.hook'
 
 interface SideBarItemProps {

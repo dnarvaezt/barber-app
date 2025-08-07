@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import type { RouteItem } from '../../routes'
+import type { RouteItem } from '../../../../routes'
 
 export interface SideBarState {
   expandedItems: Set<string>

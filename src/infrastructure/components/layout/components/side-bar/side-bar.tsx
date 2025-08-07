@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
-import type { RouteItem } from '../../routes/routes.types'
-import { Icon } from '../icons'
+import type { RouteItem } from '../../../../routes/routes.types'
+import { Icon } from '../../../icons'
 import { SideBarItem } from './side-bar-item'
 import { useSideBar } from './side-bar.hook'
 import './side-bar.scss'
@@ -76,13 +76,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
         <div className='side-bar__overlay' onClick={handleOverlayClick} />
       )}
 
-      <aside
-        className={`
-          side-bar__container
-          ${isOpen ? 'side-bar__container--open' : 'side-bar__container--closed'}
-        `}
-      >
-        {/* Header del sidebar */}
+      <div className={`side-bar ${isOpen ? 'side-bar--open' : ''}`}>
         <div className='side-bar__header'>
           <div className='side-bar__header-content'>
             <div className='side-bar__logo'>
@@ -92,16 +86,14 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
           </div>
           <button
             onClick={handleClose}
-            className='side-bar__close-button'
+            className='side-bar__header-close-button'
             aria-label='Cerrar menú lateral'
           >
             <Icon name='times' size='sm' />
           </button>
         </div>
 
-        {/* Contenido del sidebar */}
         <div className='side-bar__content'>
-          {/* Navegación */}
           <nav className='side-bar__navigation'>
             {items.map(item => (
               <SideBarItem
@@ -113,12 +105,11 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>((props, ref) => {
             ))}
           </nav>
 
-          {/* Footer del sidebar */}
           <div className='side-bar__footer'>
             <div className='side-bar__version'>v{version}</div>
           </div>
         </div>
-      </aside>
+      </div>
     </>
   )
 })

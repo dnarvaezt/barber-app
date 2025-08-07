@@ -1,30 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Footer } from '../footer'
-import { Header } from '../header'
-import { Sidebar, type SidebarRef } from '../side-bar'
+import { Footer, Header, Sidebar, type SidebarRef } from './components'
 import './layout.scss'
-
-// ============================================================================
-// LAYOUT COMPONENT - Componente autónomo y desacoplado
-// ============================================================================
 
 interface LayoutProps {
   children: React.ReactNode
   sidebarItems?: any[]
 }
 
-export const Layout = ({ children, sidebarItems = [] }: LayoutProps) => {
+export const Layout = (props: LayoutProps) => {
+  const { children, sidebarItems = [] } = props
+
   const navigate = useNavigate()
   const headerRef = useRef<any>(null)
   const sidebarRef = useRef<SidebarRef>(null)
   const [headerTitle] = useState('Barber App')
-
-  // Coordinación entre componentes autónomos
-  useEffect(() => {
-    // Los componentes son autónomos y se comunican a través de refs
-    // El header puede controlar el sidebar cuando sea necesario
-  }, [])
 
   const handleNavigate = (path: string) => {
     navigate(path)
@@ -47,8 +37,11 @@ export const Layout = ({ children, sidebarItems = [] }: LayoutProps) => {
           actions={undefined}
           showMenuButton={true}
         />
-        <main className='layout__main'>{children}</main>
-        <Footer />
+
+        <div className='layout__body'>
+          <main className='layout__main'>{children}</main>
+          <Footer />
+        </div>
       </div>
     </div>
   )
