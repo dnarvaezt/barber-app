@@ -9,7 +9,7 @@ import './entity-list.scss'
 
 interface MobileCardProps {
   entity: any
-  entityType: 'client' | 'employee' | 'category' | 'activity'
+  entityType: 'client' | 'employee' | 'category' | 'activity' | 'product'
   onDeleteClick: (id: string) => void
   formatPhone?: (phone: string) => string
   formatDate: (date: Date) => string
@@ -40,6 +40,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return RouteIds.CATEGORY_DETAIL
       case 'activity':
         return RouteIds.ACTIVITY_DETAIL
+      case 'product':
+        return RouteIds.PRODUCT_DETAIL
       default:
         return RouteIds.CLIENT_DETAIL
     }
@@ -55,6 +57,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return RouteIds.CATEGORY_FORM_EDIT
       case 'activity':
         return RouteIds.ACTIVITY_FORM_EDIT
+      case 'product':
+        return RouteIds.PRODUCT_FORM_EDIT
       default:
         return RouteIds.CLIENT_FORM_EDIT
     }
@@ -70,6 +74,8 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         return { categoryId: entity.id }
       case 'activity':
         return { activityId: entity.id }
+      case 'product':
+        return { productId: entity.id }
       default:
         return { clientId: entity.id }
     }
@@ -101,7 +107,9 @@ export const MobileCard: React.FC<MobileCardProps> = ({
         </div>
       </div>
       <div className='entity-list__mobile-content'>
-        {entityType === 'category' || entityType === 'activity' ? (
+        {entityType === 'category' ||
+        entityType === 'activity' ||
+        entityType === 'product' ? (
           <>
             <div className='entity-list__mobile-item'>
               <span className='entity-list__mobile-label'>
@@ -133,6 +141,40 @@ export const MobileCard: React.FC<MobileCardProps> = ({
                   </span>
                   <span className='entity-list__mobile-value'>
                     {entity.categoryId}
+                  </span>
+                </div>
+              </>
+            )}
+            {entityType === 'product' && (
+              <>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>
+                    Descripción:
+                  </span>
+                  <span className='entity-list__mobile-value'>
+                    {entity.description}
+                  </span>
+                </div>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>Categoría:</span>
+                  <span className='entity-list__mobile-value'>
+                    {entity.category}
+                  </span>
+                </div>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>
+                    Precio de Costo:
+                  </span>
+                  <span className='entity-list__mobile-value'>
+                    ${entity.costPrice?.toLocaleString()}
+                  </span>
+                </div>
+                <div className='entity-list__mobile-item'>
+                  <span className='entity-list__mobile-label'>
+                    Precio de Venta:
+                  </span>
+                  <span className='entity-list__mobile-value'>
+                    ${entity.salePrice?.toLocaleString()}
                   </span>
                 </div>
               </>
@@ -189,7 +231,7 @@ export const MobileCard: React.FC<MobileCardProps> = ({
 
 interface EntityListProps {
   entities: any[]
-  entityType: 'client' | 'employee' | 'category' | 'activity'
+  entityType: 'client' | 'employee' | 'category' | 'activity' | 'product'
   loading?: boolean
   error?: string | null
   onDeleteClick: (id: string) => void
@@ -224,7 +266,9 @@ export const EntityList: React.FC<EntityListProps> = ({
               ? 'empleados'
               : entityType === 'category'
                 ? 'categorías'
-                : 'actividades'}
+                : entityType === 'activity'
+                  ? 'actividades'
+                  : 'productos'}
           ...
         </p>
       </div>
@@ -252,7 +296,9 @@ export const EntityList: React.FC<EntityListProps> = ({
               ? 'empleados'
               : entityType === 'category'
                 ? 'categorías'
-                : 'actividades'}
+                : entityType === 'activity'
+                  ? 'actividades'
+                  : 'productos'}
           .
         </p>
       </div>

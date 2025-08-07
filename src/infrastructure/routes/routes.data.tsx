@@ -7,6 +7,7 @@ const userIcon = <Icon name='user' />
 const employeeIcon = <Icon name='user' />
 const categoryIcon = <Icon name='tag' />
 const activityIcon = <Icon name='briefcase' />
+const productIcon = <Icon name='box' />
 const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
@@ -191,6 +192,50 @@ export const appRoutes: RouteItem[] = [
         icon: activityIcon,
         component: lazyRoute('activity-detail', 'default'),
         path: '/:activityId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    id: RouteIds.PRODUCTS,
+    name: 'Productos',
+    title: 'Gestión de Productos',
+    icon: productIcon,
+    component: lazyRoute('product-page', 'default'),
+    path: '/products',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.PRODUCT_FORM_NEW,
+        name: 'Nuevo Producto',
+        title: 'Crear Nuevo Producto',
+        icon: productIcon,
+        component: lazyRoute('product-form', 'default'),
+        path: '/form/new',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.PRODUCT_FORM_EDIT,
+        name: 'Editar Producto',
+        title: 'Editar Producto',
+        icon: productIcon,
+        component: lazyRoute('product-form', 'default'),
+        path: '/form/:productId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.PRODUCT_DETAIL,
+        name: 'Detalle Producto',
+        title: 'Detalle del Producto',
+        icon: productIcon,
+        component: lazyRoute('product-detail', 'default'),
+        path: '/:productId',
         inheritPath: true,
         hideSidebar: true,
         children: [],

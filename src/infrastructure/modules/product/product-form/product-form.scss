@@ -1,0 +1,265 @@
+@use '../../../assets/styles/variables' as *;
+
+.product-form {
+  @apply min-h-screen bg-gray-50 dark:bg-gray-900 py-8;
+
+  .product-form__container {
+    @apply max-w-3xl mx-auto px-4;
+
+    .product-form__header {
+      @apply text-center mb-8;
+
+      .product-form__title {
+        @apply text-3xl font-bold text-gray-900 dark:text-white mb-2;
+      }
+
+      .product-form__subtitle {
+        @apply text-gray-600 dark:text-gray-400;
+      }
+    }
+
+    .product-form__form {
+      @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8;
+
+      .product-form__success-message {
+        @apply bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6 flex items-center gap-3;
+
+        .product-form__success-icon {
+          @apply text-green-600 dark:text-green-400 text-xl;
+        }
+
+        .product-form__success-text {
+          @apply text-green-800 dark:text-green-200 font-medium;
+        }
+      }
+
+      .product-form__error-message {
+        @apply bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 flex items-center gap-3;
+
+        .product-form__error-icon {
+          @apply text-red-600 dark:text-red-400 text-xl;
+        }
+
+        .product-form__error-text {
+          @apply text-red-800 dark:text-red-200 font-medium;
+        }
+      }
+
+      .product-form__loading {
+        @apply flex flex-col items-center justify-center py-12;
+
+        .product-form__loading-spinner {
+          @apply w-8 h-8 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4;
+        }
+
+        .product-form__loading-text {
+          @apply text-gray-600 dark:text-gray-400 font-medium;
+        }
+      }
+
+      .product-form__form-content {
+        @apply space-y-6;
+
+        .product-form__field {
+          @apply space-y-2;
+
+          .product-form__label {
+            @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
+          }
+
+          .product-form__input {
+            @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300;
+
+            &--filled {
+              @apply border-green-500 dark:border-green-400;
+            }
+
+            &:focus {
+              @apply shadow-lg transform scale-[1.02];
+            }
+
+            &::placeholder {
+              @apply text-gray-400 dark:text-gray-500;
+            }
+          }
+
+          .product-form__textarea {
+            @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 resize-none;
+
+            &--filled {
+              @apply border-green-500 dark:border-green-400;
+            }
+
+            &:focus {
+              @apply shadow-lg transform scale-[1.02];
+            }
+
+            &::placeholder {
+              @apply text-gray-400 dark:text-gray-500;
+            }
+          }
+
+          .product-form__select {
+            @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300;
+
+            &--filled {
+              @apply border-green-500 dark:border-green-400;
+            }
+
+            &:focus {
+              @apply shadow-lg transform scale-[1.02];
+            }
+          }
+
+          .product-form__help-text {
+            @apply text-sm text-gray-500 dark:text-gray-400 mt-1;
+          }
+        }
+
+        .product-form__price-section {
+          @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+
+          .product-form__price-field {
+            @apply space-y-2;
+
+            .product-form__price-label {
+              @apply block text-sm font-semibold text-gray-700 dark:text-gray-300;
+            }
+
+            .product-form__price-input {
+              @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300;
+
+              &--filled {
+                @apply border-green-500 dark:border-green-400;
+              }
+
+              &:focus {
+                @apply shadow-lg transform scale-[1.02];
+              }
+
+              &::placeholder {
+                @apply text-gray-400 dark:text-gray-500;
+              }
+            }
+
+            .product-form__price-help {
+              @apply text-sm text-gray-500 dark:text-gray-400 mt-1;
+            }
+          }
+        }
+
+        .product-form__actions {
+          @apply flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-600;
+
+          .product-form__button {
+            @apply flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed;
+
+            &--secondary {
+              @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+            }
+
+            &--primary {
+              @apply bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl;
+            }
+
+            .product-form__loading-spinner {
+              @apply w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
+
+              &--small {
+                @apply w-4 h-4;
+              }
+            }
+
+            .product-form__button-text {
+              @apply font-medium;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.product-form__container {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.product-form__form {
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.product-form__field {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.product-form__field:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.product-form__field:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.product-form__field:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.product-form__field:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.product-form__field:nth-child(5) {
+  animation-delay: 0.7s;
+}
+
+.product-form__price-section {
+  animation: fadeIn 0.6s ease-out 0.8s both;
+}
+
+.product-form__actions {
+  animation: fadeIn 0.6s ease-out 0.9s both;
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .product-form {
+    &__container {
+      @apply px-6;
+    }
+
+    &__form {
+      @apply p-6;
+    }
+
+    &__header {
+      .product-form__title {
+        @apply text-2xl;
+      }
+
+      .product-form__subtitle {
+        @apply text-base;
+      }
+    }
+
+    &__price-section {
+      @apply grid-cols-1;
+    }
+  }
+}

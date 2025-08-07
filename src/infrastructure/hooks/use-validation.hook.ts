@@ -100,6 +100,86 @@ export const useValidation = () => {
     return ''
   }, [])
 
+  const validateProductName = useCallback((name: string) => {
+    if (!name.trim()) {
+      return 'El nombre del producto es requerido'
+    }
+    if (name.trim().length < 2) {
+      return 'El nombre debe tener al menos 2 caracteres'
+    }
+    if (name.trim().length > 100) {
+      return 'El nombre debe tener máximo 100 caracteres'
+    }
+    return ''
+  }, [])
+
+  const validateProductDescription = useCallback((description: string) => {
+    if (!description.trim()) {
+      return 'La descripción del producto es requerida'
+    }
+    if (description.trim().length < 10) {
+      return 'La descripción debe tener al menos 10 caracteres'
+    }
+    if (description.trim().length > 500) {
+      return 'La descripción debe tener máximo 500 caracteres'
+    }
+    return ''
+  }, [])
+
+  const validateProductCategory = useCallback((category: string) => {
+    if (!category.trim()) {
+      return 'La categoría del producto es requerida'
+    }
+    if (category.trim().length < 2) {
+      return 'La categoría debe tener al menos 2 caracteres'
+    }
+    if (category.trim().length > 50) {
+      return 'La categoría debe tener máximo 50 caracteres'
+    }
+    return ''
+  }, [])
+
+  const validateProductCostPrice = useCallback((costPrice: string) => {
+    if (!costPrice.trim()) {
+      return 'El precio de costo es requerido'
+    }
+    const num = Number(costPrice)
+    if (isNaN(num)) {
+      return 'El precio de costo debe ser un número'
+    }
+    if (num < 0) {
+      return 'El precio de costo no puede ser negativo'
+    }
+    if (num > 999999.99) {
+      return 'El precio de costo no puede exceder 999,999.99'
+    }
+    return ''
+  }, [])
+
+  const validateProductSalePrice = useCallback((salePrice: string) => {
+    if (!salePrice.trim()) {
+      return 'El precio de venta es requerido'
+    }
+    const num = Number(salePrice)
+    if (isNaN(num)) {
+      return 'El precio de venta debe ser un número'
+    }
+    if (num < 0) {
+      return 'El precio de venta no puede ser negativo'
+    }
+    if (num > 999999.99) {
+      return 'El precio de venta no puede exceder 999,999.99'
+    }
+    return ''
+  }, [])
+
+  const validateProductCategoryId = useCallback((categoryId: string) => {
+    if (!categoryId.trim()) {
+      return 'La categoría es requerida'
+    }
+    return ''
+  }, [])
+
   const validateClientForm = useCallback(
     (formData: { name: string; phoneNumber: string; birthDate: string }) => {
       const errors: Record<string, string> = {}
@@ -174,6 +254,57 @@ export const useValidation = () => {
     [validateActivityName, validateActivityPrice, validateActivityCategoryId]
   )
 
+  const validateProductForm = useCallback(
+    (formData: {
+      name: string
+      description: string
+      category: string
+      costPrice: string
+      salePrice: string
+      categoryId: string
+    }) => {
+      const errors: Record<string, string> = {}
+
+      const nameError = validateProductName(formData.name)
+      if (nameError) errors.name = nameError
+
+      const descriptionError = validateProductDescription(formData.description)
+      if (descriptionError) errors.description = descriptionError
+
+      const categoryError = validateProductCategory(formData.category)
+      if (categoryError) errors.category = categoryError
+
+      const costPriceError = validateProductCostPrice(formData.costPrice)
+      if (costPriceError) errors.costPrice = costPriceError
+
+      const salePriceError = validateProductSalePrice(formData.salePrice)
+      if (salePriceError) errors.salePrice = salePriceError
+
+      const categoryIdError = validateProductCategoryId(formData.categoryId)
+      if (categoryIdError) errors.categoryId = categoryIdError
+
+      // Validación adicional: precio de venta debe ser mayor o igual al de costo
+      if (!costPriceError && !salePriceError) {
+        const costPrice = Number(formData.costPrice)
+        const salePrice = Number(formData.salePrice)
+        if (salePrice < costPrice) {
+          errors.salePrice =
+            'El precio de venta no puede ser menor al precio de costo'
+        }
+      }
+
+      return errors
+    },
+    [
+      validateProductName,
+      validateProductDescription,
+      validateProductCategory,
+      validateProductCostPrice,
+      validateProductSalePrice,
+      validateProductCategoryId,
+    ]
+  )
+
   return {
     validateRequired,
     validatePhone,
@@ -183,9 +314,16 @@ export const useValidation = () => {
     validateActivityName,
     validateActivityPrice,
     validateActivityCategoryId,
+    validateProductName,
+    validateProductDescription,
+    validateProductCategory,
+    validateProductCostPrice,
+    validateProductSalePrice,
+    validateProductCategoryId,
     validateClientForm,
     validateEmployeeForm,
     validateCategoryForm,
     validateActivityForm,
+    validateProductForm,
   }
 }

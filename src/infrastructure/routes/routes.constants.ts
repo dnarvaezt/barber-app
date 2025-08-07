@@ -17,6 +17,10 @@ export const RouteIds = {
   ACTIVITY_FORM_NEW: 'activity-form-new',
   ACTIVITY_DETAIL: 'activity-detail',
   ACTIVITY_FORM_EDIT: 'activity-form-edit',
+  PRODUCTS: 'products',
+  PRODUCT_FORM_NEW: 'product-form-new',
+  PRODUCT_DETAIL: 'product-detail',
+  PRODUCT_FORM_EDIT: 'product-form-edit',
   NOT_FOUND: 'not-found',
 } as const
 
