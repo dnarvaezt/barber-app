@@ -154,7 +154,7 @@ export const useInvoiceForm = () => {
   }, [])
 
   // Validaciones
-  const validate = (): string | null => {
+  const validate = useCallback((): string | null => {
     if (courtesyProductId && services.length === 0) {
       return 'No se puede agregar cortesía sin al menos un servicio'
     }
@@ -171,17 +171,27 @@ export const useInvoiceForm = () => {
         return 'Monto recibido insuficiente para cubrir el total'
     }
     return null
-  }
+  }, [
+    courtesyProductId,
+    services,
+    productItems,
+    paymentMethod,
+    amountReceived,
+    totals,
+  ])
 
   // Acciones
-  const buildPayment = (): InvoicePayment => ({
-    method: paymentMethod,
-    amountReceived:
-      paymentMethod === 'CASH' && typeof amountReceived === 'number'
-        ? amountReceived
-        : undefined,
-    change: paymentMethod === 'CASH' ? change : undefined,
-  })
+  const buildPayment = useCallback(
+    (): InvoicePayment => ({
+      method: paymentMethod,
+      amountReceived:
+        paymentMethod === 'CASH' && typeof amountReceived === 'number'
+          ? amountReceived
+          : undefined,
+      change: paymentMethod === 'CASH' ? change : undefined,
+    }),
+    [paymentMethod, amountReceived, change]
+  )
 
   const savePending = useCallback(async () => {
     const msg = !clientId ? 'Debes seleccionar un cliente' : validate()
@@ -232,9 +242,9 @@ export const useInvoiceForm = () => {
     productItems,
     courtesyProductId,
     comment,
-    paymentMethod,
-    amountReceived,
-    change,
+    validate,
+    buildPayment,
+    linkInvoiceToAppointment,
   ])
 
   const finalize = useCallback(async () => {
@@ -277,9 +287,9 @@ export const useInvoiceForm = () => {
     productItems,
     courtesyProductId,
     comment,
-    paymentMethod,
-    amountReceived,
-    change,
+    validate,
+    buildPayment,
+    linkInvoiceToAppointment,
   ])
 
   const cancel = useCallback(async () => {
@@ -314,9 +324,7 @@ export const useInvoiceForm = () => {
     productItems,
     courtesyProductId,
     comment,
-    paymentMethod,
-    amountReceived,
-    change,
+    buildPayment,
   ])
 
   return {

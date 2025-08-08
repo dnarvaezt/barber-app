@@ -112,30 +112,7 @@ export function useTrackActivity(
   // INICIALIZACIÓN
   // ============================================================================
 
-  useEffect(() => {
-    // Crear monitor
-    monitorRef.current = new ActivityMonitor(
-      recordService,
-      eventService,
-      configService,
-      { ...configService.getConfiguration(), ...configuration }
-    )
-
-    // Configurar callbacks del monitor
-    setupMonitorCallbacks()
-
-    // Auto-iniciar si está configurado
-    if (autoStart) {
-      startMonitoring()
-    }
-
-    // Cargar estadísticas iniciales
-    loadInitialStats()
-
-    return () => {
-      cleanup()
-    }
-  }, [autoStart, configService, configuration, eventService, recordService])
+  // Nota: el efecto de inicialización se declara al final del hook para evitar TDZ en dependencias
 
   // ============================================================================
   // CONFIGURACIÓN DE CALLBACKS
@@ -146,6 +123,79 @@ export function useTrackActivity(
 
     // Aquí se podrían configurar callbacks específicos del monitor
     // Por ahora, usamos los callbacks del hook
+  }, [])
+
+  // ==========================================================================
+  // FUNCIONES BASE NECESARIAS EN OTRAS CALLBACKS (para evitar TDZ)
+  // ==========================================================================
+
+  const getActiveRecord =
+    useCallback(async (): Promise<IActivityRecord | null> => {
+      try {
+        return await recordService.getActiveRecord()
+      } catch (error) {
+        onError?.(error as Error)
+        throw error
+      }
+    }, [recordService, onError])
+
+  const startStateUpdateInterval = useCallback(() => {
+    updateIntervalRef.current = window.setInterval(async () => {
+      try {
+        // Actualizar registro activo
+        const activeRecord = await getActiveRecord()
+
+        // Actualizar estado del monitor
+        if (monitorRef.current) {
+          setState(prev => ({
+            ...prev,
+            activeRecord,
+            lastInteractionTime: monitorRef.current!.getLastInteractionTime(),
+            isTabVisible: monitorRef.current!.isTabVisible(),
+            isTabFocused: monitorRef.current!.isTabFocused(),
+          }))
+        }
+
+        // Llamar callbacks si hay cambios
+        if (activeRecord && activeRecord !== state.activeRecord) {
+          if (
+            activeRecord.state === ActivityState.ACTIVE &&
+            state.activeRecord?.state !== ActivityState.ACTIVE
+          ) {
+            onActivityResumed?.(activeRecord)
+          } else if (
+            activeRecord.state === ActivityState.SUSPENDED &&
+            state.activeRecord?.state === ActivityState.ACTIVE
+          ) {
+            onActivitySuspended?.(activeRecord)
+          } else if (
+            activeRecord.state === ActivityState.FINISHED &&
+            state.activeRecord?.state !== ActivityState.FINISHED
+          ) {
+            onActivityFinished?.(activeRecord)
+          } else {
+            onActivityUpdated?.(activeRecord)
+          }
+        }
+      } catch (error) {
+        onError?.(error as Error)
+      }
+    }, 1000) // Actualizar cada segundo
+  }, [
+    getActiveRecord,
+    onActivityResumed,
+    onActivitySuspended,
+    onActivityFinished,
+    onActivityUpdated,
+    onError,
+    state.activeRecord,
+  ])
+
+  const stopStateUpdateInterval = useCallback(() => {
+    if (updateIntervalRef.current !== null) {
+      clearInterval(updateIntervalRef.current)
+      updateIntervalRef.current = null
+    }
   }, [])
 
   // ============================================================================
@@ -173,7 +223,7 @@ export function useTrackActivity(
       onError?.(error as Error)
       throw error
     }
-  }, [onActivityStarted, onError, state.activeRecord])
+  }, [onActivityStarted, onError, state.activeRecord, startStateUpdateInterval])
 
   const stopMonitoring = useCallback(async () => {
     try {
@@ -196,7 +246,7 @@ export function useTrackActivity(
       onError?.(error as Error)
       throw error
     }
-  }, [onActivityFinished, onError, state.activeRecord])
+  }, [onActivityFinished, onError, state.activeRecord, stopStateUpdateInterval])
 
   const updateConfiguration = useCallback(
     async (config: Partial<IActivityConfiguration>) => {
@@ -219,16 +269,6 @@ export function useTrackActivity(
     [onError]
   )
 
-  const getActiveRecord =
-    useCallback(async (): Promise<IActivityRecord | null> => {
-      try {
-        return await recordService.getActiveRecord()
-      } catch (error) {
-        onError?.(error as Error)
-        throw error
-      }
-    }, [recordService, onError])
-
   const getAllRecords = useCallback(async (): Promise<IActivityRecord[]> => {
     try {
       // Asumiendo que el repositorio tiene un método findAll
@@ -237,19 +277,6 @@ export function useTrackActivity(
         return await repository.findAll()
       }
       return []
-    } catch (error) {
-      onError?.(error as Error)
-      throw error
-    }
-  }, [recordService, onError])
-
-  const clearRecords = useCallback(async () => {
-    try {
-      const repository = (recordService as any).repository
-      if (repository && typeof repository.clear === 'function') {
-        await repository.clear()
-        await loadStats()
-      }
     } catch (error) {
       onError?.(error as Error)
       throw error
@@ -315,64 +342,18 @@ export function useTrackActivity(
     }
   }, [getStats, onError])
 
-  const startStateUpdateInterval = useCallback(() => {
-    updateIntervalRef.current = window.setInterval(async () => {
-      try {
-        // Actualizar registro activo
-        const activeRecord = await getActiveRecord()
-
-        // Actualizar estado del monitor
-        if (monitorRef.current) {
-          setState(prev => ({
-            ...prev,
-            activeRecord,
-            lastInteractionTime: monitorRef.current!.getLastInteractionTime(),
-            isTabVisible: monitorRef.current!.isTabVisible(),
-            isTabFocused: monitorRef.current!.isTabFocused(),
-          }))
-        }
-
-        // Llamar callbacks si hay cambios
-        if (activeRecord && activeRecord !== state.activeRecord) {
-          if (
-            activeRecord.state === ActivityState.ACTIVE &&
-            state.activeRecord?.state !== ActivityState.ACTIVE
-          ) {
-            onActivityResumed?.(activeRecord)
-          } else if (
-            activeRecord.state === ActivityState.SUSPENDED &&
-            state.activeRecord?.state === ActivityState.ACTIVE
-          ) {
-            onActivitySuspended?.(activeRecord)
-          } else if (
-            activeRecord.state === ActivityState.FINISHED &&
-            state.activeRecord?.state !== ActivityState.FINISHED
-          ) {
-            onActivityFinished?.(activeRecord)
-          } else {
-            onActivityUpdated?.(activeRecord)
-          }
-        }
-      } catch (error) {
-        onError?.(error as Error)
+  const clearRecords = useCallback(async () => {
+    try {
+      const repository = (recordService as any).repository
+      if (repository && typeof repository.clear === 'function') {
+        await repository.clear()
+        await loadStats()
       }
-    }, 1000) // Actualizar cada segundo
-  }, [
-    getActiveRecord,
-    onActivityResumed,
-    onActivitySuspended,
-    onActivityFinished,
-    onActivityUpdated,
-    onError,
-    state.activeRecord,
-  ])
-
-  const stopStateUpdateInterval = useCallback(() => {
-    if (updateIntervalRef.current !== null) {
-      clearInterval(updateIntervalRef.current)
-      updateIntervalRef.current = null
+    } catch (error) {
+      onError?.(error as Error)
+      throw error
     }
-  }, [])
+  }, [recordService, onError, loadStats])
 
   const cleanup = useCallback(() => {
     stopStateUpdateInterval()
@@ -380,6 +361,45 @@ export function useTrackActivity(
       monitorRef.current.stopMonitoring()
     }
   }, [stopStateUpdateInterval, state.isMonitoring])
+
+  // ============================================================================
+  // INICIALIZACIÓN (declarado al final para evitar TDZ)
+  // ============================================================================
+
+  useEffect(() => {
+    // Crear monitor
+    monitorRef.current = new ActivityMonitor(
+      recordService,
+      eventService,
+      configService,
+      { ...configService.getConfiguration(), ...configuration }
+    )
+
+    // Configurar callbacks del monitor
+    setupMonitorCallbacks()
+
+    // Auto-iniciar si está configurado
+    if (autoStart) {
+      startMonitoring()
+    }
+
+    // Cargar estadísticas iniciales
+    loadInitialStats()
+
+    return () => {
+      cleanup()
+    }
+  }, [
+    autoStart,
+    configService,
+    configuration,
+    eventService,
+    recordService,
+    setupMonitorCallbacks,
+    startMonitoring,
+    loadInitialStats,
+    cleanup,
+  ])
 
   // ============================================================================
   // RETORNO

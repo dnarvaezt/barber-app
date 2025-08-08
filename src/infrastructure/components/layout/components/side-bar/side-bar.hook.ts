@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import type { RouteItem } from '../../../../routes'
 
@@ -22,6 +22,7 @@ export interface UseSideBarProps {
 export const useSideBar = (props: UseSideBarProps): SideBarState => {
   const { sidebarItems, onClose, onNavigate } = props
   const location = useLocation()
+  const navigate = useNavigate()
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const isMobile = useRef(false)
 
@@ -139,11 +140,11 @@ export const useSideBar = (props: UseSideBarProps): SideBarState => {
       if (onNavigate) {
         onNavigate(path)
       } else {
-        // Fallback: usar window.location si no hay callback
-        window.location.href = path
+        // Fallback: usar el enrutador para navegación
+        navigate(path)
       }
     },
-    [onNavigate]
+    [onNavigate, navigate]
   )
 
   // Función para determinar el tipo de item y manejar el click

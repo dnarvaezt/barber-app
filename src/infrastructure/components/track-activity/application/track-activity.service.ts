@@ -163,7 +163,7 @@ export class ActivityRecordService implements IActivityRecordService {
 
   async finishRecord(
     recordId: string,
-    reason: EventType // eslint-disable-line @typescript-eslint/no-unused-vars
+    reason: EventType
   ): Promise<IActivityRecord> {
     const record = await this.repository.findById(recordId)
     if (!record) {
@@ -188,7 +188,7 @@ export class ActivityRecordService implements IActivityRecordService {
 
   async suspendRecord(
     recordId: string,
-    reason: EventType // eslint-disable-line @typescript-eslint/no-unused-vars
+    reason: EventType
   ): Promise<IActivityRecord> {
     const record = await this.repository.findById(recordId)
     if (!record) {

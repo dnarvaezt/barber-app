@@ -140,7 +140,7 @@ export const useAppointmentForm = () => {
     } finally {
       setLoading(false)
     }
-  }, [form, buildRoutePath, navigate, isEditing, appointmentId])
+  }, [form, buildRoutePath, navigate, isEditing, appointmentId, validate])
 
   const cancel = useCallback(() => {
     const path = buildRoutePath(RouteIds.APPOINTMENTS)

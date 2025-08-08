@@ -30,7 +30,14 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const basePath = getBasePath(mode)
 
   return {
-    plugins: [react(), markdownPlugin()],
+    plugins: [
+      react({
+        babel: {
+          plugins: ['react-compiler'],
+        },
+      }),
+      markdownPlugin(),
+    ],
     envDir: '.',
     define: {
       __APP_VERSION__: JSON.stringify(version),

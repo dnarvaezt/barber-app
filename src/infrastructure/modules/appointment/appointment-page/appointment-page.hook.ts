@@ -297,7 +297,7 @@ export const useAppointmentPage = () => {
       mk('IN_PROGRESS', 'En curso'),
       mk('COMPLETED', 'Completada'),
     ]
-  }, [appointments, clientMap, employeeMap, changeStatus])
+  }, [appointments, clientMap, employeeMap, changeStatus, reschedule])
 
   return {
     columns,

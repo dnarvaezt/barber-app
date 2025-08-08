@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import prettier from 'eslint-plugin-prettier'
+import reactCompiler from 'eslint-plugin-react-compiler'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { globalIgnores } from 'eslint/config'
@@ -23,8 +24,10 @@ export default tseslint.config([
     ],
     plugins: {
       prettier: prettier,
+      'react-compiler': reactCompiler,
     },
     rules: {
+      ...reactCompiler.configs.recommended.rules,
       'prettier/prettier': 'error',
       'arrow-body-style': 'off',
       'prefer-arrow-callback': 'off',
