@@ -1,7 +1,19 @@
-import { useEffect, useState } from 'react'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
+import { Button, Card, Input, Modal, Space, Table, Typography } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import type { Client } from '../../../../application/domain/client'
 import { Pagination, SortControls } from '../../../components'
 import { EntityList } from '../../../components/entity/entity-list'
+import { PageContent } from '../../../components/layout/components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
 import './client-page.scss'
@@ -71,241 +83,192 @@ export const ClientPage = () => {
     return age
   }
 
-  if (loading) {
-    return (
-      <div className='client-page'>
-        <div className='client-page__content'>
-          <div className='client-page__loading'>
-            <div className='client-page__loading-spinner'></div>
-            <p>Cargando clientes...</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className='client-page'>
-        <div className='client-page__content'>
-          <div className='client-page__error'>
-            <div className='client-page__error-icon'>⚠️</div>
-            <h3 className='client-page__error-title'>Error</h3>
-            <p className='client-page__error-message'>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className='client-page__button client-page__button--primary'
+  const columns: ColumnsType<Client> = useMemo(
+    () => [
+      {
+        title: 'Nombre',
+        dataIndex: 'name',
+        key: 'name',
+        sorter: false,
+      },
+      {
+        title: 'Teléfono',
+        dataIndex: 'phoneNumber',
+        key: 'phoneNumber',
+        render: (value: string) => formatPhone(value),
+      },
+      {
+        title: 'Fecha de Nacimiento',
+        dataIndex: 'birthDate',
+        key: 'birthDate',
+        render: (value: Date) => formatDate(value),
+      },
+      {
+        title: 'Edad',
+        key: 'age',
+        render: (_: unknown, record: Client) => getAge(record.birthDate),
+      },
+      {
+        title: 'Mes de Nacimiento',
+        key: 'birthMonth',
+        render: (_: unknown, record: Client) =>
+          getMonthName(new Date(record.birthDate).getMonth()),
+      },
+      {
+        title: 'Acciones',
+        key: 'actions',
+        render: (_: unknown, record: Client) => (
+          <Space>
+            <Link
+              to={buildRoutePathWithParams(RouteIds.CLIENT_DETAIL, {
+                clientId: record.id,
+              })}
             >
-              Reintentar
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+              <Button size='small' icon={<EyeOutlined />}>
+                Ver
+              </Button>
+            </Link>
+            <Link
+              to={buildRoutePathWithParams(RouteIds.CLIENT_FORM_EDIT, {
+                clientId: record.id,
+              })}
+            >
+              <Button size='small' icon={<EditOutlined />}>
+                Editar
+              </Button>
+            </Link>
+            <Button
+              danger
+              size='small'
+              icon={<DeleteOutlined />}
+              onClick={() => handleDeleteClick(record.id)}
+            >
+              Eliminar
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [buildRoutePathWithParams]
+  )
 
   return (
-    <div className='client-page'>
-      <div className='client-page__content'>
-        {/* Header de la página */}
-        <div className='client-page__header'>
-          <div className='client-page__header-content'>
-            <h1 className='client-page__title'>Gestión de Clientes</h1>
-            <div className='client-page__header-actions'>
-              <button
-                onClick={() => {
-                  const newClientPath = buildRoutePathWithParams(
-                    RouteIds.CLIENT_FORM_NEW,
-                    {}
-                  )
-                  if (newClientPath) {
-                    navigate(newClientPath)
-                  }
-                }}
-                className='client-page__action-button client-page__action-button--edit'
-              >
-                ➕ Nuevo Cliente
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Filtros y búsqueda */}
-        <div className='client-page__filters'>
-          <div className='client-page__search-section'>
-            <input
-              type='text'
-              placeholder='Buscar clientes...'
-              value={searchTerm}
-              onChange={e => handleSearch(e.target.value)}
-              className='client-page__search-input'
-            />
-            {searchTerm && (
-              <button
-                onClick={() => {
-                  clearFilters()
-                }}
-                className='px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              >
-                Limpiar
-              </button>
-            )}
-          </div>
-
-          <div className='client-page__sort-section'>
-            <SortControls
-              currentSortBy={sortBy}
-              currentSortOrder={sortOrder}
-              onSortChange={handleSortChange}
-              className='client-page__sort-controls'
-            />
-          </div>
-        </div>
-
-        {/* Lista de clientes */}
+    <PageContent>
+      <div className='client-page'>
         <div className='client-page__content'>
-          {loading ? (
-            <div className='client-page__loading'>
-              <p>Cargando clientes...</p>
-            </div>
-          ) : error ? (
-            <div className='client-page__error'>
-              <p>Error: {error}</p>
-            </div>
-          ) : clients.length === 0 ? (
-            <div className='client-page__empty'>
-              <p>No se encontraron clientes.</p>
-            </div>
-          ) : (
-            <>
-              {/* Tabla para desktop */}
-              <div className='client-page__table-container'>
-                <table className='client-page__table'>
-                  <thead className='client-page__table-header'>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Teléfono</th>
-                      <th>Fecha de Nacimiento</th>
-                      <th>Edad</th>
-                      <th>Mes de Nacimiento</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className='client-page__table-body'>
-                    {clients.map(client => (
-                      <tr key={client.id} className='client-page__table-row'>
-                        <td className='client-page__table-cell'>
-                          <div className='client-page__client-info'>
-                            <span className='client-page__client-name'>
-                              {client.name}
-                            </span>
-                          </div>
-                        </td>
-                        <td className='client-page__table-cell'>
-                          {formatPhone(client.phoneNumber)}
-                        </td>
-                        <td className='client-page__table-cell'>
-                          {formatDate(client.birthDate)}
-                        </td>
-                        <td className='client-page__table-cell'>
-                          {getAge(client.birthDate)}
-                        </td>
-                        <td className='client-page__table-cell'>
-                          {getMonthName(new Date(client.birthDate).getMonth())}
-                        </td>
-                        <td className='client-page__table-cell'>
-                          <div className='client-page__actions'>
-                            <Link
-                              to={buildRoutePathWithParams(
-                                RouteIds.CLIENT_DETAIL,
-                                {
-                                  clientId: client.id,
-                                }
-                              )}
-                              className='client-page__action-button client-page__action-button--view'
-                            >
-                              👁️ Ver
-                            </Link>
-                            <Link
-                              to={buildRoutePathWithParams(
-                                RouteIds.CLIENT_FORM_EDIT,
-                                {
-                                  clientId: client.id,
-                                }
-                              )}
-                              className='client-page__action-button client-page__action-button--edit'
-                            >
-                              ✏️ Editar
-                            </Link>
-                            <button
-                              onClick={() => handleDeleteClick(client.id)}
-                              className='client-page__action-button client-page__action-button--delete'
-                            >
-                              🗑️ Eliminar
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Tarjetas para móviles */}
-              <EntityList
-                entities={clients}
-                entityType='client'
-                loading={loading}
-                error={error}
-                onDeleteClick={handleDeleteClick}
-                formatPhone={formatPhone}
-                formatDate={formatDate}
-                getAge={getAge}
-                getMonthName={getMonthName}
-                className='client-page__mobile-cards'
-              />
-            </>
-          )}
-        </div>
-
-        {/* Componente de paginación */}
-        <Pagination
-          meta={meta}
-          onPageChange={handlePageChange}
-          onLimitChange={handleLimitChange}
-          showLimitSelector={true}
-          className='client-page__pagination'
-        />
-
-        {/* Modal de confirmación de eliminación */}
-        {showDeleteConfirm && (
-          <div className='client-page__modal-overlay'>
-            <div className='client-page__modal'>
-              <div className='client-page__modal-header'>
-                <h3>Confirmar Eliminación</h3>
-              </div>
-              <div className='client-page__modal-body'>
-                <p>¿Estás seguro de que quieres eliminar este cliente?</p>
-                <p>Esta acción no se puede deshacer.</p>
-              </div>
-              <div className='client-page__modal-actions'>
-                <button
-                  onClick={handleCancelDelete}
-                  className='client-page__button client-page__button--secondary'
+          <div className='client-page__header'>
+            <div className='client-page__header-content'>
+              <Typography.Title level={2} className='client-page__title'>
+                Gestión de Clientes
+              </Typography.Title>
+              <div className='client-page__header-actions'>
+                <Button
+                  type='primary'
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    const newClientPath = buildRoutePathWithParams(
+                      RouteIds.CLIENT_FORM_NEW,
+                      {}
+                    )
+                    if (newClientPath) {
+                      navigate(newClientPath)
+                    }
+                  }}
                 >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => handleConfirmDelete(showDeleteConfirm)}
-                  className='client-page__button client-page__button--danger'
-                >
-                  Eliminar
-                </button>
+                  Nuevo Cliente
+                </Button>
               </div>
             </div>
           </div>
-        )}
+
+          <Card className='client-page__filters'>
+            <Space direction='vertical' style={{ width: '100%' }} size='middle'>
+              <Space.Compact style={{ width: '100%' }}>
+                <Input
+                  size='middle'
+                  placeholder='Buscar clientes...'
+                  value={searchTerm}
+                  onChange={e => handleSearch(e.target.value)}
+                  allowClear
+                  prefix={<SearchOutlined />}
+                />
+                {searchTerm && (
+                  <Button
+                    icon={<ReloadOutlined />}
+                    onClick={() => {
+                      clearFilters()
+                    }}
+                  >
+                    Limpiar
+                  </Button>
+                )}
+              </Space.Compact>
+
+              <div className='client-page__sort-section'>
+                <SortControls
+                  currentSortBy={sortBy}
+                  currentSortOrder={sortOrder}
+                  onSortChange={handleSortChange}
+                  className='client-page__sort-controls'
+                />
+              </div>
+            </Space>
+          </Card>
+
+          <div className='client-page__content'>
+            <div className='client-page__table-container'>
+              <Table<Client>
+                rowKey='id'
+                columns={columns}
+                dataSource={clients}
+                loading={loading}
+                pagination={false}
+              />
+            </div>
+
+            <EntityList
+              entities={clients}
+              entityType='client'
+              loading={loading}
+              error={error}
+              onDeleteClick={handleDeleteClick}
+              formatPhone={formatPhone}
+              formatDate={formatDate}
+              getAge={getAge}
+              getMonthName={getMonthName}
+              className='client-page__mobile-cards'
+            />
+          </div>
+
+          <Card className='client-page__pagination'>
+            <Pagination
+              meta={meta}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+              showLimitSelector={true}
+            />
+          </Card>
+
+          <Modal
+            title='Confirmar Eliminación'
+            open={!!showDeleteConfirm}
+            onOk={() =>
+              showDeleteConfirm && handleConfirmDelete(showDeleteConfirm)
+            }
+            okText='Eliminar'
+            okButtonProps={{ danger: true }}
+            onCancel={handleCancelDelete}
+            cancelText='Cancelar'
+          >
+            <Typography.Paragraph>
+              ¿Estás seguro de que quieres eliminar este cliente?
+            </Typography.Paragraph>
+            <Typography.Paragraph type='secondary'>
+              Esta acción no se puede deshacer.
+            </Typography.Paragraph>
+          </Modal>
+        </div>
       </div>
-    </div>
+    </PageContent>
   )
 }

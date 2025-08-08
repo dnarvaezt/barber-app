@@ -1,3 +1,4 @@
+import { Button } from 'antd'
 import { useEffect } from 'react'
 import { Icon } from '../../components/icons'
 import './dashboard.scss'
@@ -56,6 +57,8 @@ export const DashboardPage = () => {
               <Icon name='calendar' className='mr-2' />
               Nueva Cita
             </button>
+            {/* Smoke test Ant Design */}
+            <Button type='primary'>AntD OK</Button>
             <button className='dashboard-page__action-button'>
               <Icon name='chart-bar' className='mr-2' />
               Ver Reportes
@@ -110,7 +113,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Estado vacío cuando no hay actividad - comentado por ahora */}
-        {/* 
+        {/*
         <div className='dashboard-page__empty-state'>
           <div className='dashboard-page__empty-icon'>
             <Icon name='inbox' />
