@@ -2,7 +2,10 @@ import type { PaginatedResponse, PaginationParams } from '../common'
 import { PaginationHelper } from '../common'
 import type { StockService } from '../stock'
 import type {
+  ClientInvoiceFilters,
   CreateInvoiceRequest,
+  EmployeeServiceHistoryFilters,
+  EmployeeServiceHistoryRecord,
   Invoice,
   InvoiceProductItem,
   InvoiceServiceItem,
@@ -34,6 +37,44 @@ export class InvoiceService {
       sortOrder: validated.sortOrder || 'desc',
     }
     return this.invoiceRepository.findAll(withSort)
+  }
+
+  async getByClient(
+    clientId: string,
+    filters: ClientInvoiceFilters,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Invoice>> {
+    if (!clientId) throw new Error('Client ID is required')
+    if (!filters?.dateFrom || !filters?.dateTo)
+      throw new Error('dateFrom and dateTo are required')
+    const validated = PaginationHelper.validateParams(pagination)
+    const withSort = {
+      ...validated,
+      sortBy: validated.sortBy || 'createdAt',
+      sortOrder: validated.sortOrder || 'desc',
+    }
+    return this.invoiceRepository.findByClient(clientId, filters, withSort)
+  }
+
+  async getEmployeeServiceHistory(
+    employeeId: string,
+    filters: EmployeeServiceHistoryFilters,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<EmployeeServiceHistoryRecord>> {
+    if (!employeeId) throw new Error('Employee ID is required')
+    if (!filters?.dateFrom || !filters?.dateTo)
+      throw new Error('dateFrom and dateTo are required')
+    const validated = PaginationHelper.validateParams(pagination)
+    const withSort = {
+      ...validated,
+      sortBy: validated.sortBy || 'timestamp',
+      sortOrder: validated.sortOrder || 'desc',
+    }
+    return this.invoiceRepository.findEmployeeServiceHistory(
+      employeeId,
+      filters,
+      withSort
+    )
   }
 
   async getById(
@@ -162,6 +203,29 @@ export class InvoiceService {
   // ----------------------------------------------------------------------------
   // Validaciones de negocio
   // ----------------------------------------------------------------------------
+
+  async getClientInvoicesAggregate(
+    clientId: string,
+    filters: ClientInvoiceFilters
+  ): Promise<{ count: number; totalAmount: number }> {
+    if (!clientId) throw new Error('Client ID is required')
+    if (!filters?.dateFrom || !filters?.dateTo)
+      throw new Error('dateFrom and dateTo are required')
+    return this.invoiceRepository.getClientInvoicesAggregate(clientId, filters)
+  }
+
+  async getEmployeeServiceHistoryAggregate(
+    employeeId: string,
+    filters: EmployeeServiceHistoryFilters
+  ): Promise<{ count: number }> {
+    if (!employeeId) throw new Error('Employee ID is required')
+    if (!filters?.dateFrom || !filters?.dateTo)
+      throw new Error('dateFrom and dateTo are required')
+    return this.invoiceRepository.getEmployeeServiceHistoryAggregate(
+      employeeId,
+      filters
+    )
+  }
   private validatePayment(payment: {
     method: PaymentMethod
     amountReceived?: number

@@ -73,3 +73,32 @@ export interface UpdateInvoiceRequest {
   canceledBy?: string
   updatedBy: string
 }
+
+// ----------------------------------------------------------------------------
+// Tipos de consulta especializados
+// ----------------------------------------------------------------------------
+
+// Registro aplanado para historial de servicios por empleado
+export interface EmployeeServiceHistoryRecord {
+  invoiceId: string
+  clientId: string
+  employeeId: string
+  timestamp: Date // Fecha y hora del servicio (usa finalizedAt de la factura)
+  service: {
+    activityId: string
+    activityName?: string
+    price: number
+  }
+}
+
+export interface EmployeeServiceHistoryFilters {
+  dateFrom: Date
+  dateTo: Date
+  activityId?: string
+}
+
+export interface ClientInvoiceFilters {
+  dateFrom: Date
+  dateTo: Date
+  status?: InvoiceStatus | 'ALL'
+}

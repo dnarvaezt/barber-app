@@ -9,12 +9,15 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'client-page': () => import('../modules/client/client-page/index.ts'),
   'client-form': () => import('../modules/client/client-form/index.ts'),
   'client-detail': () => import('../modules/client/client-detail/index.ts'),
+  'client-invoices': () => import('../modules/client/client-invoices/index.ts'),
 
   // Empleados - dividir en chunks separados
   'employee-page': () => import('../modules/employee/employee-page/index.ts'),
   'employee-form': () => import('../modules/employee/employee-form/index.ts'),
   'employee-detail': () =>
     import('../modules/employee/employee-detail/index.ts'),
+  'employee-service-history': () =>
+    import('../modules/employee/employee-service-history/index.ts'),
 
   // Categorías - dividir en chunks separados
   'category-page': () => import('../modules/category/category-page/index.ts'),

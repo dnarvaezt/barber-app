@@ -1,0 +1,62 @@
+.employee-history-page {
+  @apply min-h-screen p-6;
+
+  &__header {
+    @apply flex items-center justify-between mb-4;
+  }
+
+  &__title {
+    @apply text-2xl font-bold;
+  }
+
+  &__actions {
+    @apply flex gap-2;
+  }
+
+  &__btn {
+    @apply px-3 py-2 rounded bg-gray-800 text-white;
+    &--secondary {
+      @apply bg-gray-200 text-gray-800;
+    }
+  }
+
+  &__filters {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-4 mb-4;
+  }
+
+  &__filter {
+    @apply flex flex-col gap-1;
+  }
+
+  &__summary {
+    @apply mb-2 text-sm text-gray-600;
+  }
+
+  &__loading,
+  &__error,
+  &__empty {
+    @apply p-4;
+  }
+
+  &__list {
+    @apply divide-y;
+  }
+
+  &__item {
+    @apply grid grid-cols-1 md:grid-cols-5 gap-2 p-3;
+  }
+
+  &__item-label {
+    @apply text-xs text-gray-500;
+  }
+
+  &__item-value {
+    @apply font-medium;
+  }
+
+  &__link {
+    @apply text-blue-600 hover:underline;
+  }
+}
+
+

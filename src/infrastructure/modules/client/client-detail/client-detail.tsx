@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { RouteIds, useRoutes } from '../../../routes'
 import { useClientDetail } from './client-detail.hook'
 import './client-detail.scss'
 
@@ -16,6 +18,9 @@ export const ClientDetail = () => {
     getAge,
     getBirthMonth,
   } = useClientDetail()
+
+  // Declarar hooks SIEMPRE al inicio del componente
+  const { buildRoutePathWithParams } = useRoutes()
 
   useEffect(() => {
     // El componente es autónomo, no necesita configurar el header
@@ -76,10 +81,23 @@ export const ClientDetail = () => {
     )
   }
 
+  // eliminado duplicado
   return (
     <div className='client-detail-page'>
       <div className='client-detail-page__content'>
         <div className='client-detail-page__card'>
+          <div className='client-detail-page__section'>
+            <div className='client-detail-page__actions'>
+              <Link
+                to={buildRoutePathWithParams(RouteIds.CLIENT_INVOICES, {
+                  clientId: client.id,
+                })}
+                className='client-detail-page__action-button client-detail-page__action-button--edit'
+              >
+                🧾 Facturas del Cliente
+              </Link>
+            </div>
+          </div>
           {/* Información principal */}
           <div className='client-detail-page__section'>
             <h2 className='client-detail-page__section-title'>

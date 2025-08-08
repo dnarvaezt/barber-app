@@ -1,7 +1,10 @@
 import type { PaginatedResponse, PaginationParams } from '../common'
 import { PaginationHelper } from '../common'
 import type {
+  ClientInvoiceFilters,
   CreateInvoiceRequest,
+  EmployeeServiceHistoryFilters,
+  EmployeeServiceHistoryRecord,
   Invoice,
   UpdateInvoiceRequest,
 } from './invoice.model'
@@ -113,6 +116,192 @@ export class InvoiceRepositoryMemory implements InvoiceRepository {
         hasPrevPage: page > 1,
       },
     }
+  }
+
+  async findByClient(
+    clientId: string,
+    filters: ClientInvoiceFilters,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<Invoice>> {
+    const validated = PaginationHelper.validateParams(pagination)
+    const { page, limit, sortBy, sortOrder } = validated
+
+    // Filtrar por cliente y rango de fechas
+    const start = new Date(filters.dateFrom)
+    start.setHours(0, 0, 0, 0)
+    const end = new Date(filters.dateTo)
+    end.setHours(23, 59, 59, 999)
+
+    const filtered = this.invoices.filter(inv => {
+      if (inv.clientId !== clientId) return false
+      const date = inv.createdAt
+      if (date < start || date > end) return false
+      if (filters.status && filters.status !== 'ALL') {
+        if (inv.status !== filters.status) return false
+      }
+      return true
+    })
+
+    // Ordenamiento
+    const sorted = sortBy
+      ? [...filtered].sort((a: any, b: any) => {
+          const aValue = a[sortBy as keyof Invoice]
+          const bValue = b[sortBy as keyof Invoice]
+          if (aValue == null || bValue == null) return 0
+          if (aValue instanceof Date && bValue instanceof Date) {
+            return sortOrder === 'asc'
+              ? aValue.getTime() - bValue.getTime()
+              : bValue.getTime() - aValue.getTime()
+          }
+          if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return sortOrder === 'asc'
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue)
+          }
+          return 0
+        })
+      : filtered
+
+    // Paginación
+    const startIndex = (page - 1) * limit
+    const endIndex = startIndex + limit
+    const data = sorted.slice(startIndex, endIndex)
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total: sorted.length,
+        totalPages: Math.ceil(sorted.length / limit),
+        hasNextPage: endIndex < sorted.length,
+        hasPrevPage: page > 1,
+      },
+    }
+  }
+
+  async findEmployeeServiceHistory(
+    employeeId: string,
+    filters: EmployeeServiceHistoryFilters,
+    pagination: PaginationParams
+  ): Promise<PaginatedResponse<EmployeeServiceHistoryRecord>> {
+    const validated = PaginationHelper.validateParams(pagination)
+    const { page, limit, sortBy, sortOrder } = validated
+
+    // Rango de fechas sobre finalizedAt y solo facturas FINALIZED
+    const start = new Date(filters.dateFrom)
+    start.setHours(0, 0, 0, 0)
+    const end = new Date(filters.dateTo)
+    end.setHours(23, 59, 59, 999)
+
+    // Expandir servicios de cada factura a registros
+    const flattened: EmployeeServiceHistoryRecord[] = []
+    for (const inv of this.invoices) {
+      if (inv.status !== 'FINALIZED') continue
+      const ts = inv.finalizedAt ?? inv.createdAt
+      if (ts < start || ts > end) continue
+      for (const s of inv.services) {
+        if (s.employeeId !== employeeId) continue
+        if (filters.activityId && s.activityId !== filters.activityId) continue
+        flattened.push({
+          invoiceId: inv.id,
+          clientId: inv.clientId,
+          employeeId: s.employeeId,
+          timestamp: ts,
+          service: {
+            activityId: s.activityId,
+            activityName: s.activityName,
+            price: s.price,
+          },
+        })
+      }
+    }
+
+    // Ordenamiento por timestamp o campo deseado
+    const sorted = sortBy
+      ? [...flattened].sort((a: any, b: any) => {
+          const aValue = a[sortBy as keyof EmployeeServiceHistoryRecord]
+          const bValue = b[sortBy as keyof EmployeeServiceHistoryRecord]
+          if (aValue instanceof Date && bValue instanceof Date) {
+            return sortOrder === 'asc'
+              ? aValue.getTime() - bValue.getTime()
+              : bValue.getTime() - aValue.getTime()
+          }
+          if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return sortOrder === 'asc'
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue)
+          }
+          return 0
+        })
+      : flattened
+
+    // Paginación
+    const startIndex = (page - 1) * limit
+    const endIndex = startIndex + limit
+    const data = sorted.slice(startIndex, endIndex)
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total: sorted.length,
+        totalPages: Math.ceil(sorted.length / limit),
+        hasNextPage: endIndex < sorted.length,
+        hasPrevPage: page > 1,
+      },
+    }
+  }
+
+  async getClientInvoicesAggregate(
+    clientId: string,
+    filters: ClientInvoiceFilters
+  ): Promise<{ count: number; totalAmount: number }> {
+    const start = new Date(filters.dateFrom)
+    start.setHours(0, 0, 0, 0)
+    const end = new Date(filters.dateTo)
+    end.setHours(23, 59, 59, 999)
+
+    const filtered = this.invoices.filter(inv => {
+      if (inv.clientId !== clientId) return false
+      const date = inv.createdAt
+      if (date < start || date > end) return false
+      if (filters.status && filters.status !== 'ALL') {
+        if (inv.status !== filters.status) return false
+      }
+      return true
+    })
+
+    const count = filtered.length
+    const totalAmount = filtered.reduce(
+      (sum, inv) => sum + (inv.totals?.grandTotal || 0),
+      0
+    )
+    return { count, totalAmount }
+  }
+
+  async getEmployeeServiceHistoryAggregate(
+    employeeId: string,
+    filters: EmployeeServiceHistoryFilters
+  ): Promise<{ count: number }> {
+    const start = new Date(filters.dateFrom)
+    start.setHours(0, 0, 0, 0)
+    const end = new Date(filters.dateTo)
+    end.setHours(23, 59, 59, 999)
+
+    let count = 0
+    for (const inv of this.invoices) {
+      if (inv.status !== 'FINALIZED') continue
+      const ts = inv.finalizedAt ?? inv.createdAt
+      if (ts < start || ts > end) continue
+      for (const s of inv.services) {
+        if (s.employeeId !== employeeId) continue
+        if (filters.activityId && s.activityId !== filters.activityId) continue
+        count += 1
+      }
+    }
+    return { count }
   }
 
   async create(data: CreateInvoiceRequest): Promise<Invoice> {

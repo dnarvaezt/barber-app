@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { RouteIds, useRoutes } from '../../../routes'
 import { useEmployeeDetail } from './employee-detail.hook'
 import './employee-detail.scss'
 
@@ -16,6 +18,7 @@ export const EmployeeDetail = () => {
     getAge,
     getBirthMonth,
   } = useEmployeeDetail()
+  const { buildRoutePathWithParams } = useRoutes()
 
   useEffect(() => {
     // El componente es autónomo, no necesita configurar el header
@@ -80,6 +83,21 @@ export const EmployeeDetail = () => {
     <div className='employee-detail-page'>
       <div className='employee-detail-page__content'>
         <div className='employee-detail-page__card'>
+          <div className='employee-detail-page__section'>
+            <div className='employee-detail-page__actions'>
+              <Link
+                to={buildRoutePathWithParams(
+                  RouteIds.EMPLOYEE_SERVICE_HISTORY,
+                  {
+                    employeeId: employee.id,
+                  }
+                )}
+                className='employee-detail-page__action-button employee-detail-page__action-button--edit'
+              >
+                📜 Historial de Servicios
+              </Link>
+            </div>
+          </div>
           {/* Información principal */}
           <div className='employee-detail-page__section'>
             <h2 className='employee-detail-page__section-title'>

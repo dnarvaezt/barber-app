@@ -5,7 +5,7 @@ import { RouteIds, useRoutes } from '../../../routes'
 
 const InvoiceDetail = () => {
   const { invoiceId } = useParams()
-  const { buildRoutePath } = useRoutes()
+  const { buildRoutePath, buildRoutePathWithParams } = useRoutes()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [invoice, setInvoice] = useState<any>(null)
@@ -51,7 +51,14 @@ const InvoiceDetail = () => {
           <strong>Pago:</strong> {invoice.payment.method}
         </p>
         <p>
-          <strong>Cliente:</strong> {invoice.clientId}
+          <strong>Cliente:</strong>{' '}
+          <Link
+            to={buildRoutePathWithParams(RouteIds.CLIENT_DETAIL, {
+              clientId: invoice.clientId,
+            })}
+          >
+            {invoice.clientId}
+          </Link>
         </p>
         <p>
           <strong>Creada:</strong>{' '}
@@ -82,8 +89,15 @@ const InvoiceDetail = () => {
       <ul>
         {invoice.services.map((s: any, idx: number) => (
           <li key={idx}>
-            {s.activityName || s.activityId} — Empleado: {s.employeeId} — $
-            {s.price.toLocaleString()}
+            {s.activityName || s.activityId} — Empleado:{' '}
+            <Link
+              to={buildRoutePathWithParams(RouteIds.EMPLOYEE_DETAIL, {
+                employeeId: s.employeeId,
+              })}
+            >
+              {s.employeeId}
+            </Link>{' '}
+            — ${s.price.toLocaleString()}
           </li>
         ))}
       </ul>
