@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import type {
   Invoice,
   InvoicePayment,
@@ -7,6 +8,7 @@ import type {
   PaymentMethod,
 } from '../../../../application/domain'
 import { activityService } from '../../../../application/domain/activity'
+// Integración con citas eliminada
 import { clientService } from '../../../../application/domain/client'
 import { employeeService } from '../../../../application/domain/employee'
 import { invoiceService } from '../../../../application/domain/invoice'
@@ -15,6 +17,7 @@ import { productService } from '../../../../application/domain/product'
 type SelectOption = { value: string; label: string }
 
 export const useInvoiceForm = () => {
+  const location = useLocation()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -137,6 +140,19 @@ export const useInvoiceForm = () => {
     setProductItems(prev => prev.filter((_, i) => i !== index))
   }
 
+  // Prefill desde cita finalizada (ubicado después de declarar addService)
+  const prefillDoneRef = useRef(false)
+  useEffect(() => {
+    // Prellenado desde cita eliminado
+    void prefillDoneRef
+  }, [location.search, activities, clients, employees])
+
+  // Vincular factura a cita
+  const linkInvoiceToAppointment = useCallback(async (_invoiceId: string) => {
+    // Integración con cita eliminada
+    return
+  }, [])
+
   // Validaciones
   const validate = (): string | null => {
     if (courtesyProductId && services.length === 0) {
@@ -188,6 +204,7 @@ export const useInvoiceForm = () => {
         })
         setCreatedInvoice(created)
         setSuccessMessage('Factura guardada en estado pendiente')
+        await linkInvoiceToAppointment(created.id)
       } else {
         const updated = await invoiceService.update({
           id: createdInvoice.id,
@@ -201,6 +218,7 @@ export const useInvoiceForm = () => {
         })
         setCreatedInvoice(updated)
         setSuccessMessage('Factura actualizada')
+        await linkInvoiceToAppointment(updated.id)
       }
     } catch (e: any) {
       setError(e?.message || 'Error al guardar factura')
@@ -241,10 +259,12 @@ export const useInvoiceForm = () => {
           createdBy: 'admin_001',
         })
         setCreatedInvoice(inv)
+        await linkInvoiceToAppointment(inv.id)
       }
       const finalized = await invoiceService.finalize(inv!.id, 'admin_001')
       setCreatedInvoice(finalized)
       setSuccessMessage('Factura finalizada y stock descontado')
+      await linkInvoiceToAppointment(finalized.id)
     } catch (e: any) {
       setError(e?.message || 'Error al finalizar factura')
     } finally {

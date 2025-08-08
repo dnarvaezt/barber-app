@@ -1,0 +1,31 @@
+.appointment-detail {
+  @apply p-6;
+  &__card {
+    @apply max-w-xl mx-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow;
+  }
+  &__title {
+    @apply text-xl font-semibold mb-4;
+  }
+  &__row {
+    @apply flex justify-between py-1;
+    span {
+      @apply text-gray-500;
+    }
+  }
+  &__actions {
+    @apply mt-4 flex gap-2;
+  }
+  &__btn {
+    @apply px-4 py-2 rounded border;
+    &--primary {
+      @apply bg-blue-600 text-white border-blue-600;
+    }
+    &--secondary {
+      @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600;
+    }
+    &--danger {
+      @apply bg-red-600 text-white border-red-600;
+    }
+  }
+}
+

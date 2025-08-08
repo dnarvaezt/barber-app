@@ -1,4 +1,5 @@
 export * from './activity'
+export * from './appointment'
 export * from './category'
 export * from './client'
 export * from './employee'

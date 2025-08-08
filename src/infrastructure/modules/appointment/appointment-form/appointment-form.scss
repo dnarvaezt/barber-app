@@ -1,0 +1,45 @@
+.appointment-form {
+  @apply p-6;
+  &__container {
+    @apply max-w-3xl mx-auto;
+  }
+  &__title {
+    @apply text-2xl font-semibold mb-4;
+  }
+  &__error {
+    @apply mb-3 text-red-700 bg-red-100 p-3 rounded;
+  }
+  &__success {
+    @apply mb-3 text-green-700 bg-green-100 p-3 rounded;
+  }
+  &__grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  &__field {
+    @apply flex flex-col gap-1;
+    label {
+      @apply text-sm font-medium;
+    }
+    input,
+    select,
+    textarea {
+      @apply border rounded px-3 py-2 dark:bg-gray-800;
+    }
+  }
+  &__field--full {
+    @apply md:col-span-2;
+  }
+  &__actions {
+    @apply mt-4 flex justify-end gap-3;
+  }
+  &__btn {
+    @apply px-4 py-2 rounded border;
+    &--primary {
+      @apply bg-blue-600 text-white border-blue-600;
+    }
+    &--secondary {
+      @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600;
+    }
+  }
+}
+

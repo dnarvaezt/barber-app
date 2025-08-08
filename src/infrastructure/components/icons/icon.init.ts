@@ -6,6 +6,7 @@ import {
   faBox,
   faBoxesStacked,
   faBriefcase,
+  faCalendar,
   faExclamationTriangle,
   faFileInvoiceDollar,
   faHome,
@@ -29,5 +30,6 @@ library.add(
   faFileInvoiceDollar,
   faBox,
   faBoxesStacked,
-  faBriefcase
+  faBriefcase,
+  faCalendar
 )

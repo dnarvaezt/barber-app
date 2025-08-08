@@ -11,9 +11,54 @@ const productIcon = <Icon name='box' />
 const stockIcon = <Icon name='boxes-stacked' />
 const invoiceIcon = <Icon name='file-invoice-dollar' />
 const alertIcon = <Icon name='exclamation-triangle' />
+const calendarIcon = <Icon name='calendar' />
 const homeIcon = <Icon name='home' />
 
 export const appRoutes: RouteItem[] = [
+  {
+    id: RouteIds.APPOINTMENTS,
+    name: 'Citas',
+    title: 'Gestión de Citas',
+    icon: calendarIcon,
+    component: lazyRoute('appointment-page', 'default'),
+    path: '/appointments',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.APPOINTMENT_FORM_NEW,
+        name: 'Nueva Cita',
+        title: 'Crear Nueva Cita',
+        icon: calendarIcon,
+        component: lazyRoute('appointment-form', 'default'),
+        path: '/form/new',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.APPOINTMENT_FORM_EDIT,
+        name: 'Editar Cita',
+        title: 'Editar Cita',
+        icon: calendarIcon,
+        component: lazyRoute('appointment-form', 'default'),
+        path: '/form/:appointmentId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.APPOINTMENT_DETAIL,
+        name: 'Detalle Cita',
+        title: 'Detalle de la Cita',
+        icon: calendarIcon,
+        component: lazyRoute('appointment-detail', 'default'),
+        path: '/:appointmentId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
   {
     id: RouteIds.INVOICES,
     name: 'Facturas',

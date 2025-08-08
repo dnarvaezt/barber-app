@@ -46,6 +46,14 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'invoice-form': () => import('../modules/invoice/invoice-form/index.ts'),
   'invoice-detail': () => import('../modules/invoice/invoice-detail/index.ts'),
 
+  // Citas - dividir en chunks separados
+  'appointment-page': () =>
+    import('../modules/appointment/appointment-page/index.ts'),
+  'appointment-form': () =>
+    import('../modules/appointment/appointment-form/index.ts'),
+  'appointment-detail': () =>
+    import('../modules/appointment/appointment-detail/index.ts'),
+
   // Páginas de error - carga independiente
   'not-found': () => import('../modules/not-found/index.ts'),
 }
