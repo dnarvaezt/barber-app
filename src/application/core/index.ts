@@ -8,14 +8,10 @@ export * from './domain/base.service'
 export * from './domain/entity.interface'
 export * from './domain/validators/base.validator'
 
-// Dependency Injection
-export * from './di/container'
-
 // Events
 export * from './events/event.bus'
 
-// Configuration
-export * from './config/entity.config'
+// Configuration (removida por no uso)
 
 // ============================================================================
 // RE-EXPORTS FROM DOMAIN - Reexportaciones del dominio existente
@@ -32,15 +28,4 @@ export type {
 // UTILITY EXPORTS - Exportaciones de utilidades
 // ============================================================================
 
-export {
-  CLIENT_CONFIG,
-  EMPLOYEE_CONFIG,
-  USER_CONFIG,
-  createEntityConfig,
-  getAllEntityConfigs,
-  getEntityConfig,
-  hasEntityConfig,
-  validateEntityConfig,
-} from './config/entity.config'
-export { ServiceIds } from './di/container'
-export { EventTypes } from './events/event.bus'
+// Re-export removidos: entity.config, ServiceIds y EventTypes sin uso
