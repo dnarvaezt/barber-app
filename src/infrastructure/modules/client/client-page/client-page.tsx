@@ -12,7 +12,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { Client } from '../../../../application/domain/client'
 import { Pagination, SortControls } from '../../../components'
-import { EntityList } from '../../../components/entity/entity-list'
 import { PageContent } from '../../../components/layout/components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientPage } from './client-page.hook'
@@ -225,19 +224,6 @@ export const ClientPage = () => {
                 pagination={false}
               />
             </div>
-
-            <EntityList
-              entities={clients}
-              entityType='client'
-              loading={loading}
-              error={error}
-              onDeleteClick={handleDeleteClick}
-              formatPhone={formatPhone}
-              formatDate={formatDate}
-              getAge={getAge}
-              getMonthName={getMonthName}
-              className='client-page__mobile-cards'
-            />
           </div>
 
           <Card className='client-page__pagination'>
