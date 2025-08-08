@@ -9,3 +9,6 @@ export * from './employee.service'
 
 // Exceptions
 export * from './employee.exceptions'
+
+// Provider
+export * from './employee.provider'

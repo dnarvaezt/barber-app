@@ -18,3 +18,6 @@ export * from './activity'
 
 // Stock Domain
 export * from './stock'
+
+// Invoice Domain
+export * from './invoice'

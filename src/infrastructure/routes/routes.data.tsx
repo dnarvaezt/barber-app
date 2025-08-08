@@ -9,10 +9,55 @@ const categoryIcon = <Icon name='tag' />
 const activityIcon = <Icon name='briefcase' />
 const productIcon = <Icon name='box' />
 const stockIcon = <Icon name='boxes-stacked' />
+const invoiceIcon = <Icon name='file-invoice-dollar' />
 const alertIcon = <Icon name='exclamation-triangle' />
 const homeIcon = <Icon name='home' />
 
 export const appRoutes: RouteItem[] = [
+  {
+    id: RouteIds.INVOICES,
+    name: 'Facturas',
+    title: 'Gestión de Facturas',
+    icon: invoiceIcon,
+    component: lazyRoute('invoice-page', 'default'),
+    path: '/invoices',
+    hideSidebar: false,
+    children: [
+      {
+        id: RouteIds.INVOICE_FORM_NEW,
+        name: 'Nueva Factura',
+        title: 'Crear Nueva Factura',
+        icon: invoiceIcon,
+        component: lazyRoute('invoice-form', 'default'),
+        path: '/form/new',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.INVOICE_FORM_EDIT,
+        name: 'Editar Factura',
+        title: 'Editar Factura',
+        icon: invoiceIcon,
+        component: lazyRoute('invoice-form', 'default'),
+        path: '/form/:invoiceId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+      {
+        id: RouteIds.INVOICE_DETAIL,
+        name: 'Detalle Factura',
+        title: 'Detalle de la Factura',
+        icon: invoiceIcon,
+        component: lazyRoute('invoice-detail', 'default'),
+        path: '/:invoiceId',
+        inheritPath: true,
+        hideSidebar: true,
+        children: [],
+      },
+    ],
+  },
   {
     id: RouteIds.DASHBOARD,
     name: 'Dashboard',

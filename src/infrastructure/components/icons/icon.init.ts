@@ -3,7 +3,11 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import {
   faBars,
   faBook,
+  faBox,
+  faBoxesStacked,
+  faBriefcase,
   faExclamationTriangle,
+  faFileInvoiceDollar,
   faHome,
   faMoon,
   faSun,
@@ -21,5 +25,9 @@ library.add(
   faUser,
   faExclamationTriangle,
   faHome,
-  faGithub
+  faGithub,
+  faFileInvoiceDollar,
+  faBox,
+  faBoxesStacked,
+  faBriefcase
 )

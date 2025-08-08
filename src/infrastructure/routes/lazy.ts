@@ -38,6 +38,11 @@ const moduleMap: Record<string, () => Promise<any>> = {
   'stock-movements': () =>
     import('../modules/stock/stock-movement-page/index.ts'),
 
+  // Facturas - dividir en chunks separados
+  'invoice-page': () => import('../modules/invoice/invoice-page/index.ts'),
+  'invoice-form': () => import('../modules/invoice/invoice-form/index.ts'),
+  'invoice-detail': () => import('../modules/invoice/invoice-detail/index.ts'),
+
   // Páginas de error - carga independiente
   'not-found': () => import('../modules/not-found/index.ts'),
 }
