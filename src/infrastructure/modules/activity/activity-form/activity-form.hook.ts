@@ -110,5 +110,19 @@ export const useActivityForm = () => {
     isValidActivity: entityForm.isValidEntity,
     activity: entityForm.entity,
     handleSubmit,
+    handleDelete: useCallback(async () => {
+      try {
+        if (!entityForm.isEditing || !entityForm.entity) return
+        const deleted = await activityService.deleteActivity(
+          (entityForm.entity as Activity).id
+        )
+        if (deleted) {
+          entityForm.handleCancel()
+        }
+      } catch (error) {
+        console.error('Error deleting activity:', error)
+        throw error
+      }
+    }, [entityForm]),
   }
 }

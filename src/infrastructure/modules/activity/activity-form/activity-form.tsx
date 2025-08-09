@@ -1,3 +1,17 @@
+import {
+  Alert,
+  Button,
+  Card,
+  Flex,
+  Form,
+  Input,
+  Popconfirm,
+  Select,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
+import { PageContent } from 'infrastructure/components/layout/components'
 import { useEffect, useState } from 'react'
 import { categoryService } from '../../../../application/domain/category/category.provider'
 import { useActivityForm } from './activity-form.hook'
@@ -15,6 +29,7 @@ export const ActivityForm = () => {
     handleSubmit,
     handleCancel,
     handleInputChange,
+    handleDelete,
   } = useActivityForm()
 
   const [categories, setCategories] = useState<any[]>([])
@@ -50,12 +65,17 @@ export const ActivityForm = () => {
     return (
       <div className='activity-form'>
         <div className='activity-form__container'>
-          <div className='activity-form__loading'>
-            <div className='activity-form__loading-spinner'></div>
-            <p className='activity-form__loading-text'>
+          <Flex
+            align='center'
+            justify='center'
+            vertical
+            className='activity-form__loading'
+          >
+            <Spin size='large' />
+            <Typography.Paragraph className='activity-form__loading-text'>
               Validando actividad...
-            </p>
-          </div>
+            </Typography.Paragraph>
+          </Flex>
         </div>
       </div>
     )
@@ -70,150 +90,163 @@ export const ActivityForm = () => {
     return (
       <div className='activity-form'>
         <div className='activity-form__container'>
-          <div className='activity-form__loading'>
-            <div className='activity-form__loading-spinner'></div>
-            <p className='activity-form__loading-text'>Cargando actividad...</p>
-          </div>
+          <Flex
+            align='center'
+            justify='center'
+            vertical
+            className='activity-form__loading'
+          >
+            <Spin size='large' />
+            <Typography.Paragraph className='activity-form__loading-text'>
+              Cargando actividad...
+            </Typography.Paragraph>
+          </Flex>
         </div>
       </div>
     )
   }
 
   return (
-    <div className='activity-form'>
-      <div className='activity-form__container'>
-        <div className='activity-form__header'>
-          <h1 className='activity-form__title'>
-            {isEditing ? 'Editar Actividad' : 'Nueva Actividad'}
-          </h1>
-          <p className='activity-form__subtitle'>
-            {isEditing
-              ? 'Actualiza la información de la actividad'
-              : 'Completa la información para crear una nueva actividad'}
-          </p>
-        </div>
+    <PageContent>
+      <div className='activity-form'>
+        <div className='activity-form__container'>
+          <div className='activity-form__header'>
+            <Typography.Title level={3} className='activity-form__title'>
+              {isEditing ? 'Editar Actividad' : 'Nueva Actividad'}
+            </Typography.Title>
+            <Typography.Paragraph
+              type='secondary'
+              className='activity-form__subtitle'
+            >
+              {isEditing
+                ? 'Actualiza la información de la actividad'
+                : 'Completa la información para crear una nueva actividad'}
+            </Typography.Paragraph>
+          </div>
 
-        <div className='activity-form__form'>
-          {/* Mensaje de éxito */}
-          {showSuccessMessage && (
-            <div className='activity-form__success-message'>
-              <div className='activity-form__success-icon'>✅</div>
-              <p className='activity-form__success-text'>
-                {isEditing
-                  ? '¡Actividad actualizada exitosamente!'
-                  : '¡Actividad creada exitosamente!'}
-              </p>
-            </div>
-          )}
-
-          {/* Mensaje de error general */}
-          {errors.general && (
-            <div className='activity-form__error-message'>
-              <div className='activity-form__error-icon'>❌</div>
-              <p className='activity-form__error-text'>{errors.general}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className='activity-form__form-content'>
-            {/* Campo Nombre */}
-            <div className='activity-form__field'>
-              <label htmlFor='name' className='activity-form__label'>
-                Nombre de la actividad *
-              </label>
-              <input
-                type='text'
-                id='name'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                className={`activity-form__input ${
-                  formData.name ? 'activity-form__input--filled' : ''
-                }`}
-                placeholder='Ingresa el nombre de la actividad'
-                required
-                minLength={2}
-                maxLength={100}
+          <Card className='activity-form__form' bordered>
+            {/* Mensaje de éxito */}
+            {showSuccessMessage && (
+              <Alert
+                className='activity-form__success-message'
+                message={
+                  isEditing
+                    ? '¡Actividad actualizada exitosamente!'
+                    : '¡Actividad creada exitosamente!'
+                }
+                type='success'
+                showIcon
               />
-              <p className='activity-form__help-text'>
-                El nombre debe tener entre 2 y 100 caracteres
-              </p>
-            </div>
+            )}
 
-            {/* Campo Precio */}
-            <div className='activity-form__field'>
-              <label htmlFor='price' className='activity-form__label'>
-                Precio *
-              </label>
-              <input
-                type='number'
-                id='price'
-                value={formData.price}
-                onChange={e => handleInputChange('price', e.target.value)}
-                className={`activity-form__input ${
-                  formData.price ? 'activity-form__input--filled' : ''
-                }`}
-                placeholder='Ej: 25000'
-                min='0'
-                max='999999.99'
-                step='0.01'
-                required
+            {/* Mensaje de error general */}
+            {errors.general && (
+              <Alert
+                className='activity-form__error-message'
+                message={errors.general}
+                type='error'
+                showIcon
               />
-              <p className='activity-form__help-text'>
-                Ingresa el precio en pesos colombianos (0 - 999,999.99)
-              </p>
-            </div>
+            )}
 
-            {/* Campo Categoría */}
-            <div className='activity-form__field'>
-              <label htmlFor='categoryId' className='activity-form__label'>
-                Categoría *
-              </label>
-              <select
-                id='categoryId'
-                value={formData.categoryId}
-                onChange={e => handleInputChange('categoryId', e.target.value)}
-                className={`activity-form__select ${
-                  formData.categoryId ? 'activity-form__select--filled' : ''
-                }`}
+            <Form
+              layout='vertical'
+              className='activity-form__form-content'
+              onSubmitCapture={handleSubmit}
+            >
+              {/* Campo Nombre */}
+              <Form.Item
+                label='Nombre de la actividad'
                 required
-                disabled={loadingCategories}
+                htmlFor='name'
+                help='El nombre debe tener entre 2 y 100 caracteres'
               >
-                <option value=''>Selecciona una categoría</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              <p className='activity-form__help-text'>
-                Selecciona la categoría a la que pertenece esta actividad
-              </p>
-            </div>
+                <Input
+                  id='name'
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='Ingresa el nombre de la actividad'
+                  minLength={2}
+                  maxLength={100}
+                  aria-required
+                />
+              </Form.Item>
 
-            {/* Botones de acción */}
-            <div className='activity-form__actions'>
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='activity-form__button activity-form__button--secondary'
+              {/* Campo Precio */}
+              <Form.Item
+                label='Precio'
+                required
+                htmlFor='price'
+                help='Ingresa el precio en pesos colombianos (0 - 999,999.99)'
               >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                disabled={loading}
-                className='activity-form__button activity-form__button--primary'
+                <Input
+                  id='price'
+                  type='number'
+                  value={formData.price}
+                  onChange={e => handleInputChange('price', e.target.value)}
+                  placeholder='Ej: 25000'
+                  min={0}
+                  max={999999.99}
+                  step={0.01}
+                  inputMode='decimal'
+                  aria-required
+                />
+              </Form.Item>
+
+              {/* Campo Categoría */}
+              <Form.Item
+                label='Categoría'
+                required
+                htmlFor='categoryId'
+                help='Selecciona la categoría a la que pertenece esta actividad'
               >
-                {loading && (
-                  <div className='activity-form__loading-spinner activity-form__loading-spinner--small'></div>
+                <Select
+                  id='categoryId'
+                  value={formData.categoryId || undefined}
+                  onChange={value => handleInputChange('categoryId', value)}
+                  placeholder='Selecciona una categoría'
+                  loading={loadingCategories}
+                  disabled={loadingCategories}
+                  options={[
+                    {
+                      label: 'Selecciona una categoría',
+                      value: '',
+                      disabled: true,
+                    },
+                    ...categories.map(category => ({
+                      label: category.name,
+                      value: category.id,
+                    })),
+                  ]}
+                  showSearch
+                  optionFilterProp='label'
+                  aria-required
+                />
+              </Form.Item>
+
+              {/* Botones de acción */}
+              <Space wrap className='activity-form__actions'>
+                <Button onClick={handleCancel}>Cancelar</Button>
+                {isEditing && (
+                  <Popconfirm
+                    title='Eliminar actividad'
+                    description='¿Estás seguro de que deseas eliminar esta actividad? Esta acción no se puede deshacer.'
+                    okText='Eliminar'
+                    okButtonProps={{ danger: true }}
+                    cancelText='Cancelar'
+                    onConfirm={handleDelete}
+                  >
+                    <Button danger>Eliminar</Button>
+                  </Popconfirm>
                 )}
-                <span className='activity-form__button-text'>
+                <Button htmlType='submit' type='primary' loading={loading}>
                   {isEditing ? 'Actualizar' : 'Crear'} Actividad
-                </span>
-              </button>
-            </div>
-          </form>
+                </Button>
+              </Space>
+            </Form>
+          </Card>
         </div>
       </div>
-    </div>
+    </PageContent>
   )
 }

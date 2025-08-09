@@ -1,8 +1,22 @@
+import { EditOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  Descriptions,
+  Flex,
+  Grid,
+  Result,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect } from 'react'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { useActivityDetail } from './activity-detail.hook'
 import './activity-detail.scss'
 
 export const ActivityDetail = () => {
+  const screens = Grid.useBreakpoint()
   const {
     loading,
     isValidating,
@@ -23,14 +37,15 @@ export const ActivityDetail = () => {
   // Mostrar loading mientras valida el activityId
   if (isValidating) {
     return (
-      <div className='activity-detail-page'>
-        <div className='activity-detail-page__content'>
-          <div className='activity-detail-page__loading'>
-            <div className='activity-detail-page__loading-spinner'></div>
-            <p>Validando actividad...</p>
+      <PageContent>
+        <div className='activity-detail-page'>
+          <div className='activity-detail-page__content'>
+            <Spin tip='Validando actividad...'>
+              <div style={{ width: '100%', padding: 24, minHeight: 120 }} />
+            </Spin>
           </div>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
@@ -41,139 +56,108 @@ export const ActivityDetail = () => {
 
   if (loading) {
     return (
-      <div className='activity-detail-page'>
-        <div className='activity-detail-page__content'>
-          <div className='activity-detail-page__loading'>
-            <div className='activity-detail-page__loading-spinner'></div>
-            <p>Cargando actividad...</p>
+      <PageContent>
+        <div className='activity-detail-page'>
+          <div className='activity-detail-page__content'>
+            <Spin tip='Cargando actividad...'>
+              <div style={{ width: '100%', padding: 24, minHeight: 120 }} />
+            </Spin>
           </div>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
   if (error || !activity) {
     return (
-      <div className='activity-detail-page'>
-        <div className='activity-detail-page__content'>
-          <div className='activity-detail-page__error'>
-            <div className='activity-detail-page__error-icon'>⚠️</div>
-            <h3 className='activity-detail-page__error-title'>Error</h3>
-            <p className='activity-detail-page__error-message'>
-              {error || 'Actividad no encontrada'}
-            </p>
-            <button
-              onClick={handleBack}
-              className='activity-detail-page__button activity-detail-page__button--primary'
-            >
-              Volver a la lista
-            </button>
+      <PageContent>
+        <div className='activity-detail-page'>
+          <div className='activity-detail-page__content'>
+            <Result
+              status='error'
+              title='Error'
+              subTitle={error || 'Actividad no encontrada'}
+              extra={
+                <Button type='primary' onClick={handleBack}>
+                  Volver a la lista
+                </Button>
+              }
+            />
           </div>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
   return (
-    <div className='activity-detail-page'>
-      <div className='activity-detail-page__content'>
-        <div className='activity-detail-page__card'>
-          {/* Información principal */}
-          <div className='activity-detail-page__section'>
-            <h2 className='activity-detail-page__section-title'>
-              Información de la Actividad
-            </h2>
-            <div className='activity-detail-page__info-grid'>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Nombre:
-                </span>
-                <span className='activity-detail-page__info-value'>
-                  {activity.name}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Precio:
-                </span>
-                <span className='activity-detail-page__info-value activity-detail-page__info-value--price'>
-                  {formatCurrency(activity.price)}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  ID de Categoría:
-                </span>
-                <span className='activity-detail-page__info-value activity-detail-page__info-value--mono'>
-                  {activity.categoryId}
-                </span>
-              </div>
+    <PageContent>
+      <div className='activity-detail-page'>
+        <div className='activity-detail-page__content'>
+          <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+            <div>
+              <Typography.Title level={screens.md ? 3 : 4}>
+                Información de la Actividad
+              </Typography.Title>
+              <Card bordered>
+                <Descriptions
+                  column={{ xs: 1, sm: 1, md: 2, lg: 3 }}
+                  size={screens.md ? 'default' : 'small'}
+                >
+                  <Descriptions.Item label='Nombre'>
+                    {activity.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Precio'>
+                    {formatCurrency(activity.price)}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='ID de Categoría'>
+                    <Typography.Text code>
+                      {activity.categoryId}
+                    </Typography.Text>
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
             </div>
-          </div>
 
-          {/* Información de auditoría */}
-          <div className='activity-detail-page__section'>
-            <h2 className='activity-detail-page__section-title'>
-              Información del Sistema
-            </h2>
-            <div className='activity-detail-page__info-grid'>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  ID de la Actividad:
-                </span>
-                <span className='activity-detail-page__info-value activity-detail-page__info-value--mono'>
-                  {activity.id}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Fecha de Creación:
-                </span>
-                <span className='activity-detail-page__info-value'>
-                  {formatDate(activity.createdAt)}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Última Actualización:
-                </span>
-                <span className='activity-detail-page__info-value'>
-                  {formatDate(activity.updatedAt)}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Creado por:
-                </span>
-                <span className='activity-detail-page__info-value'>
-                  {activity.createdBy}
-                </span>
-              </div>
-              <div className='activity-detail-page__info-item'>
-                <span className='activity-detail-page__info-label'>
-                  Actualizado por:
-                </span>
-                <span className='activity-detail-page__info-value'>
-                  {activity.updatedBy}
-                </span>
-              </div>
+            <div>
+              <Typography.Title level={screens.md ? 3 : 4}>
+                Información del Sistema
+              </Typography.Title>
+              <Card bordered>
+                <Descriptions
+                  column={{ xs: 1, sm: 1, md: 2, lg: 3 }}
+                  size={screens.md ? 'default' : 'small'}
+                >
+                  <Descriptions.Item label='ID de la Actividad'>
+                    <Typography.Text code>{activity.id}</Typography.Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Fecha de Creación'>
+                    {formatDate(activity.createdAt)}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Última Actualización'>
+                    {formatDate(activity.updatedAt)}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Creado por'>
+                    {activity.createdBy}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Actualizado por'>
+                    {activity.updatedBy}
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
             </div>
-          </div>
 
-          {/* Acciones rápidas */}
-          <div className='activity-detail-page__section'>
-            <h2 className='activity-detail-page__section-title'>Acciones</h2>
-            <div className='activity-detail-page__actions'>
-              <button
+            <Flex align='center' justify='flex-end' gap={8} wrap>
+              <Button
+                type='primary'
+                icon={<EditOutlined />}
                 onClick={handleEdit}
-                className='activity-detail-page__action-button activity-detail-page__action-button--edit'
               >
-                ✏️ Editar Actividad
-              </button>
-            </div>
-          </div>
+                Editar Actividad
+              </Button>
+            </Flex>
+          </Space>
         </div>
       </div>
-    </div>
+    </PageContent>
   )
 }
