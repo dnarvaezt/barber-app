@@ -1,3 +1,19 @@
+import {
+  EditOutlined,
+  MessageOutlined,
+  PhoneOutlined,
+  ProfileOutlined,
+} from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  Descriptions,
+  Result,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
+import { PageContent } from 'infrastructure/components/layout/components'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { RouteIds, useRoutes } from '../../../routes'
@@ -30,9 +46,10 @@ export const EmployeeDetail = () => {
     return (
       <div className='employee-detail-page'>
         <div className='employee-detail-page__content'>
-          <div className='employee-detail-page__loading'>
-            <div className='employee-detail-page__loading-spinner'></div>
-            <p>Validando empleado...</p>
+          <div className='employee-detail-page__center'>
+            <Spin size='large' tip='Validando empleado...'>
+              <div style={{ minHeight: 80 }} />
+            </Spin>
           </div>
         </div>
       </div>
@@ -48,9 +65,10 @@ export const EmployeeDetail = () => {
     return (
       <div className='employee-detail-page'>
         <div className='employee-detail-page__content'>
-          <div className='employee-detail-page__loading'>
-            <div className='employee-detail-page__loading-spinner'></div>
-            <p>Cargando empleado...</p>
+          <div className='employee-detail-page__center'>
+            <Spin size='large' tip='Cargando empleado...'>
+              <div style={{ minHeight: 80 }} />
+            </Spin>
           </div>
         </div>
       </div>
@@ -61,182 +79,152 @@ export const EmployeeDetail = () => {
     return (
       <div className='employee-detail-page'>
         <div className='employee-detail-page__content'>
-          <div className='employee-detail-page__error'>
-            <div className='employee-detail-page__error-icon'>⚠️</div>
-            <h3 className='employee-detail-page__error-title'>Error</h3>
-            <p className='employee-detail-page__error-message'>
-              {error || 'Empleado no encontrado'}
-            </p>
-            <button
-              onClick={handleBack}
-              className='employee-detail-page__button employee-detail-page__button--primary'
-            >
-              Volver a la lista
-            </button>
-          </div>
+          <Result
+            status='error'
+            title='Error'
+            subTitle={error || 'Empleado no encontrado'}
+            extra={[
+              <Button type='primary' key='back' onClick={handleBack}>
+                Volver a la lista
+              </Button>,
+            ]}
+          />
         </div>
       </div>
     )
   }
 
   return (
-    <div className='employee-detail-page'>
-      <div className='employee-detail-page__content'>
-        <div className='employee-detail-page__card'>
-          <div className='employee-detail-page__section'>
-            <div className='employee-detail-page__actions'>
-              <Link
-                to={buildRoutePathWithParams(
-                  RouteIds.EMPLOYEE_SERVICE_HISTORY,
-                  {
-                    employeeId: employee.id,
-                  }
-                )}
-                className='employee-detail-page__action-button employee-detail-page__action-button--edit'
+    <PageContent>
+      <div className='employee-detail-page'>
+        <div className='employee-detail-page__content'>
+          <Space
+            direction='vertical'
+            size='middle'
+            className='employee-detail-page__stack'
+          >
+            <Card
+              size='small'
+              title={
+                <Typography.Title level={4}>
+                  Información Personal
+                </Typography.Title>
+              }
+            >
+              <Descriptions
+                size='small'
+                column={{ xs: 1, sm: 1, md: 2 }}
+                bordered={false}
               >
-                📜 Historial de Servicios
-              </Link>
-            </div>
-          </div>
-          {/* Información principal */}
-          <div className='employee-detail-page__section'>
-            <h2 className='employee-detail-page__section-title'>
-              Información Personal
-            </h2>
-            <div className='employee-detail-page__info-grid'>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Nombre:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {employee.name}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Teléfono:
-                </span>
-                <span className='employee-detail-page__info-value'>
+                <Descriptions.Item label='Nombre'>
+                  <Typography.Text>{employee.name}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Teléfono'>
                   <a
                     href={`tel:${employee.phoneNumber}`}
                     className='employee-detail-page__phone-link'
                   >
                     {formatPhone(employee.phoneNumber)}
                   </a>
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Fecha de Nacimiento:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {formatDate(employee.birthDate)} ({getAge(employee.birthDate)}{' '}
-                  años)
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Mes de Cumpleaños:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {getBirthMonth(employee.birthDate)}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Porcentaje de Comisión:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  <span className='employee-detail-page__info-value--percentage'>
+                </Descriptions.Item>
+                <Descriptions.Item label='Fecha de Nacimiento'>
+                  <Typography.Text>
+                    {formatDate(employee.birthDate)} (
+                    {getAge(employee.birthDate)} años)
+                  </Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Mes de Cumpleaños'>
+                  <Typography.Text>
+                    {getBirthMonth(employee.birthDate)}
+                  </Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Porcentaje de Comisión'>
+                  <Typography.Text strong>
                     {employee.percentage}%
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
+                  </Typography.Text>
+                </Descriptions.Item>
+              </Descriptions>
+            </Card>
 
-          {/* Información de auditoría */}
-          <div className='employee-detail-page__section'>
-            <h2 className='employee-detail-page__section-title'>
-              Información del Sistema
-            </h2>
-            <div className='employee-detail-page__info-grid'>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  ID del Empleado:
-                </span>
-                <span className='employee-detail-page__info-value employee-detail-page__info-value--mono'>
-                  {employee.id}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Fecha de Creación:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {formatDate(employee.createdAt)}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Última Actualización:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {formatDate(employee.updatedAt)}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Creado por:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {employee.createdBy}
-                </span>
-              </div>
-              <div className='employee-detail-page__info-item'>
-                <span className='employee-detail-page__info-label'>
-                  Actualizado por:
-                </span>
-                <span className='employee-detail-page__info-value'>
-                  {employee.updatedBy}
-                </span>
-              </div>
-            </div>
-          </div>
+            <Card
+              size='small'
+              title={
+                <Typography.Title level={4}>
+                  Información del Sistema
+                </Typography.Title>
+              }
+            >
+              <Descriptions size='small' column={{ xs: 1, sm: 1, md: 2 }}>
+                <Descriptions.Item label='ID del Empleado'>
+                  <Typography.Text code>{employee.id}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Fecha de Creación'>
+                  <Typography.Text>
+                    {formatDate(employee.createdAt)}
+                  </Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Última Actualización'>
+                  <Typography.Text>
+                    {formatDate(employee.updatedAt)}
+                  </Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Creado por'>
+                  <Typography.Text>{employee.createdBy}</Typography.Text>
+                </Descriptions.Item>
+                <Descriptions.Item label='Actualizado por'>
+                  <Typography.Text>{employee.updatedBy}</Typography.Text>
+                </Descriptions.Item>
+              </Descriptions>
+            </Card>
 
-          {/* Acciones rápidas */}
-          <div className='employee-detail-page__section'>
-            <h2 className='employee-detail-page__section-title'>Acciones</h2>
-            <div className='employee-detail-page__actions'>
-              <button
-                onClick={handleEdit}
-                className='employee-detail-page__action-button employee-detail-page__action-button--edit'
-              >
-                ✏️ Editar Empleado
-              </button>
-              <button
-                onClick={() =>
-                  window.open(`tel:${employee.phoneNumber}`, '_self')
-                }
-                className='employee-detail-page__action-button employee-detail-page__action-button--call'
-              >
-                📞 Llamar
-              </button>
-              <button
-                onClick={() =>
-                  window.open(
-                    `https://wa.me/${employee.phoneNumber.replace('+', '')}`,
-                    '_blank'
-                  )
-                }
-                className='employee-detail-page__action-button employee-detail-page__action-button--whatsapp'
-              >
-                💬 WhatsApp
-              </button>
-            </div>
-          </div>
+            <Card
+              size='small'
+              title={<Typography.Title level={4}>Acciones</Typography.Title>}
+            >
+              <Space wrap className='employee-detail-page__actions'>
+                <Button
+                  type='primary'
+                  icon={<EditOutlined />}
+                  onClick={handleEdit}
+                >
+                  Editar Empleado
+                </Button>
+                <Button
+                  icon={<PhoneOutlined />}
+                  onClick={() =>
+                    window.open(`tel:${employee.phoneNumber}`, '_self')
+                  }
+                >
+                  Llamar
+                </Button>
+                <Button
+                  icon={<MessageOutlined />}
+                  onClick={() =>
+                    window.open(
+                      `https://wa.me/${employee.phoneNumber.replace('+', '')}`,
+                      '_blank'
+                    )
+                  }
+                >
+                  WhatsApp
+                </Button>
+                <Link
+                  to={buildRoutePathWithParams(
+                    RouteIds.EMPLOYEE_SERVICE_HISTORY,
+                    {
+                      employeeId: employee.id,
+                    }
+                  )}
+                >
+                  <Button icon={<ProfileOutlined />}>
+                    Historial de Servicios
+                  </Button>
+                </Link>
+              </Space>
+            </Card>
+          </Space>
         </div>
       </div>
-    </div>
+    </PageContent>
   )
 }

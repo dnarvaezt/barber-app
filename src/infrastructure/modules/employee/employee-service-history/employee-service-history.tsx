@@ -1,3 +1,17 @@
+import {
+  Alert,
+  Pagination as AntPagination,
+  Button,
+  Card,
+  DatePicker,
+  Empty,
+  Grid,
+  Input,
+  List,
+  Space,
+  Typography,
+} from 'antd'
+import dayjs from 'dayjs'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { PaginationParams } from '../../../../application/domain/common'
@@ -6,7 +20,7 @@ import type {
   EmployeeServiceHistoryRecord,
 } from '../../../../application/domain/invoice/invoice.model'
 import { invoiceService } from '../../../../application/domain/invoice/invoice.provider'
-import { Pagination } from '../../../components/pagination/pagination'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { usePaginatedList } from '../../../hooks/use-paginated-list.hook'
 import { useUtils } from '../../../hooks/use-utils.hook'
 import { RouteIds, useRoutes } from '../../../routes'
@@ -21,8 +35,9 @@ type Filters = {
 export const EmployeeServiceHistoryPage = () => {
   const params = useParams<{ employeeId: string }>()
   const employeeId = params.employeeId as string
-  const { formatDate, formatDateTime, formatCurrency } = useUtils()
+  const { formatDateTime, formatCurrency } = useUtils()
   const { buildRoutePathWithParams } = useRoutes()
+  const screens = Grid.useBreakpoint()
 
   const load = useCallback(
     async (pagination: PaginationParams, filters: Partial<Filters>) => {
@@ -97,141 +112,184 @@ export const EmployeeServiceHistoryPage = () => {
   }
 
   return (
-    <div className='employee-history-page'>
-      <div className='employee-history-page__header'>
-        <h1 className='employee-history-page__title'>Historial de Servicios</h1>
-        <div className='employee-history-page__actions'>
+    <PageContent>
+      <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+        <Space
+          align='center'
+          style={{ width: '100%', justifyContent: 'space-between' }}
+        >
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Historial de Servicios
+          </Typography.Title>
           <Link
             to={buildRoutePathWithParams(RouteIds.EMPLOYEE_DETAIL, {
               employeeId,
             })}
-            className='employee-history-page__btn'
           >
-            ← Volver al detalle
+            <Button type='default'>← Volver al detalle</Button>
           </Link>
-        </div>
-      </div>
+        </Space>
 
-      <div className='employee-history-page__filters'>
-        <div className='employee-history-page__filter'>
-          <label>Desde</label>
-          <input
-            type='date'
-            value={list.filters.dateFrom || ''}
-            onChange={e => list.updateFilters({ dateFrom: e.target.value })}
-          />
-        </div>
-        <div className='employee-history-page__filter'>
-          <label>Hasta</label>
-          <input
-            type='date'
-            value={list.filters.dateTo || ''}
-            onChange={e => list.updateFilters({ dateTo: e.target.value })}
-          />
-        </div>
-        <div className='employee-history-page__filter'>
-          <label>Actividad (opcional)</label>
-          <input
-            type='text'
-            placeholder='activityId'
-            value={list.filters.activityId || ''}
-            onChange={e =>
-              list.updateFilters({
-                activityId: e.target.value || null,
-              })
-            }
-          />
-        </div>
-        <button
-          className='employee-history-page__btn employee-history-page__btn--secondary'
-          onClick={handleClearFilters}
-        >
-          Limpiar filtros
-        </button>
-      </div>
-
-      <div className='employee-history-page__summary'>
-        <span>{totalCountText}</span>
-      </div>
-
-      {list.loading && (
-        <div className='employee-history-page__loading'>Cargando...</div>
-      )}
-      {list.error && (
-        <div className='employee-history-page__error'>Error: {list.error}</div>
-      )}
-      {!list.loading && !list.error && list.data.length === 0 && (
-        <div className='employee-history-page__empty'>
-          No hay servicios para el período seleccionado.
-        </div>
-      )}
-
-      {!list.loading && !list.error && list.data.length > 0 && (
-        <ul className='employee-history-page__list'>
-          {list.data.map(item => (
-            <li
-              key={`${item.invoiceId}-${item.service.activityId}-${item.timestamp.toString()}`}
-              className='employee-history-page__item'
+        <Card>
+          <Space
+            direction={screens.md ? 'horizontal' : 'vertical'}
+            style={{ width: '100%' }}
+          >
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 240 : '100%' }}
             >
-              <div className='employee-history-page__item-col'>
-                <div className='employee-history-page__item-label'>Fecha</div>
-                <div className='employee-history-page__item-value'>
-                  {formatDateTime(item.timestamp)}
-                </div>
-              </div>
-              <div className='employee-history-page__item-col'>
-                <div className='employee-history-page__item-label'>Cliente</div>
-                <div className='employee-history-page__item-value'>
-                  <Link
-                    to={buildRoutePathWithParams(RouteIds.CLIENT_DETAIL, {
-                      clientId: item.clientId,
-                    })}
-                    className='employee-history-page__link'
-                  >
-                    {item.clientId}
-                  </Link>
-                </div>
-              </div>
-              <div className='employee-history-page__item-col'>
-                <div className='employee-history-page__item-label'>
-                  Servicio
-                </div>
-                <div className='employee-history-page__item-value'>
-                  {item.service.activityName || item.service.activityId}
-                </div>
-              </div>
-              <div className='employee-history-page__item-col'>
-                <div className='employee-history-page__item-label'>Precio</div>
-                <div className='employee-history-page__item-value'>
-                  {formatCurrency(item.service.price)}
-                </div>
-              </div>
-              <div className='employee-history-page__item-col'>
-                <div className='employee-history-page__item-label'>Factura</div>
-                <div className='employee-history-page__item-value'>
-                  <Link
-                    to={buildRoutePathWithParams(RouteIds.INVOICE_DETAIL, {
-                      invoiceId: item.invoiceId,
-                    })}
-                    className='employee-history-page__link'
-                  >
-                    {item.invoiceId}
-                  </Link>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              <Typography.Text type='secondary'>Desde</Typography.Text>
+              <DatePicker
+                style={{ width: '100%' }}
+                value={
+                  list.filters.dateFrom
+                    ? dayjs(list.filters.dateFrom)
+                    : undefined
+                }
+                onChange={value => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  list.updateFilters({
+                    dateFrom: value ? toISO(value.toDate()) : '',
+                  })
+                }}
+              />
+            </Space>
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 240 : '100%' }}
+            >
+              <Typography.Text type='secondary'>Hasta</Typography.Text>
+              <DatePicker
+                style={{ width: '100%' }}
+                value={
+                  list.filters.dateTo ? dayjs(list.filters.dateTo) : undefined
+                }
+                onChange={value => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  list.updateFilters({
+                    dateTo: value ? toISO(value.toDate()) : '',
+                  })
+                }}
+              />
+            </Space>
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 240 : '100%' }}
+            >
+              <Typography.Text type='secondary'>
+                Actividad (opcional)
+              </Typography.Text>
+              <Input
+                placeholder='activityId'
+                value={list.filters.activityId || ''}
+                onChange={e =>
+                  list.updateFilters({
+                    activityId: e.target.value || null,
+                  })
+                }
+              />
+            </Space>
+            <Space wrap>
+              <Button onClick={handleClearFilters}>Limpiar filtros</Button>
+            </Space>
+          </Space>
+        </Card>
 
-      <Pagination
-        meta={list.meta}
-        onPageChange={page => list.updatePagination({ page })}
-        onLimitChange={limit => list.updatePagination({ limit })}
-        showLimitSelector
-      />
-    </div>
+        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Typography.Text>{totalCountText}</Typography.Text>
+        </Space>
+
+        {list.loading && (
+          <Card>
+            <div style={{ width: '100%' }}>
+              <Typography.Text>Cargando...</Typography.Text>
+            </div>
+          </Card>
+        )}
+
+        {list.error && <Alert type='error' message={list.error} showIcon />}
+
+        {!list.loading && !list.error && list.data.length === 0 && (
+          <Card>
+            <Empty description='No hay servicios para el período seleccionado.' />
+          </Card>
+        )}
+
+        {!list.loading && !list.error && list.data.length > 0 && (
+          <Card>
+            <List
+              itemLayout={screens.md ? 'horizontal' : 'vertical'}
+              dataSource={list.data}
+              renderItem={item => (
+                <List.Item
+                  key={`${item.invoiceId}-${item.service.activityId}-${item.timestamp.toString()}`}
+                  actions={[
+                    <Link
+                      key='invoice'
+                      to={buildRoutePathWithParams(RouteIds.INVOICE_DETAIL, {
+                        invoiceId: item.invoiceId,
+                      })}
+                    >
+                      <Button type='link'>Ver factura</Button>
+                    </Link>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    title={
+                      <Space size={8} wrap>
+                        <Typography.Text strong>
+                          {formatDateTime(item.timestamp)}
+                        </Typography.Text>
+                        <Typography.Text type='secondary'>•</Typography.Text>
+                        <Typography.Text>
+                          {item.service.activityName || item.service.activityId}
+                        </Typography.Text>
+                      </Space>
+                    }
+                    description={
+                      <Space direction='vertical' size={4}>
+                        <Typography.Text>
+                          <strong>Cliente:</strong>{' '}
+                          <Link
+                            to={buildRoutePathWithParams(
+                              RouteIds.CLIENT_DETAIL,
+                              {
+                                clientId: item.clientId,
+                              }
+                            )}
+                          >
+                            {item.clientId}
+                          </Link>
+                        </Typography.Text>
+                        <Typography.Text>
+                          <strong>Precio:</strong>{' '}
+                          {formatCurrency(item.service.price)}
+                        </Typography.Text>
+                        <Typography.Text type='secondary'>
+                          Factura: {item.invoiceId}
+                        </Typography.Text>
+                      </Space>
+                    }
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+        )}
+
+        {/* Paginación */}
+        <AntPagination
+          current={list.meta.page}
+          pageSize={list.meta.limit}
+          total={list.meta.total}
+          showSizeChanger
+          responsive
+          onChange={(page, pageSize) =>
+            list.updatePagination({ page, limit: pageSize })
+          }
+        />
+      </Space>
+    </PageContent>
   )
 }
-
-// no default export (rule)

@@ -151,18 +151,15 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
     urlState.pagination.sortOrder,
   ]) // Solo ejecutar cuando cambie loadData
 
-  // Recargar datos cuando cambien los filtros, búsqueda o ordenamiento
+  // Recargar datos cuando cambien filtros, búsqueda o paginación
   useEffect(() => {
-    // Solo recargar si ya tenemos datos iniciales
-    if (data.length > 0 || loading) {
-      const currentPagination: PaginationParams = {
-        page: urlState.pagination.page,
-        limit: urlState.pagination.limit,
-        sortBy: urlState.pagination.sortBy,
-        sortOrder: urlState.pagination.sortOrder,
-      }
-      loadData(currentPagination)
+    const currentPagination: PaginationParams = {
+      page: urlState.pagination.page,
+      limit: urlState.pagination.limit,
+      sortBy: urlState.pagination.sortBy,
+      sortOrder: urlState.pagination.sortOrder,
     }
+    loadData(currentPagination)
   }, [
     urlState.filters,
     urlState.search,
@@ -170,10 +167,8 @@ export const usePaginatedList = <T, F extends Record<string, any>>(
     urlState.pagination.sortOrder,
     urlState.pagination.page,
     urlState.pagination.limit,
-    data.length,
-    loading,
     loadData,
-  ]) // Dependencies are intentionally included to trigger reloads
+  ])
 
   // Actualizar filtros
   const updateFilters = useCallback(

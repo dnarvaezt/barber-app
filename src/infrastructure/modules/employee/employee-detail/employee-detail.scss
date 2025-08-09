@@ -1,190 +1,29 @@
 @use '../../../assets/styles/variables' as *;
 
 .employee-detail-page {
-  @apply min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 py-8;
-
   &__content {
-    @apply container mx-auto px-4 max-w-4xl;
+    width: 100%;
   }
 
-  &__card {
-    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden;
+  &__center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
   }
 
-  &__section {
-    @apply p-8 border-b border-gray-200 dark:border-gray-600 last:border-b-0;
-
-    .employee-detail-page__section-title {
-      @apply text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3;
-
-      &::before {
-        content: '';
-        @apply w-1 h-8 bg-green-500 rounded-full;
-      }
-    }
-
-    .employee-detail-page__info-grid {
-      @apply grid grid-cols-1 md:grid-cols-2 gap-6;
-
-      .employee-detail-page__info-item {
-        @apply flex flex-col sm:flex-row sm:items-center gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl;
-
-        .employee-detail-page__info-label {
-          @apply text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-[140px];
-        }
-
-        .employee-detail-page__info-value {
-          @apply text-base font-medium text-gray-800 dark:text-gray-200;
-
-          &--mono {
-            @apply font-mono text-sm bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded;
-          }
-
-          &--percentage {
-            @apply bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full font-bold;
-          }
-        }
-
-        .employee-detail-page__phone-link {
-          @apply text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200;
-        }
-      }
-    }
-
-    .employee-detail-page__actions {
-      @apply flex flex-wrap gap-4;
-
-      .employee-detail-page__action-button {
-        @apply flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg;
-
-        &--edit {
-          @apply bg-green-600 hover:bg-green-700 text-white;
-        }
-
-        &--call {
-          @apply bg-blue-600 hover:bg-blue-700 text-white;
-        }
-
-        &--whatsapp {
-          @apply bg-green-500 hover:bg-green-600 text-white;
-        }
-      }
-    }
+  &__stack {
+    display: flex;
+    width: 100%;
   }
 
-  &__loading {
-    @apply flex flex-col items-center justify-center py-12;
-
-    .employee-detail-page__loading-spinner {
-      @apply w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin mb-4;
-    }
-
-    p {
-      @apply text-gray-600 dark:text-gray-400;
-    }
+  &__actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
   }
 
-  &__error {
-    @apply flex flex-col items-center justify-center py-12 text-center;
-
-    .employee-detail-page__error-icon {
-      @apply text-4xl mb-4;
-    }
-
-    .employee-detail-page__error-title {
-      @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2;
-    }
-
-    .employee-detail-page__error-message {
-      @apply text-gray-600 dark:text-gray-400 mb-4;
-    }
-
-    .employee-detail-page__button {
-      @apply btn;
-
-      &--primary {
-        @apply btn-primary;
-      }
-    }
-  }
-}
-
-// Animaciones
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.employee-detail-page__content {
-  animation: slideInUp 0.6s ease-out;
-}
-
-.employee-detail-page__card {
-  animation: fadeIn 0.8s ease-out 0.2s both;
-}
-
-.employee-detail-page__section {
-  animation: fadeIn 0.6s ease-out;
-}
-
-.employee-detail-page__section:nth-child(1) {
-  animation-delay: 0.3s;
-}
-.employee-detail-page__section:nth-child(2) {
-  animation-delay: 0.4s;
-}
-.employee-detail-page__section:nth-child(3) {
-  animation-delay: 0.5s;
-}
-
-// Responsive design
-@media (max-width: 768px) {
-  .employee-detail-page {
-    &__content {
-      @apply px-6;
-    }
-
-    &__section {
-      @apply p-6;
-
-      .employee-detail-page__section-title {
-        @apply text-xl;
-      }
-
-      .employee-detail-page__info-grid {
-        @apply grid-cols-1 gap-4;
-
-        .employee-detail-page__info-item {
-          @apply flex-col items-start;
-
-          .employee-detail-page__info-label {
-            @apply min-w-0;
-          }
-        }
-      }
-
-      .employee-detail-page__actions {
-        @apply flex-col;
-
-        .employee-detail-page__action-button {
-          @apply w-full justify-center;
-        }
-      }
-    }
+  &__phone-link {
+    color: var(--ant-color-primary);
   }
 }

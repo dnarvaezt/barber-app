@@ -1,4 +1,18 @@
+import {
+  Alert,
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
+import dayjs from 'dayjs'
 import { useEffect } from 'react'
+import { PageContent } from '../../../components/layout/components'
 import { useEmployeeForm } from './employee-form.hook'
 import './employee-form.scss'
 
@@ -21,177 +35,167 @@ export const EmployeeForm = () => {
     // El header maneja su propio estado internamente
   }, [])
 
-  // Mostrar loading mientras valida el employeeId
   if (isValidating) {
     return (
-      <div className='employee-form'>
-        <div className='employee-form__container'>
-          <div className='employee-form__loading'>
-            <div className='employee-form__loading-spinner'></div>
-            <p className='employee-form__loading-text'>Validando empleado...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Validando empleado...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
-  // Si el employeeId no es válido, no mostrar nada (ya se redirigió)
   if (!isValidEmployee && isEditing) {
     return null
   }
 
   if (loading && isEditing) {
     return (
-      <div className='employee-form'>
-        <div className='employee-form__container'>
-          <div className='employee-form__loading'>
-            <div className='employee-form__loading-spinner'></div>
-            <p className='employee-form__loading-text'>Cargando empleado...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Cargando empleado...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
   return (
-    <div className='employee-form'>
-      <div className='employee-form__container'>
-        <div className='employee-form__header'>
-          <h1 className='employee-form__title'>
-            {isEditing ? 'Editar Empleado' : 'Nuevo Empleado'}
-          </h1>
-          <p className='employee-form__subtitle'>
-            {isEditing
-              ? 'Actualiza la información del empleado'
-              : 'Completa la información para crear un nuevo empleado'}
-          </p>
-        </div>
+    <PageContent>
+      <Card
+        style={{ width: '100%' }}
+        title={isEditing ? 'Editar Empleado' : 'Nuevo Empleado'}
+      >
+        <Typography.Paragraph type='secondary' style={{ marginTop: -8 }}>
+          {isEditing
+            ? 'Actualiza la información del empleado'
+            : 'Completa la información para crear un nuevo empleado'}
+        </Typography.Paragraph>
 
-        <div className='employee-form__form'>
-          {/* Mensaje de éxito */}
+        <Space direction='vertical' size='large' style={{ width: '100%' }}>
           {showSuccessMessage && (
-            <div className='employee-form__success-message'>
-              <div className='employee-form__success-icon'>✅</div>
-              <p className='employee-form__success-text'>
-                {isEditing
+            <Alert
+              showIcon
+              type='success'
+              message={
+                isEditing
                   ? '¡Empleado actualizado exitosamente!'
-                  : '¡Empleado creado exitosamente!'}
-              </p>
-            </div>
+                  : '¡Empleado creado exitosamente!'
+              }
+            />
           )}
 
-          {/* Mensaje de error general */}
           {errors.general && (
-            <div className='employee-form__error-message'>
-              <div className='employee-form__error-icon'>❌</div>
-              <p className='employee-form__error-text'>{errors.general}</p>
-            </div>
+            <Alert showIcon type='error' message={errors.general} />
           )}
 
-          <form onSubmit={handleSubmit} className='employee-form__form-content'>
-            {/* Campo Nombre */}
-            <div className='employee-form__field'>
-              <label htmlFor='name' className='employee-form__label'>
-                Nombre completo *
-              </label>
-              <input
-                type='text'
-                id='name'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                className={`employee-form__input ${
-                  formData.name ? 'employee-form__input--filled' : ''
-                }`}
-                placeholder='Ingresa el nombre completo'
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit}>
+            <Form layout='vertical' component={false}>
+              <Form.Item label='Nombre completo' required htmlFor='name'>
+                <Input
+                  id='name'
+                  size='large'
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='Ingresa el nombre completo'
+                  allowClear
+                  required
+                />
+              </Form.Item>
 
-            {/* Campo Teléfono */}
-            <div className='employee-form__field'>
-              <label htmlFor='phoneNumber' className='employee-form__label'>
-                Número de teléfono *
-              </label>
-              <input
-                type='tel'
-                id='phoneNumber'
-                value={formData.phoneNumber}
-                onChange={e => handleInputChange('phoneNumber', e.target.value)}
-                className={`employee-form__input ${
-                  formData.phoneNumber ? 'employee-form__input--filled' : ''
-                }`}
-                placeholder='Ej: +57 300 123 4567'
+              <Form.Item
+                label='Número de teléfono'
                 required
-              />
-            </div>
-
-            {/* Campo Fecha de Nacimiento */}
-            <div className='employee-form__field'>
-              <label htmlFor='birthDate' className='employee-form__label'>
-                Fecha de nacimiento *
-              </label>
-              <input
-                type='date'
-                id='birthDate'
-                value={formData.birthDate}
-                onChange={e => handleInputChange('birthDate', e.target.value)}
-                className={`employee-form__input ${
-                  formData.birthDate ? 'employee-form__input--filled' : ''
-                }`}
-                required
-              />
-            </div>
-
-            {/* Campo Porcentaje */}
-            <div className='employee-form__field'>
-              <label htmlFor='percentage' className='employee-form__label'>
-                Porcentaje de comisión *
-              </label>
-              <input
-                type='number'
-                id='percentage'
-                value={formData.percentage}
-                onChange={e => handleInputChange('percentage', e.target.value)}
-                className={`employee-form__input ${
-                  formData.percentage ? 'employee-form__input--filled' : ''
-                }`}
-                placeholder='Ej: 25'
-                min='0'
-                max='100'
-                step='0.01'
-                required
-              />
-              <p className='employee-form__help-text'>
-                Ingresa el porcentaje de comisión que recibirá el empleado
-                (0-100%)
-              </p>
-            </div>
-
-            {/* Botones de acción */}
-            <div className='employee-form__actions'>
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='employee-form__button employee-form__button--secondary'
+                htmlFor='phoneNumber'
               >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                disabled={loading}
-                className='employee-form__button employee-form__button--primary'
+                <Input
+                  id='phoneNumber'
+                  size='large'
+                  type='tel'
+                  value={formData.phoneNumber}
+                  onChange={e =>
+                    handleInputChange('phoneNumber', e.target.value)
+                  }
+                  placeholder='Ej: +57 300 123 4567'
+                  allowClear
+                  required
+                />
+              </Form.Item>
+
+              <Form.Item
+                label='Fecha de nacimiento'
+                required
+                htmlFor='birthDate'
               >
-                {loading && (
-                  <div className='employee-form__loading-spinner employee-form__loading-spinner--small'></div>
-                )}
-                <span className='employee-form__button-text'>
+                <DatePicker
+                  id='birthDate'
+                  size='large'
+                  style={{ width: '100%' }}
+                  value={
+                    formData.birthDate
+                      ? dayjs(formData.birthDate, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={d =>
+                    handleInputChange(
+                      'birthDate',
+                      d ? d.format('YYYY-MM-DD') : ''
+                    )
+                  }
+                  placeholder='Selecciona una fecha'
+                  allowClear
+                  inputReadOnly
+                />
+              </Form.Item>
+
+              <Form.Item
+                label='Porcentaje de comisión'
+                required
+                htmlFor='percentage'
+                extra='Ingresa el porcentaje de comisión que recibirá el empleado (0-100%)'
+              >
+                <InputNumber
+                  id='percentage'
+                  size='large'
+                  style={{ width: '100%' }}
+                  value={
+                    formData.percentage !== ''
+                      ? Number.isNaN(Number(formData.percentage))
+                        ? undefined
+                        : Number(formData.percentage)
+                      : undefined
+                  }
+                  onChange={value =>
+                    handleInputChange(
+                      'percentage',
+                      value !== null && value !== undefined ? String(value) : ''
+                    )
+                  }
+                  placeholder='Ej: 25'
+                  min={0}
+                  max={100}
+                  step={0.01}
+                  addonAfter='%'
+                />
+              </Form.Item>
+
+              <Space style={{ width: '100%' }} wrap>
+                <Button onClick={handleCancel}>Cancelar</Button>
+                <Button htmlType='submit' type='primary' loading={loading}>
                   {isEditing ? 'Actualizar' : 'Crear'} Empleado
-                </span>
-              </button>
-            </div>
+                </Button>
+              </Space>
+            </Form>
           </form>
-        </div>
-      </div>
-    </div>
+        </Space>
+      </Card>
+    </PageContent>
   )
 }
