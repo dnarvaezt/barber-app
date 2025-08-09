@@ -124,7 +124,7 @@ export const ActivityForm = () => {
             </Typography.Paragraph>
           </div>
 
-          <Card className='activity-form__form' bordered>
+          <Card className='activity-form__form' variant='outlined'>
             {/* Mensaje de éxito */}
             {showSuccessMessage && (
               <Alert

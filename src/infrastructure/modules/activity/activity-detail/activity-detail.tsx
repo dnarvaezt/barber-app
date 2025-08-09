@@ -98,7 +98,7 @@ export const ActivityDetail = () => {
               <Typography.Title level={screens.md ? 3 : 4}>
                 Información de la Actividad
               </Typography.Title>
-              <Card bordered>
+              <Card variant='outlined'>
                 <Descriptions
                   column={{ xs: 1, sm: 1, md: 2, lg: 3 }}
                   size={screens.md ? 'default' : 'small'}
@@ -122,7 +122,7 @@ export const ActivityDetail = () => {
               <Typography.Title level={screens.md ? 3 : 4}>
                 Información del Sistema
               </Typography.Title>
-              <Card bordered>
+              <Card variant='outlined'>
                 <Descriptions
                   column={{ xs: 1, sm: 1, md: 2, lg: 3 }}
                   size={screens.md ? 'default' : 'small'}

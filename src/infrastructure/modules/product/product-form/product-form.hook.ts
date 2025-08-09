@@ -122,5 +122,19 @@ export const useProductForm = () => {
     isValidProduct: entityForm.isValidEntity,
     product: entityForm.entity,
     handleSubmit,
+    handleDelete: useCallback(async () => {
+      try {
+        if (!entityForm.isEditing || !entityForm.entity) return
+        const deleted = await productService.deleteProduct(
+          (entityForm.entity as Product).id
+        )
+        if (deleted) {
+          entityForm.handleCancel()
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error)
+        throw error
+      }
+    }, [entityForm]),
   }
 }

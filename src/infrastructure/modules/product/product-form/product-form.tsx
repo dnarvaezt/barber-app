@@ -1,5 +1,18 @@
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  Input,
+  Popconfirm,
+  Select,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect, useState } from 'react'
 import { categoryService } from '../../../../application/domain/category/category.provider'
+import { PageContent } from '../../../components/layout/components'
 import { useProductForm } from './product-form.hook'
 import './product-form.scss'
 
@@ -15,6 +28,7 @@ export const ProductForm = () => {
     handleSubmit,
     handleCancel,
     handleInputChange,
+    handleDelete,
   } = useProductForm()
 
   const [categories, setCategories] = useState<any[]>([])
@@ -48,14 +62,17 @@ export const ProductForm = () => {
   // Mostrar loading mientras valida el productId
   if (isValidating) {
     return (
-      <div className='product-form'>
-        <div className='product-form__container'>
-          <div className='product-form__loading'>
-            <div className='product-form__loading-spinner'></div>
-            <p className='product-form__loading-text'>Validando producto...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Validando producto...'>
+              <div style={{ width: 1, height: 24 }} />
+            </Spin>
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
@@ -66,235 +83,176 @@ export const ProductForm = () => {
 
   if (loading && isEditing) {
     return (
-      <div className='product-form'>
-        <div className='product-form__container'>
-          <div className='product-form__loading'>
-            <div className='product-form__loading-spinner'></div>
-            <p className='product-form__loading-text'>Cargando producto...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Cargando producto...'>
+              <div style={{ width: 1, height: 24 }} />
+            </Spin>
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
   return (
-    <div className='product-form'>
-      <div className='product-form__container'>
-        <div className='product-form__header'>
-          <h1 className='product-form__title'>
-            {isEditing ? 'Editar Producto' : 'Nuevo Producto'}
-          </h1>
-          <p className='product-form__subtitle'>
-            {isEditing
-              ? 'Actualiza la información del producto'
-              : 'Completa la información para crear un nuevo producto'}
-          </p>
-        </div>
+    <PageContent>
+      <Card
+        style={{ width: '100%' }}
+        title={isEditing ? 'Editar Producto' : 'Nuevo Producto'}
+      >
+        <Typography.Paragraph type='secondary' style={{ marginTop: -8 }}>
+          {isEditing
+            ? 'Actualiza la información del producto'
+            : 'Completa la información para crear un nuevo producto'}
+        </Typography.Paragraph>
 
-        <div className='product-form__form'>
-          {/* Mensaje de éxito */}
+        <Space direction='vertical' size='large' style={{ width: '100%' }}>
           {showSuccessMessage && (
-            <div className='product-form__success-message'>
-              <div className='product-form__success-icon'>✅</div>
-              <p className='product-form__success-text'>
-                {isEditing
+            <Alert
+              showIcon
+              type='success'
+              message={
+                isEditing
                   ? '¡Producto actualizado exitosamente!'
-                  : '¡Producto creado exitosamente!'}
-              </p>
-            </div>
+                  : '¡Producto creado exitosamente!'
+              }
+            />
           )}
 
-          {/* Mensaje de error general */}
           {errors.general && (
-            <div className='product-form__error-message'>
-              <div className='product-form__error-icon'>❌</div>
-              <p className='product-form__error-text'>{errors.general}</p>
-            </div>
+            <Alert showIcon type='error' message={errors.general} />
           )}
 
-          <form onSubmit={handleSubmit} className='product-form__form-content'>
-            {/* Campo Nombre */}
-            <div className='product-form__field'>
-              <label htmlFor='name' className='product-form__label'>
-                Nombre del producto *
-              </label>
-              <input
-                type='text'
-                id='name'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                className={`product-form__input ${
-                  formData.name ? 'product-form__input--filled' : ''
-                }`}
-                placeholder='Ingresa el nombre del producto'
-                required
-                minLength={2}
-                maxLength={100}
-              />
-              <p className='product-form__help-text'>
-                El nombre debe tener entre 2 y 100 caracteres
-              </p>
-            </div>
+          <form onSubmit={handleSubmit}>
+            <Form layout='vertical' component={false}>
+              <Form.Item label='Nombre del producto' required htmlFor='name'>
+                <Input
+                  id='name'
+                  size='large'
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='Ingresa el nombre del producto'
+                  allowClear
+                  required
+                  minLength={2}
+                  maxLength={100}
+                />
+              </Form.Item>
 
-            {/* Campo Descripción */}
-            <div className='product-form__field'>
-              <label htmlFor='description' className='product-form__label'>
-                Descripción del producto *
-              </label>
-              <textarea
-                id='description'
-                value={formData.description}
-                onChange={e => handleInputChange('description', e.target.value)}
-                className={`product-form__textarea ${
-                  formData.description ? 'product-form__textarea--filled' : ''
-                }`}
-                placeholder='Describe el producto detalladamente'
+              <Form.Item
+                label='Descripción del producto'
                 required
-                minLength={10}
-                maxLength={500}
-                rows={4}
-              />
-              <p className='product-form__help-text'>
-                La descripción debe tener entre 10 y 500 caracteres
-              </p>
-            </div>
+                htmlFor='description'
+              >
+                <Input.TextArea
+                  id='description'
+                  size='large'
+                  value={formData.description}
+                  onChange={e =>
+                    handleInputChange('description', e.target.value)
+                  }
+                  placeholder='Describe el producto detalladamente'
+                  required
+                  minLength={10}
+                  maxLength={500}
+                  rows={4}
+                  allowClear
+                />
+              </Form.Item>
 
-            {/* Campo Categoría */}
-            <div className='product-form__field'>
-              <label htmlFor='category' className='product-form__label'>
-                Categoría del producto *
-              </label>
-              <input
-                type='text'
-                id='category'
-                value={formData.category}
-                onChange={e => handleInputChange('category', e.target.value)}
-                className={`product-form__input ${
-                  formData.category ? 'product-form__input--filled' : ''
-                }`}
-                placeholder='Ej: Cuidado Personal, Accesorios, etc.'
+              <Form.Item
+                label='Categoría del producto'
                 required
-                minLength={2}
-                maxLength={50}
-              />
-              <p className='product-form__help-text'>
-                La categoría debe tener entre 2 y 50 caracteres
-              </p>
-            </div>
+                htmlFor='category'
+              >
+                <Input
+                  id='category'
+                  size='large'
+                  value={formData.category}
+                  onChange={e => handleInputChange('category', e.target.value)}
+                  placeholder='Ej: Cuidado Personal, Accesorios, etc.'
+                  allowClear
+                  required
+                  minLength={2}
+                  maxLength={50}
+                />
+              </Form.Item>
 
-            {/* Sección de Precios */}
-            <div className='product-form__price-section'>
-              {/* Campo Precio de Costo */}
-              <div className='product-form__price-field'>
-                <label
-                  htmlFor='costPrice'
-                  className='product-form__price-label'
-                >
-                  Precio de Costo *
-                </label>
-                <input
-                  type='number'
+              <Form.Item label='Precio de Costo' required htmlFor='costPrice'>
+                <Input
                   id='costPrice'
+                  size='large'
+                  type='number'
                   value={formData.costPrice}
                   onChange={e => handleInputChange('costPrice', e.target.value)}
-                  className={`product-form__price-input ${
-                    formData.costPrice
-                      ? 'product-form__price-input--filled'
-                      : ''
-                  }`}
                   placeholder='Ej: 15000'
-                  min='0'
-                  max='999999.99'
+                  min={0}
                   step='0.01'
                   required
                 />
-                <p className='product-form__price-help'>
-                  Ingresa el precio de costo en pesos colombianos
-                </p>
-              </div>
+              </Form.Item>
 
-              {/* Campo Precio de Venta */}
-              <div className='product-form__price-field'>
-                <label
-                  htmlFor='salePrice'
-                  className='product-form__price-label'
-                >
-                  Precio de Venta *
-                </label>
-                <input
-                  type='number'
+              <Form.Item label='Precio de Venta' required htmlFor='salePrice'>
+                <Input
                   id='salePrice'
+                  size='large'
+                  type='number'
                   value={formData.salePrice}
                   onChange={e => handleInputChange('salePrice', e.target.value)}
-                  className={`product-form__price-input ${
-                    formData.salePrice
-                      ? 'product-form__price-input--filled'
-                      : ''
-                  }`}
                   placeholder='Ej: 25000'
-                  min='0'
-                  max='999999.99'
+                  min={0}
                   step='0.01'
                   required
                 />
-                <p className='product-form__price-help'>
-                  Ingresa el precio de venta en pesos colombianos
-                </p>
-              </div>
-            </div>
+              </Form.Item>
 
-            {/* Campo Categoría ID */}
-            <div className='product-form__field'>
-              <label htmlFor='categoryId' className='product-form__label'>
-                Categoría ID *
-              </label>
-              <select
-                id='categoryId'
-                value={formData.categoryId}
-                onChange={e => handleInputChange('categoryId', e.target.value)}
-                className={`product-form__select ${
-                  formData.categoryId ? 'product-form__select--filled' : ''
-                }`}
-                required
-                disabled={loadingCategories}
-              >
-                <option value=''>Selecciona una categoría</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              <p className='product-form__help-text'>
-                Selecciona la categoría a la que pertenece este producto
-              </p>
-            </div>
+              <Form.Item label='Categoría' required htmlFor='categoryId'>
+                <Select
+                  id='categoryId'
+                  size='large'
+                  value={formData.categoryId || ''}
+                  onChange={value => handleInputChange('categoryId', value)}
+                  placeholder='Selecciona una categoría'
+                  options={[
+                    { label: 'Selecciona una categoría', value: '' },
+                    ...categories.map((c: any) => ({
+                      label: c.name,
+                      value: c.id,
+                    })),
+                  ]}
+                  loading={loadingCategories}
+                  disabled={loadingCategories}
+                  showSearch
+                  optionFilterProp='label'
+                  allowClear
+                />
+              </Form.Item>
 
-            {/* Botones de acción */}
-            <div className='product-form__actions'>
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='product-form__button product-form__button--secondary'
-              >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                disabled={loading}
-                className='product-form__button product-form__button--primary'
-              >
-                {loading && (
-                  <div className='product-form__loading-spinner product-form__loading-spinner--small'></div>
+              <Space style={{ width: '100%' }} wrap>
+                <Button onClick={handleCancel}>Cancelar</Button>
+                {isEditing && (
+                  <Popconfirm
+                    title='Eliminar producto'
+                    description='¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.'
+                    okText='Eliminar'
+                    okButtonProps={{ danger: true }}
+                    cancelText='Cancelar'
+                    onConfirm={handleDelete}
+                  >
+                    <Button danger>Eliminar</Button>
+                  </Popconfirm>
                 )}
-                <span className='product-form__button-text'>
+                <Button htmlType='submit' type='primary' loading={loading}>
                   {isEditing ? 'Actualizar' : 'Crear'} Producto
-                </span>
-              </button>
-            </div>
+                </Button>
+              </Space>
+            </Form>
           </form>
-        </div>
-      </div>
-    </div>
+        </Space>
+      </Card>
+    </PageContent>
   )
 }

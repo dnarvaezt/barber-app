@@ -1,12 +1,29 @@
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  Alert,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Input,
+  List,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { EntityList } from '../../../components/entity/entity-list'
+import { Link, useNavigate } from 'react-router-dom'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { Pagination } from '../../../components/pagination'
 import { SortControls } from '../../../components/sort-controls'
+import { RouteIds, useRoutes } from '../../../routes'
 import { useProductPage } from './product-page.hook'
 import './product-page.scss'
 
 export const ProductPage = () => {
+  const navigate = useNavigate()
+  const { buildRoutePathWithParams } = useRoutes()
+  const screens = Grid.useBreakpoint()
   const {
     products,
     loading,
@@ -21,8 +38,8 @@ export const ProductPage = () => {
     sortOrder,
     setSortBy,
     setSortOrder,
-    deleteProduct,
     formatDate,
+    formatCurrency,
   } = useProductPage()
 
   useEffect(() => {
@@ -30,147 +47,175 @@ export const ProductPage = () => {
     // El header maneja su propio estado internamente
   }, [])
 
-  const handleDelete = async (id: string) => {
-    if (
-      window.confirm('¿Estás seguro de que quieres eliminar este producto?')
-    ) {
-      try {
-        await deleteProduct(id)
-      } catch (error) {
-        console.error('Error deleting product:', error)
-        alert('Error al eliminar el producto')
-      }
-    }
-  }
-
-  const formatPhone = () => '' // No aplica para productos
-  const getAge = () => 0 // No aplica para productos
-  const getMonthName = () => '' // No aplica para productos
-
   return (
-    <div className='product-page'>
-      <div className='product-page__container'>
-        {/* Header */}
-        <div className='product-page__header'>
-          <div className='product-page__title-section'>
-            <h1 className='product-page__title'>Productos</h1>
-            <span className='product-page__subtitle'>
-              Gestiona los productos del barber shop
-            </span>
-          </div>
-          <div className='product-page__actions'>
-            <Link
-              to='/products/form/new'
-              className='product-page__button product-page__button--primary'
-            >
-              <span className='product-page__button-icon'>➕</span>
-              <span className='product-page__button-text'>Nuevo Producto</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Content */}
+    <PageContent>
+      <div className='product-page'>
         <div className='product-page__content'>
-          {/* Toolbar */}
-          <div className='product-page__toolbar'>
-            <div className='product-page__search-section'>
-              <div className='product-page__search-container'>
-                <input
-                  type='text'
-                  placeholder='Buscar productos...'
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className='product-page__search-input'
-                />
-              </div>
-              <div className='product-page__sort-controls'>
-                <SortControls
-                  currentSortBy={sortBy}
-                  currentSortOrder={sortOrder}
-                  onSortChange={(sortBy, sortOrder) => {
-                    setSortBy(sortBy)
-                    setSortOrder(sortOrder)
-                  }}
-                />
-              </div>
+          {/* Header */}
+          <Flex
+            align='center'
+            justify='space-between'
+            vertical={!screens.md}
+            gap={8}
+          >
+            <div>
+              <Typography.Title level={3} className='product-page__title'>
+                Productos
+              </Typography.Title>
+              <Typography.Text type='secondary'>
+                Gestiona los productos del barber shop
+              </Typography.Text>
             </div>
-          </div>
+            <Link
+              to={
+                buildRoutePathWithParams(RouteIds.PRODUCT_FORM_NEW, {}) ||
+                '/products/form/new'
+              }
+            >
+              <Button type='primary' icon={<PlusOutlined />}>
+                Nuevo Producto
+              </Button>
+            </Link>
+          </Flex>
+
+          {/* Toolbar */}
+          <Card style={{ marginTop: 12 }}>
+            <Space direction='vertical' style={{ width: '100%' }} size='middle'>
+              <Input
+                placeholder='Buscar productos...'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                allowClear
+                prefix={<SearchOutlined />}
+              />
+              <SortControls
+                currentSortBy={sortBy}
+                currentSortOrder={sortOrder}
+                onSortChange={(nextSortBy, nextSortOrder) => {
+                  setSortBy(nextSortBy)
+                  setSortOrder(nextSortOrder)
+                }}
+              />
+            </Space>
+          </Card>
 
           {/* List Section */}
           <div className='product-page__list-section'>
             {loading ? (
-              <div className='product-page__loading'>
-                <div className='product-page__loading-spinner'></div>
-                <p className='product-page__loading-text'>
-                  Cargando productos...
-                </p>
-              </div>
+              <Flex
+                align='center'
+                justify='center'
+                style={{ width: '100%', padding: 24 }}
+              >
+                <Spin tip='Cargando productos...'>
+                  <div style={{ width: 1, height: 24 }} />
+                </Spin>
+              </Flex>
             ) : error ? (
-              <div className='product-page__error'>
-                <div className='product-page__error-icon'>⚠️</div>
-                <h3 className='product-page__error-title'>Error</h3>
-                <p className='product-page__error-message'>{error}</p>
-                <button
-                  onClick={refresh}
-                  className='product-page__button product-page__button--primary'
-                >
-                  Reintentar
-                </button>
-              </div>
-            ) : products.length === 0 ? (
-              <div className='product-page__empty'>
-                <div className='product-page__empty-icon'>📦</div>
-                <h3 className='product-page__empty-title'>No hay productos</h3>
-                <p className='product-page__empty-message'>
-                  {searchTerm
-                    ? 'No se encontraron productos con ese término de búsqueda'
-                    : 'Aún no se han creado productos. Crea el primer producto para comenzar.'}
-                </p>
-                {!searchTerm && (
-                  <Link
-                    to='/products/form/new'
-                    className='product-page__button product-page__button--primary'
-                  >
-                    Crear Primer Producto
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <>
-                <EntityList
-                  entities={products}
-                  entityType='product'
-                  loading={loading}
-                  onDeleteClick={handleDelete}
-                  formatDate={formatDate}
-                  formatPhone={formatPhone}
-                  getAge={getAge}
-                  getMonthName={getMonthName}
+              <Space direction='vertical' style={{ width: '100%' }}>
+                <Alert
+                  message='Ocurrió un error al cargar productos'
+                  description={error}
+                  type='error'
+                  showIcon
                 />
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className='product-page__pagination'>
-                    <div className='product-page__pagination-info'>
-                      Mostrando {(pagination.page - 1) * pagination.limit + 1}-
-                      {Math.min(pagination.page * pagination.limit, total)} de{' '}
-                      {total} productos
-                    </div>
-                    <div className='product-page__pagination-controls'>
-                      <Pagination
-                        meta={pagination}
-                        onPageChange={() => {
-                          // La paginación se maneja automáticamente por el hook
+                <Button type='primary' onClick={refresh}>
+                  Reintentar
+                </Button>
+              </Space>
+            ) : products.length === 0 ? (
+              <Card>
+                <Space
+                  direction='vertical'
+                  align='center'
+                  style={{ width: '100%' }}
+                >
+                  <Typography.Title level={5}>
+                    No hay productos
+                  </Typography.Title>
+                  <Typography.Text type='secondary'>
+                    {searchTerm
+                      ? 'No se encontraron productos con ese término de búsqueda'
+                      : 'Aún no se han creado productos. Crea el primer producto para comenzar.'}
+                  </Typography.Text>
+                  {!searchTerm && (
+                    <Link
+                      to={
+                        buildRoutePathWithParams(
+                          RouteIds.PRODUCT_FORM_NEW,
+                          {}
+                        ) || '/products/form/new'
+                      }
+                    >
+                      <Button type='primary' icon={<PlusOutlined />}>
+                        Crear Primer Producto
+                      </Button>
+                    </Link>
+                  )}
+                </Space>
+              </Card>
+            ) : (
+              <Card>
+                <List
+                  itemLayout='horizontal'
+                  dataSource={products}
+                  rowKey='id'
+                  renderItem={(prod: any) => {
+                    const detailPath =
+                      buildRoutePathWithParams(RouteIds.PRODUCT_DETAIL, {
+                        productId: prod.id,
+                      }) || `/products/${prod.id}`
+                    return (
+                      <List.Item
+                        onClick={() => navigate(detailPath)}
+                        role='link'
+                        tabIndex={0}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            navigate(detailPath)
+                          }
                         }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </>
+                        className='product-page__list-item'
+                      >
+                        <List.Item.Meta
+                          title={<Link to={detailPath}>{prod.name}</Link>}
+                          description={
+                            <Space size='small'>
+                              <Typography.Text type='secondary'>
+                                {prod.category}
+                              </Typography.Text>
+                              <Typography.Text strong>
+                                {formatCurrency(prod.salePrice)}
+                              </Typography.Text>
+                            </Space>
+                          }
+                        />
+                      </List.Item>
+                    )
+                  }}
+                />
+              </Card>
             )}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className='product-page__pagination'>
+              <div className='product-page__pagination-controls'>
+                <Pagination
+                  meta={pagination}
+                  onPageChange={() => {
+                    // La paginación se maneja automáticamente por el hook via URL state
+                  }}
+                  size={screens.md ? 'default' : 'small'}
+                  showLimitSelector
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </PageContent>
   )
 }
