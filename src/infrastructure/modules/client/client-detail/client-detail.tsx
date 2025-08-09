@@ -1,5 +1,22 @@
+import {
+  EditOutlined,
+  FileTextOutlined,
+  PhoneOutlined,
+  WhatsAppOutlined,
+} from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  Descriptions,
+  Grid,
+  Result,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useClientDetail } from './client-detail.hook'
 import './client-detail.scss'
@@ -21,6 +38,7 @@ export const ClientDetail = () => {
 
   // Declarar hooks SIEMPRE al inicio del componente
   const { buildRoutePathWithParams } = useRoutes()
+  const screens = Grid.useBreakpoint()
 
   useEffect(() => {
     // El componente es autónomo, no necesita configurar el header
@@ -30,14 +48,13 @@ export const ClientDetail = () => {
   // Mostrar loading mientras valida el clientId
   if (isValidating) {
     return (
-      <div className='client-detail-page'>
-        <div className='client-detail-page__content'>
-          <div className='client-detail-page__loading'>
-            <div className='client-detail-page__loading-spinner'></div>
-            <p>Validando cliente...</p>
-          </div>
+      <PageContent>
+        <div style={{ width: '100%' }}>
+          <Spin tip='Validando cliente...' size='large'>
+            <div style={{ minHeight: 120 }} />
+          </Spin>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
@@ -48,183 +65,176 @@ export const ClientDetail = () => {
 
   if (loading) {
     return (
-      <div className='client-detail-page'>
-        <div className='client-detail-page__content'>
-          <div className='client-detail-page__loading'>
-            <div className='client-detail-page__loading-spinner'></div>
-            <p>Cargando cliente...</p>
-          </div>
+      <PageContent>
+        <div style={{ width: '100%' }}>
+          <Spin tip='Cargando cliente...' size='large'>
+            <div style={{ minHeight: 120 }} />
+          </Spin>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
   if (error || !client) {
     return (
-      <div className='client-detail-page'>
-        <div className='client-detail-page__content'>
-          <div className='client-detail-page__error'>
-            <div className='client-detail-page__error-icon'>⚠️</div>
-            <h3 className='client-detail-page__error-title'>Error</h3>
-            <p className='client-detail-page__error-message'>
-              {error || 'Cliente no encontrado'}
-            </p>
-            <button
+      <PageContent>
+        <Result
+          status='error'
+          title='Error'
+          subTitle={error || 'Cliente no encontrado'}
+          extra={
+            <Button
+              type='primary'
               onClick={handleBack}
-              className='client-detail-page__button client-detail-page__button--primary'
+              icon={<FileTextOutlined />}
             >
               Volver a la lista
-            </button>
-          </div>
-        </div>
-      </div>
+            </Button>
+          }
+        />
+      </PageContent>
     )
   }
 
   // eliminado duplicado
+  const { Title, Text } = Typography
+
   return (
-    <div className='client-detail-page'>
-      <div className='client-detail-page__content'>
-        <div className='client-detail-page__card'>
-          <div className='client-detail-page__section'>
-            <div className='client-detail-page__actions'>
-              <Link
-                to={buildRoutePathWithParams(RouteIds.CLIENT_INVOICES, {
-                  clientId: client.id,
-                })}
-                className='client-detail-page__action-button client-detail-page__action-button--edit'
-              >
-                🧾 Facturas del Cliente
-              </Link>
-            </div>
-          </div>
-          {/* Información principal */}
-          <div className='client-detail-page__section'>
-            <h2 className='client-detail-page__section-title'>
+    <PageContent>
+      <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
               Información Personal
-            </h2>
-            <div className='client-detail-page__info-grid'>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>Nombre:</span>
-                <span className='client-detail-page__info-value'>
-                  {client.name}
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Teléfono:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  <a
-                    href={`tel:${client.phoneNumber}`}
-                    className='client-detail-page__phone-link'
-                  >
+            </Title>
+          }
+        >
+          <Descriptions
+            size='small'
+            column={{ xs: 1, sm: 1, md: 2, lg: 2 }}
+            items={[
+              {
+                key: 'name',
+                label: 'Nombre',
+                children: <Text>{client.name}</Text>,
+              },
+              {
+                key: 'phone',
+                label: 'Teléfono',
+                children: (
+                  <a href={`tel:${client.phoneNumber}`}>
                     {formatPhone(client.phoneNumber)}
                   </a>
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Fecha de Nacimiento:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {formatDate(client.birthDate)} ({getAge(client.birthDate)}{' '}
-                  años)
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Mes de Cumpleaños:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {getBirthMonth(client.birthDate)}
-                </span>
-              </div>
-            </div>
-          </div>
+                ),
+              },
+              {
+                key: 'birth',
+                label: 'Fecha de Nacimiento',
+                children: (
+                  <Text>
+                    {formatDate(client.birthDate)} ({getAge(client.birthDate)}{' '}
+                    años)
+                  </Text>
+                ),
+              },
+              {
+                key: 'month',
+                label: 'Mes de Cumpleaños',
+                children: <Text>{getBirthMonth(client.birthDate)}</Text>,
+              },
+            ]}
+          />
+        </Card>
 
-          {/* Información de auditoría */}
-          <div className='client-detail-page__section'>
-            <h2 className='client-detail-page__section-title'>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
               Información del Sistema
-            </h2>
-            <div className='client-detail-page__info-grid'>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  ID del Cliente:
-                </span>
-                <span className='client-detail-page__info-value client-detail-page__info-value--mono'>
-                  {client.id}
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Fecha de Creación:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {formatDate(client.createdAt)}
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Última Actualización:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {formatDate(client.updatedAt)}
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Creado por:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {client.createdBy}
-                </span>
-              </div>
-              <div className='client-detail-page__info-item'>
-                <span className='client-detail-page__info-label'>
-                  Actualizado por:
-                </span>
-                <span className='client-detail-page__info-value'>
-                  {client.updatedBy}
-                </span>
-              </div>
-            </div>
-          </div>
+            </Title>
+          }
+        >
+          <Descriptions
+            size='small'
+            column={{ xs: 1, sm: 1, md: 2, lg: 2 }}
+            items={[
+              {
+                key: 'id',
+                label: 'ID del Cliente',
+                children: <Text code>{client.id}</Text>,
+              },
+              {
+                key: 'createdAt',
+                label: 'Fecha de Creación',
+                children: <Text>{formatDate(client.createdAt)}</Text>,
+              },
+              {
+                key: 'updatedAt',
+                label: 'Última Actualización',
+                children: <Text>{formatDate(client.updatedAt)}</Text>,
+              },
+              {
+                key: 'createdBy',
+                label: 'Creado por',
+                children: <Text>{client.createdBy}</Text>,
+              },
+              {
+                key: 'updatedBy',
+                label: 'Actualizado por',
+                children: <Text>{client.updatedBy}</Text>,
+              },
+            ]}
+          />
+        </Card>
 
-          {/* Acciones rápidas */}
-          <div className='client-detail-page__section'>
-            <h2 className='client-detail-page__section-title'>Acciones</h2>
-            <div className='client-detail-page__actions'>
-              <button
-                onClick={handleEdit}
-                className='client-detail-page__action-button client-detail-page__action-button--edit'
-              >
-                ✏️ Editar Cliente
-              </button>
-              <button
-                onClick={() =>
-                  window.open(`tel:${client.phoneNumber}`, '_self')
-                }
-                className='client-detail-page__action-button client-detail-page__action-button--call'
-              >
-                📞 Llamar
-              </button>
-              <button
-                onClick={() =>
-                  window.open(
-                    `https://wa.me/${client.phoneNumber.replace('+', '')}`,
-                    '_blank'
-                  )
-                }
-                className='client-detail-page__action-button client-detail-page__action-button--whatsapp'
-              >
-                💬 WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
+              Acciones
+            </Title>
+          }
+        >
+          <Space
+            direction={screens.md ? 'horizontal' : 'vertical'}
+            style={{ width: '100%' }}
+          >
+            <Button
+              type='primary'
+              icon={<EditOutlined />}
+              onClick={handleEdit}
+              block={!screens.md}
+            >
+              Editar Cliente
+            </Button>
+            <Button
+              icon={<PhoneOutlined />}
+              onClick={() => window.open(`tel:${client.phoneNumber}`, '_self')}
+              block={!screens.md}
+            >
+              Llamar
+            </Button>
+            <Button
+              icon={<WhatsAppOutlined />}
+              onClick={() =>
+                window.open(
+                  `https://wa.me/${client.phoneNumber.replace('+', '')}`,
+                  '_blank'
+                )
+              }
+              block={!screens.md}
+            >
+              WhatsApp
+            </Button>
+
+            <Link
+              to={buildRoutePathWithParams(RouteIds.CLIENT_INVOICES, {
+                clientId: client.id,
+              })}
+            >
+              <Button icon={<FileTextOutlined />}>Facturas del Cliente</Button>
+            </Link>
+          </Space>
+        </Card>
+      </Space>
+    </PageContent>
   )
 }
