@@ -234,4 +234,4 @@ export const EmployeeServiceHistoryPage = () => {
   )
 }
 
-export default EmployeeServiceHistoryPage
+// no default export (rule)

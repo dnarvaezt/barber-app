@@ -9,9 +9,6 @@ import type {
 
 import { ActivityRecordNotFoundException } from './track-activity.exceptions'
 
-// Re-export for tests
-export { ActivityRecordNotFoundException }
-
 // ============================================================================
 // ACTIVITY RECORD MEMORY REPOSITORY - Repositorio en memoria
 // ============================================================================

@@ -6,53 +6,31 @@
 // COMPONENTES PRINCIPALES
 // ============================================================================
 
-export { TrackActivityComponent } from './track-activity.component'
-export { TrackActivityProvider } from './track-activity.provider'
+export * from './track-activity.component'
+export * from './track-activity.provider'
 
 // ============================================================================
 // HOOKS
 // ============================================================================
 
-export {
-  useTrackActivity,
-  type TrackActivityActions,
-  type TrackActivityState,
-  type UseTrackActivityOptions,
-} from './track-activity.hook'
+export * from './track-activity.hook'
 
-export {
-  useTrackActivityActions,
-  useTrackActivityConfiguration,
-  useTrackActivityContext,
-  useTrackActivityDebug,
-  useTrackActivityEvents,
-  useTrackActivityMonitoring,
-  useTrackActivityRecords,
-  useTrackActivityServices,
-  useTrackActivityState,
-  useTrackActivityStats,
-  useTrackActivityWithCallbacks,
-} from './track-activity.hooks'
+export * from './track-activity.hooks'
 
-export type { TrackActivityContextValue } from './track-activity.context'
-export type { TrackActivityProviderProps } from './track-activity.provider'
+export * from './track-activity.context'
+export * from './track-activity.provider'
 
 // ============================================================================
 // EJEMPLOS
 // ============================================================================
 
-export {
-  TrackActivityBasicExample,
-  TrackActivityCustomExample,
-  TrackActivityHooksExample,
-  TrackActivityIntegratedExample,
-} from './track-activity.example'
+export * from './track-activity.example'
 
 // ============================================================================
 // TIPOS Y UTILIDADES
 // ============================================================================
 
-export type { TrackActivityComponentProps } from './track-activity.component'
+export * from './track-activity.component'
 
 // ============================================================================
 // CONSTANTES

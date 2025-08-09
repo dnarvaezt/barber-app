@@ -166,5 +166,3 @@ export const InvoicePage = () => {
     </div>
   )
 }
-
-export default InvoicePage

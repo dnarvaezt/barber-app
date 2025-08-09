@@ -20,7 +20,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Citas',
     title: 'Gestión de Citas',
     icon: calendarIcon,
-    component: lazyRoute('appointment-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/appointment/appointment-page'),
+      'AppointmentPage'
+    ),
     path: '/appointments',
     hideSidebar: false,
     children: [
@@ -29,7 +32,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nueva Cita',
         title: 'Crear Nueva Cita',
         icon: calendarIcon,
-        component: lazyRoute('appointment-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/appointment/appointment-form'),
+          'AppointmentForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -40,7 +46,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Cita',
         title: 'Editar Cita',
         icon: calendarIcon,
-        component: lazyRoute('appointment-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/appointment/appointment-form'),
+          'AppointmentForm'
+        ),
         path: '/form/:appointmentId',
         inheritPath: true,
         hideSidebar: true,
@@ -51,7 +60,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Cita',
         title: 'Detalle de la Cita',
         icon: calendarIcon,
-        component: lazyRoute('appointment-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/appointment/appointment-detail'),
+          'AppointmentDetail'
+        ),
         path: '/:appointmentId',
         inheritPath: true,
         hideSidebar: true,
@@ -64,7 +76,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Facturas',
     title: 'Gestión de Facturas',
     icon: invoiceIcon,
-    component: lazyRoute('invoice-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/invoice/invoice-page'),
+      'InvoicePage'
+    ),
     path: '/invoices',
     hideSidebar: false,
     children: [
@@ -73,7 +88,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nueva Factura',
         title: 'Crear Nueva Factura',
         icon: invoiceIcon,
-        component: lazyRoute('invoice-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/invoice/invoice-form'),
+          'InvoiceForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -84,7 +102,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Factura',
         title: 'Editar Factura',
         icon: invoiceIcon,
-        component: lazyRoute('invoice-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/invoice/invoice-form'),
+          'InvoiceForm'
+        ),
         path: '/form/:invoiceId',
         inheritPath: true,
         hideSidebar: true,
@@ -95,7 +116,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Factura',
         title: 'Detalle de la Factura',
         icon: invoiceIcon,
-        component: lazyRoute('invoice-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/invoice/invoice-detail'),
+          'InvoiceDetail'
+        ),
         path: '/:invoiceId',
         inheritPath: true,
         hideSidebar: true,
@@ -108,7 +132,7 @@ export const appRoutes: RouteItem[] = [
     name: 'Dashboard',
     title: 'Dashboard',
     icon: homeIcon,
-    component: lazyRoute('dashboard', 'default'),
+    component: lazyRoute(() => import('../modules/dashboard'), 'DashboardPage'),
     path: '/',
     hideSidebar: false,
     children: [],
@@ -118,7 +142,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Clientes',
     title: 'Gestión de Clientes',
     icon: userIcon,
-    component: lazyRoute('client-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/client/client-page'),
+      'ClientPage'
+    ),
     path: '/clients',
     hideSidebar: false,
     children: [
@@ -127,7 +154,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nuevo Cliente',
         title: 'Crear Nuevo Cliente',
         icon: userIcon,
-        component: lazyRoute('client-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/client/client-form'),
+          'ClientForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -138,7 +168,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Cliente',
         title: 'Editar Cliente',
         icon: userIcon,
-        component: lazyRoute('client-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/client/client-form'),
+          'ClientForm'
+        ),
         path: '/form/:clientId',
         inheritPath: true,
         hideSidebar: true,
@@ -149,7 +182,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Cliente',
         title: 'Detalle del Cliente',
         icon: userIcon,
-        component: lazyRoute('client-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/client/client-detail'),
+          'ClientDetail'
+        ),
         path: '/:clientId',
         inheritPath: true,
         hideSidebar: true,
@@ -160,7 +196,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Facturas del Cliente',
         title: 'Facturas del Cliente',
         icon: invoiceIcon,
-        component: lazyRoute('client-invoices', 'default'),
+        component: lazyRoute(
+          () => import('../modules/client/client-invoices'),
+          'ClientInvoicesPage'
+        ),
         path: '/:clientId/invoices',
         inheritPath: true,
         hideSidebar: true,
@@ -173,7 +212,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Empleados',
     title: 'Gestión de Empleados',
     icon: employeeIcon,
-    component: lazyRoute('employee-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/employee/employee-page'),
+      'EmployeePage'
+    ),
     path: '/employees',
     hideSidebar: false,
     children: [
@@ -182,7 +224,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nuevo Empleado',
         title: 'Crear Nuevo Empleado',
         icon: userIcon,
-        component: lazyRoute('employee-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/employee/employee-form'),
+          'EmployeeForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -193,7 +238,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Empleado',
         title: 'Editar Empleado',
         icon: userIcon,
-        component: lazyRoute('employee-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/employee/employee-form'),
+          'EmployeeForm'
+        ),
         path: '/form/:employeeId',
         inheritPath: true,
         hideSidebar: true,
@@ -204,7 +252,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Empleado',
         title: 'Detalle del Empleado',
         icon: userIcon,
-        component: lazyRoute('employee-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/employee/employee-detail'),
+          'EmployeeDetail'
+        ),
         path: '/:employeeId',
         inheritPath: true,
         hideSidebar: true,
@@ -215,7 +266,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Historial de Servicios',
         title: 'Historial de Servicios por Empleado',
         icon: activityIcon,
-        component: lazyRoute('employee-service-history', 'default'),
+        component: lazyRoute(
+          () => import('../modules/employee/employee-service-history'),
+          'EmployeeServiceHistoryPage'
+        ),
         path: '/:employeeId/history',
         inheritPath: true,
         hideSidebar: true,
@@ -228,7 +282,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Categorías',
     title: 'Gestión de Categorías',
     icon: categoryIcon,
-    component: lazyRoute('category-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/category/category-page'),
+      'CategoryPage'
+    ),
     path: '/categories',
     hideSidebar: false,
     children: [
@@ -237,7 +294,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nueva Categoría',
         title: 'Crear Nueva Categoría',
         icon: categoryIcon,
-        component: lazyRoute('category-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/category/category-form'),
+          'CategoryForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -248,7 +308,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Categoría',
         title: 'Editar Categoría',
         icon: categoryIcon,
-        component: lazyRoute('category-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/category/category-form'),
+          'CategoryForm'
+        ),
         path: '/form/:categoryId',
         inheritPath: true,
         hideSidebar: true,
@@ -259,7 +322,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Categoría',
         title: 'Detalle de la Categoría',
         icon: categoryIcon,
-        component: lazyRoute('category-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/category/category-detail'),
+          'CategoryDetail'
+        ),
         path: '/:categoryId',
         inheritPath: true,
         hideSidebar: true,
@@ -272,7 +338,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Actividades',
     title: 'Gestión de Actividades',
     icon: activityIcon,
-    component: lazyRoute('activity-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/activity/activity-page'),
+      'ActivityPage'
+    ),
     path: '/activities',
     hideSidebar: false,
     children: [
@@ -281,7 +350,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nueva Actividad',
         title: 'Crear Nueva Actividad',
         icon: activityIcon,
-        component: lazyRoute('activity-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/activity/activity-form'),
+          'ActivityForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -292,7 +364,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Actividad',
         title: 'Editar Actividad',
         icon: activityIcon,
-        component: lazyRoute('activity-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/activity/activity-form'),
+          'ActivityForm'
+        ),
         path: '/form/:activityId',
         inheritPath: true,
         hideSidebar: true,
@@ -303,7 +378,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Actividad',
         title: 'Detalle de la Actividad',
         icon: activityIcon,
-        component: lazyRoute('activity-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/activity/activity-detail'),
+          'ActivityDetail'
+        ),
         path: '/:activityId',
         inheritPath: true,
         hideSidebar: true,
@@ -316,7 +394,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Stock',
     title: 'Gestión de Stock',
     icon: stockIcon,
-    component: lazyRoute('stock', 'default'),
+    component: lazyRoute(
+      () => import('../modules/stock/stock-page'),
+      'StockPage'
+    ),
     path: '/stock',
     hideSidebar: false,
     children: [
@@ -325,7 +406,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Movimientos por Producto',
         title: 'Movimientos por Producto',
         icon: stockIcon,
-        component: lazyRoute('stock-movements', 'default'),
+        component: lazyRoute(
+          () => import('../modules/stock/stock-movement-page'),
+          'StockMovementPage'
+        ),
         path: '/:productId',
         inheritPath: true,
         hideSidebar: true,
@@ -338,7 +422,10 @@ export const appRoutes: RouteItem[] = [
     name: 'Productos',
     title: 'Gestión de Productos',
     icon: productIcon,
-    component: lazyRoute('product-page', 'default'),
+    component: lazyRoute(
+      () => import('../modules/product/product-page'),
+      'ProductPage'
+    ),
     path: '/products',
     hideSidebar: false,
     children: [
@@ -347,7 +434,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Nuevo Producto',
         title: 'Crear Nuevo Producto',
         icon: productIcon,
-        component: lazyRoute('product-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/product/product-form'),
+          'ProductForm'
+        ),
         path: '/form/new',
         inheritPath: true,
         hideSidebar: true,
@@ -358,7 +448,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Editar Producto',
         title: 'Editar Producto',
         icon: productIcon,
-        component: lazyRoute('product-form', 'default'),
+        component: lazyRoute(
+          () => import('../modules/product/product-form'),
+          'ProductForm'
+        ),
         path: '/form/:productId',
         inheritPath: true,
         hideSidebar: true,
@@ -369,7 +462,10 @@ export const appRoutes: RouteItem[] = [
         name: 'Detalle Producto',
         title: 'Detalle del Producto',
         icon: productIcon,
-        component: lazyRoute('product-detail', 'default'),
+        component: lazyRoute(
+          () => import('../modules/product/product-detail'),
+          'ProductDetail'
+        ),
         path: '/:productId',
         inheritPath: true,
         hideSidebar: true,
@@ -382,7 +478,7 @@ export const appRoutes: RouteItem[] = [
     name: '404',
     title: 'Página No Encontrada',
     icon: alertIcon,
-    component: lazyRoute('not-found', 'default'),
+    component: lazyRoute(() => import('../modules/not-found'), 'NotFoundPage'),
     path: '/404',
     hideSidebar: true,
     children: [],

@@ -1,1 +1,1 @@
-export { EmployeePage, EmployeePage as default } from './employee-page'
+export { EmployeePage } from './employee-page'

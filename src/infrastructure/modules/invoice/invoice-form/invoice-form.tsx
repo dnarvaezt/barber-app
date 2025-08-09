@@ -3,7 +3,7 @@ import { RouteIds, useRoutes } from '../../../routes'
 import './invoice-form.scss'
 import { useInvoiceForm } from './use-invoice-form.hook'
 
-const InvoiceForm = () => {
+export const InvoiceForm = () => {
   const { buildRoutePath } = useRoutes()
   const {
     loading,
@@ -325,5 +325,3 @@ const InvoiceForm = () => {
     </div>
   )
 }
-
-export default InvoiceForm

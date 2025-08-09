@@ -1,1 +1,1 @@
-export { EmployeeForm, EmployeeForm as default } from './employee-form'
+export { EmployeeForm } from './employee-form'

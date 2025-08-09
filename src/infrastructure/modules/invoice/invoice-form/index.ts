@@ -1,1 +1,1 @@
-export { default as default } from './invoice-form'
+export { InvoiceForm } from './invoice-form'

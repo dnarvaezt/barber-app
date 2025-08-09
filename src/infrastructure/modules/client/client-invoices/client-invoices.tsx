@@ -325,5 +325,3 @@ export const ClientInvoicesPage = () => {
     </PageContent>
   )
 }
-
-export default ClientInvoicesPage

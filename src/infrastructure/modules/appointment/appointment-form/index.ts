@@ -1,1 +1,1 @@
-export { AppointmentForm as default } from './appointment-form'
+export * from './appointment-form'

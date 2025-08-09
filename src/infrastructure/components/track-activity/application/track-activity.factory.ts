@@ -20,9 +20,6 @@ import type {
 
 import { ActivityConfigurationInvalidException } from './track-activity.exceptions'
 
-// Re-export for tests
-export { ActivityConfigurationInvalidException }
-
 // ============================================================================
 // ACTIVITY RECORD FACTORY - Factory para registros de actividad
 // ============================================================================

@@ -6,7 +6,7 @@
 // MONITOR - Monitor principal de actividad
 // ============================================================================
 
-export { ActivityMonitor } from './track-activity.monitor'
+export * from './track-activity.monitor'
 
 // ============================================================================
 // UTILIDADES

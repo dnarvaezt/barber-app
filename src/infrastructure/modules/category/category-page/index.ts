@@ -1,1 +1,1 @@
-export { CategoryPage, CategoryPage as default } from './category-page'
+export { CategoryPage } from './category-page'

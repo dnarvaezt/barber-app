@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { invoiceService } from '../../../../application/domain/invoice'
 import { RouteIds, useRoutes } from '../../../routes'
 
-const InvoiceDetail = () => {
+export const InvoiceDetail = () => {
   const { invoiceId } = useParams()
   const { buildRoutePath, buildRoutePathWithParams } = useRoutes()
   const [loading, setLoading] = useState(false)
@@ -128,5 +128,3 @@ const InvoiceDetail = () => {
     </div>
   )
 }
-
-export default InvoiceDetail

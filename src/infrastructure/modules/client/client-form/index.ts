@@ -1,2 +1,1 @@
-export { ClientForm, ClientForm as default } from './client-form'
-export { useClientForm } from './client-form.hook'
+export { ClientForm } from './client-form'

@@ -1,2 +1,1 @@
-export { ProductForm, ProductForm as default } from './product-form'
-export { useProductForm } from './product-form.hook'
+export { ProductForm } from './product-form'

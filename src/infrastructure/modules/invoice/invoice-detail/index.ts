@@ -1,1 +1,1 @@
-export { default as default } from './invoice-detail'
+export { InvoiceDetail } from './invoice-detail'

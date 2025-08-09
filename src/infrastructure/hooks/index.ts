@@ -3,12 +3,12 @@
 // ============================================================================
 
 // Existing hooks
-export { useEntityDetail } from './use-entity-detail.hook'
-export { useEntityForm } from './use-entity-form.hook'
-export { usePaginatedList } from './use-paginated-list.hook'
-export { useURLState } from './use-url-state.hook'
-export { useUtils } from './use-utils.hook'
-export { useValidation } from './use-validation.hook'
+export * from './use-entity-detail.hook'
+export * from './use-entity-form.hook'
+export * from './use-paginated-list.hook'
+export * from './use-url-state.hook'
+export * from './use-utils.hook'
+export * from './use-validation.hook'
 
 // New generic entity hook (removed unused exports)
 
@@ -16,7 +16,4 @@ export { useValidation } from './use-validation.hook'
 // HOOK TYPES - Tipos exportados para hooks
 // ============================================================================
 
-export type {
-  PaginatedListConfig,
-  PaginatedListState,
-} from './use-paginated-list.hook'
+export * from './use-paginated-list.hook'
