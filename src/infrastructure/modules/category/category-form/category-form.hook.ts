@@ -102,5 +102,19 @@ export const useCategoryForm = () => {
     isValidCategory: entityForm.isValidEntity,
     category: entityForm.entity,
     handleSubmit,
+    handleDelete: useCallback(async () => {
+      try {
+        if (!entityForm.isEditing || !entityForm.entity) return
+        const deleted = await categoryService.deleteCategory(
+          (entityForm.entity as Category).id
+        )
+        if (deleted) {
+          entityForm.handleCancel()
+        }
+      } catch (error) {
+        console.error('Error deleting category:', error)
+        throw error
+      }
+    }, [entityForm]),
   }
 }

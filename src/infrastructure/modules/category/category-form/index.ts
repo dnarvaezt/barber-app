@@ -1,1 +1,1 @@
-export { CategoryForm } from './category-form'
+export * from './category-form'

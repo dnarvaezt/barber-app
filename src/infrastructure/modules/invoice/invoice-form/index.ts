@@ -1,1 +1,1 @@
-export { InvoiceForm } from './invoice-form'
+export * from './invoice-form'

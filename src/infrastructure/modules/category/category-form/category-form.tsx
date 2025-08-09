@@ -1,4 +1,16 @@
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  Input,
+  Popconfirm,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect } from 'react'
+import { PageContent } from '../../../components/layout/components'
 import { useCategoryForm } from './category-form.hook'
 import './category-form.scss'
 
@@ -14,6 +26,7 @@ export const CategoryForm = () => {
     handleSubmit,
     handleCancel,
     handleInputChange,
+    handleDelete,
   } = useCategoryForm()
 
   useEffect(() => {
@@ -24,16 +37,15 @@ export const CategoryForm = () => {
   // Mostrar loading mientras valida el categoryId
   if (isValidating) {
     return (
-      <div className='category-form'>
-        <div className='category-form__container'>
-          <div className='category-form__loading'>
-            <div className='category-form__loading-spinner'></div>
-            <p className='category-form__loading-text'>
-              Validando categoría...
-            </p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Validando categoría...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
@@ -44,101 +56,90 @@ export const CategoryForm = () => {
 
   if (loading && isEditing) {
     return (
-      <div className='category-form'>
-        <div className='category-form__container'>
-          <div className='category-form__loading'>
-            <div className='category-form__loading-spinner'></div>
-            <p className='category-form__loading-text'>Cargando categoría...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 24 }}
+          >
+            <Spin tip='Cargando categoría...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
   return (
-    <div className='category-form'>
-      <div className='category-form__container'>
-        <div className='category-form__header'>
-          <h1 className='category-form__title'>
-            {isEditing ? 'Editar Categoría' : 'Nueva Categoría'}
-          </h1>
-          <p className='category-form__subtitle'>
-            {isEditing
-              ? 'Actualiza la información de la categoría'
-              : 'Completa la información para crear una nueva categoría'}
-          </p>
-        </div>
+    <PageContent>
+      <Card
+        style={{ width: '100%' }}
+        title={isEditing ? 'Editar Categoría' : 'Nueva Categoría'}
+      >
+        <Typography.Paragraph type='secondary' style={{ marginTop: -8 }}>
+          {isEditing
+            ? 'Actualiza la información de la categoría'
+            : 'Completa la información para crear una nueva categoría'}
+        </Typography.Paragraph>
 
-        <div className='category-form__form'>
-          {/* Mensaje de éxito */}
+        <Space direction='vertical' size='large' style={{ width: '100%' }}>
           {showSuccessMessage && (
-            <div className='category-form__success-message'>
-              <div className='category-form__success-icon'>✅</div>
-              <p className='category-form__success-text'>
-                {isEditing
+            <Alert
+              showIcon
+              type='success'
+              message={
+                isEditing
                   ? '¡Categoría actualizada exitosamente!'
-                  : '¡Categoría creada exitosamente!'}
-              </p>
-            </div>
+                  : '¡Categoría creada exitosamente!'
+              }
+            />
           )}
 
-          {/* Mensaje de error general */}
           {errors.general && (
-            <div className='category-form__error-message'>
-              <div className='category-form__error-icon'>❌</div>
-              <p className='category-form__error-text'>{errors.general}</p>
-            </div>
+            <Alert showIcon type='error' message={errors.general} />
           )}
 
-          <form onSubmit={handleSubmit} className='category-form__form-content'>
-            {/* Campo Nombre */}
-            <div className='category-form__field'>
-              <label htmlFor='name' className='category-form__label'>
-                Nombre de la categoría *
-              </label>
-              <input
-                type='text'
-                id='name'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                className={`category-form__input ${
-                  formData.name ? 'category-form__input--filled' : ''
-                }`}
-                placeholder='Ingresa el nombre de la categoría'
+          <form onSubmit={handleSubmit}>
+            <Form layout='vertical' component={false}>
+              <Form.Item
+                label='Nombre de la categoría'
                 required
-                minLength={2}
-                maxLength={50}
-              />
-              <p className='category-form__help-text'>
-                El nombre debe tener entre 2 y 50 caracteres
-              </p>
-            </div>
+                htmlFor='name'
+                extra='El nombre debe tener entre 2 y 50 caracteres'
+              >
+                <Input
+                  id='name'
+                  size='large'
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='Ingresa el nombre de la categoría'
+                  allowClear
+                  required
+                  minLength={2}
+                  maxLength={50}
+                />
+              </Form.Item>
 
-            {/* Botones de acción */}
-            <div className='category-form__actions'>
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='category-form__button category-form__button--secondary'
-              >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                disabled={loading}
-                className='category-form__button category-form__button--primary'
-              >
-                {loading && (
-                  <div className='category-form__loading-spinner category-form__loading-spinner--small'></div>
+              <Space style={{ width: '100%' }} wrap>
+                <Button onClick={handleCancel}>Cancelar</Button>
+                {isEditing && (
+                  <Popconfirm
+                    title='Eliminar categoría'
+                    description='¿Estás seguro de que deseas eliminar esta categoría? Esta acción no se puede deshacer.'
+                    okText='Eliminar'
+                    okButtonProps={{ danger: true }}
+                    cancelText='Cancelar'
+                    onConfirm={handleDelete}
+                  >
+                    <Button danger>Eliminar</Button>
+                  </Popconfirm>
                 )}
-                <span className='category-form__button-text'>
+                <Button htmlType='submit' type='primary' loading={loading}>
                   {isEditing ? 'Actualizar' : 'Crear'} Categoría
-                </span>
-              </button>
-            </div>
+                </Button>
+              </Space>
+            </Form>
           </form>
-        </div>
-      </div>
-    </div>
+        </Space>
+      </Card>
+    </PageContent>
   )
 }

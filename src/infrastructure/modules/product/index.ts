@@ -1,4 +1,4 @@
 // Product Module (solo re-export nombrado de cada página)
-export { ProductDetail } from './product-detail'
-export { ProductForm } from './product-form'
-export { ProductPage } from './product-page'
+export * from './product-detail'
+export * from './product-form'
+export * from './product-page'

@@ -1,4 +1,16 @@
+import { EditOutlined, FileTextOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  Descriptions,
+  Grid,
+  Result,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
 import { useEffect } from 'react'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { useCategoryDetail } from './category-detail.hook'
 import './category-detail.scss'
 
@@ -13,6 +25,8 @@ export const CategoryDetail = () => {
     handleBack,
     formatDate,
   } = useCategoryDetail()
+  const screens = Grid.useBreakpoint()
+  const { Title, Text } = Typography
 
   useEffect(() => {
     // El componente es autónomo, no necesita configurar el header
@@ -22,14 +36,13 @@ export const CategoryDetail = () => {
   // Mostrar loading mientras valida el categoryId
   if (isValidating) {
     return (
-      <div className='category-detail-page'>
-        <div className='category-detail-page__content'>
-          <div className='category-detail-page__loading'>
-            <div className='category-detail-page__loading-spinner'></div>
-            <p>Validando categoría...</p>
-          </div>
+      <PageContent>
+        <div style={{ width: '100%' }}>
+          <Spin tip='Validando categoría...' size='large'>
+            <div style={{ minHeight: 120 }} />
+          </Spin>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
@@ -40,123 +53,102 @@ export const CategoryDetail = () => {
 
   if (loading) {
     return (
-      <div className='category-detail-page'>
-        <div className='category-detail-page__content'>
-          <div className='category-detail-page__loading'>
-            <div className='category-detail-page__loading-spinner'></div>
-            <p>Cargando categoría...</p>
-          </div>
+      <PageContent>
+        <div style={{ width: '100%' }}>
+          <Spin tip='Cargando categoría...' size='large'>
+            <div style={{ minHeight: 120 }} />
+          </Spin>
         </div>
-      </div>
+      </PageContent>
     )
   }
 
   if (error || !category) {
     return (
-      <div className='category-detail-page'>
-        <div className='category-detail-page__content'>
-          <div className='category-detail-page__error'>
-            <div className='category-detail-page__error-icon'>⚠️</div>
-            <h3 className='category-detail-page__error-title'>Error</h3>
-            <p className='category-detail-page__error-message'>
-              {error || 'Categoría no encontrada'}
-            </p>
-            <button
+      <PageContent>
+        <Result
+          status='error'
+          title='Error'
+          subTitle={error || 'Categoría no encontrada'}
+          extra={
+            <Button
+              type='primary'
               onClick={handleBack}
-              className='category-detail-page__button category-detail-page__button--primary'
+              icon={<FileTextOutlined />}
             >
               Volver a la lista
-            </button>
-          </div>
-        </div>
-      </div>
+            </Button>
+          }
+        />
+      </PageContent>
     )
   }
 
   return (
-    <div className='category-detail-page'>
-      <div className='category-detail-page__content'>
-        <div className='category-detail-page__card'>
-          {/* Información principal */}
-          <div className='category-detail-page__section'>
-            <h2 className='category-detail-page__section-title'>
+    <PageContent>
+      <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
               Información de la Categoría
-            </h2>
-            <div className='category-detail-page__info-grid'>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  Nombre:
-                </span>
-                <span className='category-detail-page__info-value'>
-                  {category.name}
-                </span>
-              </div>
-            </div>
-          </div>
+            </Title>
+          }
+        >
+          <Descriptions size='small' column={{ xs: 1, sm: 1, md: 2, lg: 2 }}>
+            <Descriptions.Item label='Nombre'>
+              <Text>{category.name}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
 
-          {/* Información de auditoría */}
-          <div className='category-detail-page__section'>
-            <h2 className='category-detail-page__section-title'>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
               Información del Sistema
-            </h2>
-            <div className='category-detail-page__info-grid'>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  ID de la Categoría:
-                </span>
-                <span className='category-detail-page__info-value category-detail-page__info-value--mono'>
-                  {category.id}
-                </span>
-              </div>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  Fecha de Creación:
-                </span>
-                <span className='category-detail-page__info-value'>
-                  {formatDate(category.createdAt)}
-                </span>
-              </div>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  Última Actualización:
-                </span>
-                <span className='category-detail-page__info-value'>
-                  {formatDate(category.updatedAt)}
-                </span>
-              </div>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  Creado por:
-                </span>
-                <span className='category-detail-page__info-value'>
-                  {category.createdBy}
-                </span>
-              </div>
-              <div className='category-detail-page__info-item'>
-                <span className='category-detail-page__info-label'>
-                  Actualizado por:
-                </span>
-                <span className='category-detail-page__info-value'>
-                  {category.updatedBy}
-                </span>
-              </div>
-            </div>
-          </div>
+            </Title>
+          }
+        >
+          <Descriptions size='small' column={{ xs: 1, sm: 1, md: 2, lg: 2 }}>
+            <Descriptions.Item label='ID de la Categoría'>
+              <Text code>{category.id}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label='Fecha de Creación'>
+              <Text>{formatDate(category.createdAt)}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label='Última Actualización'>
+              <Text>{formatDate(category.updatedAt)}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label='Creado por'>
+              <Text>{category.createdBy}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label='Actualizado por'>
+              <Text>{category.updatedBy}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
 
-          {/* Acciones rápidas */}
-          <div className='category-detail-page__section'>
-            <h2 className='category-detail-page__section-title'>Acciones</h2>
-            <div className='category-detail-page__actions'>
-              <button
-                onClick={handleEdit}
-                className='category-detail-page__action-button category-detail-page__action-button--edit'
-              >
-                ✏️ Editar Categoría
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <Card
+          title={
+            <Title level={4} style={{ margin: 0 }}>
+              Acciones
+            </Title>
+          }
+        >
+          <Space
+            direction={screens.md ? 'horizontal' : 'vertical'}
+            style={{ width: '100%' }}
+          >
+            <Button
+              type='primary'
+              icon={<EditOutlined />}
+              onClick={handleEdit}
+              block={!screens.md}
+            >
+              Editar Categoría
+            </Button>
+          </Space>
+        </Card>
+      </Space>
+    </PageContent>
   )
 }

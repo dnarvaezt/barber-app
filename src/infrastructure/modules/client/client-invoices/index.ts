@@ -1,1 +1,1 @@
-export { ClientInvoicesPage } from './client-invoices'
+export * from './client-invoices'

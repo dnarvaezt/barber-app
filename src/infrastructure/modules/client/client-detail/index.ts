@@ -1,1 +1,1 @@
-export { ClientDetail } from './client-detail'
+export * from './client-detail'

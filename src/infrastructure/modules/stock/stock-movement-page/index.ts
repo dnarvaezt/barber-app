@@ -1,1 +1,1 @@
-export { StockMovementPage } from './stock-movement-page'
+export * from './stock-movement-page'

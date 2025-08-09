@@ -1,1 +1,1 @@
-export { ClientForm } from './client-form'
+export * from './client-form'
