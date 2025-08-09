@@ -1,3 +1,4 @@
+import { Layout as AntLayout } from 'antd'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Footer, Header, Sidebar, type SidebarRef } from './components'
@@ -21,7 +22,7 @@ export const Layout = (props: LayoutProps) => {
   }
 
   return (
-    <div className='layout'>
+    <AntLayout className='layout'>
       <Sidebar
         ref={sidebarRef}
         items={sidebarItems}
@@ -29,20 +30,22 @@ export const Layout = (props: LayoutProps) => {
         onNavigate={handleNavigate}
       />
 
-      <div className='layout__container'>
+      <AntLayout className='layout__container'>
         <Header
           ref={headerRef}
           title={headerTitle}
           visible={true}
           actions={undefined}
           showMenuButton={true}
+          onMenuClick={() => sidebarRef.current?.toggle()}
         />
 
-        <div className='layout__body'>
-          <main className='layout__main'>{children}</main>
-          <Footer />
-        </div>
-      </div>
-    </div>
+        <AntLayout.Content className='layout__main'>
+          {children}
+        </AntLayout.Content>
+
+        <Footer />
+      </AntLayout>
+    </AntLayout>
   )
 }

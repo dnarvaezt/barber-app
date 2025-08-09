@@ -1,3 +1,5 @@
+import { MenuOutlined } from '@ant-design/icons'
+import { Button, Layout, Space, Typography } from 'antd'
 import {
   forwardRef,
   useCallback,
@@ -5,7 +7,6 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { Icon } from '../../../icons'
 import { ThemeToggle } from '../../../theme'
 import './header.scss'
 
@@ -14,6 +15,7 @@ export interface HeaderProps {
   visible?: boolean
   actions?: React.ReactNode
   showMenuButton?: boolean
+  onMenuClick?: () => void
 }
 
 export interface HeaderRef {
@@ -23,7 +25,13 @@ export interface HeaderRef {
 }
 
 export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
-  const { title, visible = true, actions, showMenuButton = true } = props
+  const {
+    title,
+    visible = true,
+    actions,
+    showMenuButton = true,
+    onMenuClick,
+  } = props
 
   // Estado interno autónomo
   const [currentTitle, setCurrentTitle] = useState(title)
@@ -36,7 +44,8 @@ export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
 
   const handleMenuToggle = useCallback(() => {
     setIsMenuOpen(!isMenuOpen)
-  }, [isMenuOpen])
+    onMenuClick?.()
+  }, [isMenuOpen, onMenuClick])
 
   // Exponer métodos a través de ref
   useImperativeHandle(
@@ -54,30 +63,36 @@ export const Header = forwardRef<HeaderRef, HeaderProps>((props, ref) => {
   }
 
   return (
-    <header className='header'>
+    <Layout.Header className='header' role='banner'>
       <div className='header__container'>
         <div className='header__content'>
           <div className='header__left-section'>
             {showMenuButton && (
-              <button
-                onClick={handleMenuToggle}
+              <Button
                 className='header__menu-button'
                 aria-label='Abrir menú lateral'
-              >
-                <Icon name='bars' size='lg' />
-              </button>
+                type='text'
+                shape='circle'
+                icon={<MenuOutlined />}
+                onClick={handleMenuToggle}
+              />
             )}
+
             <div className='header__title-container'>
-              <h1 className='header__title'>{currentTitle}</h1>
+              <Typography.Title level={4} className='header__title' ellipsis>
+                {currentTitle}
+              </Typography.Title>
             </div>
           </div>
 
           <div className='header__right-section'>
-            {actions}
-            <ThemeToggle />
+            <Space size={8} align='center'>
+              {actions}
+              <ThemeToggle />
+            </Space>
           </div>
         </div>
       </div>
-    </header>
+    </Layout.Header>
   )
 })

@@ -8,7 +8,8 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding-inline: 16px;
+
+  @apply px-3 pt-6 pb-3;
 
   @media (min-width: 360px) {
     max-width: 100%;

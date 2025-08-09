@@ -30,6 +30,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const basePath = getBasePath(mode)
 
   return {
+    resolve: {
+      alias: {
+        application: '/src/application',
+        infrastructure: '/src/infrastructure',
+      },
+    },
     plugins: [
       react({
         babel: {

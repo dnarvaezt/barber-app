@@ -8,7 +8,8 @@
   }
 
   &__content {
-    @apply flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0;
+    // Usamos el grid de AntD; solo controlamos separación vertical en mobile
+    @apply space-y-4 sm:space-y-0;
   }
 
   &__brand {
@@ -20,7 +21,7 @@
   }
 
   &__links {
-    @apply flex items-center space-x-4;
+    @apply flex items-center space-x-4 justify-start sm:justify-end;
   }
 
   &__link {

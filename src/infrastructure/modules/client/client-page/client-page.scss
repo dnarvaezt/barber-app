@@ -2,38 +2,8 @@
 
 .client-page {
   &__content {
-    @apply flex flex-col gap-4;
-  }
-
-  &__header {
-    @apply mb-2;
-  }
-
-  &__header-content {
-    @apply flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between;
-  }
-
-  &__title {
-    @apply m-0 text-lg sm:text-2xl;
-  }
-
-  &__header-actions {
-    @apply w-full sm:w-auto;
-  }
-
-  &__filters {
-    @apply mb-2;
-  }
-
-  &__sort-section {
-    @apply mt-1;
-  }
-
-  &__table-container {
-    @apply w-full overflow-x-auto;
-  }
-
-  &__pagination {
-    @apply mt-2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 }

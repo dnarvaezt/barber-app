@@ -1,194 +1,127 @@
 @use '../../../../assets/styles/variables' as *;
 
 .side-bar {
-  position: sticky;
-  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
 
-  @apply inset-y-0 left-0 z-50 flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg;
+  &__sider {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-inline-end: 1px solid rgba(0, 0, 0, 0.06);
+  }
 
-  width: 250px;
-  height: 100vh;
-  max-height: 100dvh;
-
-  // Responsive: ocultar en móvil por defecto
-  @media (max-width: 1023px) {
-    @apply transform -translate-x-full transition-transform duration-300 ease-in-out;
-
-    &--open {
-      @apply translate-x-0;
+  &__drawer {
+    .ant-drawer-header {
+      display: none;
     }
-  }
-
-  // Desktop: siempre visible
-  @media (min-width: 1024px) {
-    @apply transform-none;
-  }
-
-  &__overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 z-40;
-
-    @media (min-width: 1024px) {
-      @apply hidden;
+    .ant-drawer-body {
+      padding: 0;
     }
   }
 
   &__header {
-    @apply flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    background: $primary-color;
+    color: #fff;
+  }
 
-    &-content {
-      @apply flex items-center gap-3;
+  &__header-content {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__logo {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+
+    svg,
+    .anticon {
+      color: #fff;
     }
+  }
 
-    &-logo {
-      @apply flex items-center justify-center w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg;
-    }
+  &__title {
+    color: #fff !important;
+  }
 
-    &-title {
-      @apply text-lg font-semibold text-gray-900 dark:text-white;
-    }
-
-    &-close-button {
-      @apply p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200;
-
-      @media (min-width: 1024px) {
-        @apply hidden;
-      }
-
-      &:focus {
-        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
-      }
-    }
+  &__header-close-button {
+    color: #fff;
   }
 
   &__content {
-    @apply flex flex-col flex-1 overflow-hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: calc(100vh - 56px);
+    /* header ~56px */
+    padding: $spacing-sm;
   }
 
   &__navigation {
-    @apply flex-1 overflow-y-auto p-4 space-y-2;
-
-    // Scrollbar personalizado
-    &::-webkit-scrollbar {
-      @apply w-2;
-    }
-
-    &::-webkit-scrollbar-track {
-      @apply bg-transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      @apply bg-gray-300 dark:bg-gray-600 rounded-full;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-400 dark:bg-gray-500;
-    }
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   &__footer {
-    @apply p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
+    padding-top: $spacing-sm;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
   }
 
   &__version {
-    @apply text-xs text-gray-500 dark:text-gray-400 text-center;
-  }
-}
-
-// Animaciones
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-}
-
-// Estados de transición
-.side-bar {
-  &--entering {
-    animation: slideIn 0.3s ease-out;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
   }
 
-  &--exiting {
-    animation: slideOut 0.3s ease-in;
-  }
-}
-
-// Mejoras de accesibilidad
-.side-bar {
-  &__navigation {
-    // Enfoque visible para navegación por teclado
-    &:focus-within {
-      @apply outline-none;
-    }
-  }
-
-  &__header-close-button,
-  &__navigation button {
-    &:focus-visible {
-      @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
-    }
-  }
-}
-
-// Optimizaciones para pantallas pequeñas
-@media (max-width: 640px) {
-  .side-bar {
+  &__space {
     width: 100%;
-    max-width: 280px;
-    position: absolute;
+  }
 
-    &__header {
-      @apply p-3;
-    }
+  /* Antd Menu overrides dentro del sidebar */
+  .ant-menu {
+    border-inline-end: 0;
+    background: transparent;
+  }
 
-    &__navigation {
-      @apply p-3;
-    }
+  .ant-menu-item-selected {
+    background: rgba(0, 122, 255, 0.12);
+  }
 
-    &__footer {
-      @apply p-3;
-    }
+  &__menu-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    width: 100%;
   }
 }
 
-// Soporte para modo de alto contraste
-@media (prefers-contrast: high) {
-  .side-bar {
-    @apply border-2 border-gray-900 dark:border-white;
-
-    &__header {
-      @apply border-b-2 border-gray-900 dark:border-white;
-    }
-
-    &__footer {
-      @apply border-t-2 border-gray-900 dark:border-white;
-    }
-  }
+/* Estilos de items reutilizados por el label del Menu */
+.side-bar-item__icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
 }
 
-// Soporte para motion reduced
-@media (prefers-reduced-motion: reduce) {
-  .side-bar {
-    @apply transition-none;
+.side-bar-item__link {
+  display: inline-block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
 
-    &--entering,
-    &--exiting {
-      animation: none;
-    }
-  }
+.side-bar-item__text {
+  display: inline-block;
 }

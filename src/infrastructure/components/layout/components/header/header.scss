@@ -1,82 +1,61 @@
-@use '../../../../assets/styles/variables' as *;
-
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
 
-  @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm top-0 z-40;
+  padding: 0;
+  background: var(--bg-color, #ffffff);
+  border-bottom: 1px solid var(--border-color, #f0f0f0);
 
   &__container {
-    @apply container mx-auto px-4;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 12px;
   }
 
   &__content {
-    @apply flex items-center justify-between h-16;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    gap: 8px;
   }
 
   &__left-section {
-    @apply flex items-center gap-4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0; // permite elipsis del título en mobile
+  }
 
-    .header__menu-button {
-      @apply p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200;
+  &__menu-button {
+    color: var(--text-color, rgba(0, 0, 0, 0.88));
+  }
 
-      &:focus {
-        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
-      }
-    }
+  &__title-container {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
 
-    .header__title-container {
-      @apply flex items-center;
-
-      .header__title {
-        @apply text-xl font-bold text-gray-800 dark:text-gray-200;
-
-        @media (max-width: 640px) {
-          @apply text-lg;
-        }
-      }
-    }
+  &__title {
+    margin: 0 !important;
+    line-height: 1.2 !important;
   }
 
   &__right-section {
-    @apply flex items-center gap-3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
   }
 }
 
-// Animaciones
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.header {
-  animation: slideDown 0.3s ease-out;
-}
-
-// Responsive design
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .header {
-    &__container {
-      @apply px-6;
-    }
-
     &__content {
-      @apply h-14;
-    }
-
-    &__left-section {
-      .header__title-container {
-        .header__title {
-          @apply text-lg;
-        }
-      }
+      min-height: 64px;
+      gap: 12px;
     }
   }
 }
