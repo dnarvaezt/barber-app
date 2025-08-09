@@ -1,119 +1,19 @@
 @use '../../assets/styles/variables' as *;
 
 .not-found-page {
-  @apply min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 flex items-center justify-center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  &__content {
-    @apply container mx-auto px-4 py-8 max-w-4xl text-center;
+  &__result {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
   }
 
-  &__error {
-    @apply bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-12 border border-gray-100 dark:border-gray-700;
-
-    .not-found-page__error-icon {
-      @apply text-8xl md:text-9xl font-bold text-transparent bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text mb-6;
-      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .not-found-page__error-title {
-      @apply text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4;
-    }
-
-    .not-found-page__error-message {
-      @apply text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto;
-    }
-
-    .not-found-page__actions {
-      @apply flex flex-col sm:flex-row gap-4 justify-center;
-
-      .not-found-page__button {
-        @apply btn btn-lg px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105;
-
-        &--secondary {
-          @apply btn-outline btn-ghost;
-        }
-
-        &--primary {
-          @apply btn-primary;
-        }
-      }
-    }
-  }
-}
-
-// Animaciones
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) translateY(-100px);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05) translateY(0);
-  }
-  70% {
-    transform: scale(0.95) translateY(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.not-found-page__error {
-  animation: bounceIn 1s ease-out;
-}
-
-.not-found-page__error-title {
-  animation: fadeInUp 0.8s ease-out 0.3s both;
-}
-
-.not-found-page__error-message {
-  animation: fadeInUp 0.8s ease-out 0.5s both;
-}
-
-.not-found-page__actions {
-  animation: fadeInUp 0.8s ease-out 0.7s both;
-}
-
-// Efectos hover adicionales
-.not-found-page__error:hover {
-  @apply shadow-2xl transform -translate-y-2;
-  transition: all 0.3s ease;
-}
-
-// Responsive design
-@media (max-width: 640px) {
-  .not-found-page {
-    &__content {
-      @apply px-6;
-    }
-
-    &__error {
-      @apply p-8;
-
-      .not-found-page__error-icon {
-        @apply text-6xl;
-      }
-
-      .not-found-page__error-title {
-        @apply text-2xl;
-      }
-
-      .not-found-page__error-message {
-        @apply text-base;
-      }
-    }
+  // Permite que los botones con `block` dentro de Link ocupen 100% en mobile
+  a {
+    display: block;
   }
 }

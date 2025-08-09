@@ -1,41 +1,47 @@
 .stock-page {
-  &__container {
-    @apply p-4;
-  }
   &__header {
-    @apply flex items-center justify-between mb-4;
+    margin-bottom: 8px;
   }
+
+  &__filters-card {
+    margin-bottom: 12px;
+  }
+
   &__title {
-    @apply text-2xl font-bold;
+    margin-bottom: 0;
   }
-  &__subtitle {
-    @apply text-sm text-gray-500;
+
+  &__content {
+    width: 100%;
   }
-  &__filters {
-    @apply grid grid-cols-1 md:grid-cols-4 gap-3 mb-4;
-    label {
-      @apply block text-sm text-gray-600 mb-1;
-    }
-    input,
-    select {
-      @apply border rounded px-2 py-1 w-full;
-    }
+
+  &__table-card {
+    width: 100%;
   }
-  &__table {
-    @apply w-full border-collapse;
-    th,
-    td {
-      @apply border p-2 text-left;
-    }
-    thead {
-      th {
-        @apply bg-gray-50;
-      }
-    }
+
+  &__list-card {
+    width: 100%;
   }
-  &__empty,
-  &__error,
-  &__loading {
-    @apply p-6 text-center text-gray-600;
+
+  &__list {
+    width: 100%;
+  }
+
+  &__list-item {
+    padding: 12px 0;
+  }
+
+  &__pagination {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 16px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 }

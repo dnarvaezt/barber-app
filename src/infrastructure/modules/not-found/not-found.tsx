@@ -1,47 +1,66 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { ArrowLeftOutlined, TeamOutlined } from '@ant-design/icons'
+import { Button, Grid, Result, Space } from 'antd'
+import { Link, useNavigate } from 'react-router-dom'
+import { PageContent } from '../../components/layout/components/page-content'
 import { RouteIds, useRoutes } from '../../routes'
 import './not-found.scss'
 
 export const NotFoundPage = () => {
   const navigate = useNavigate()
   const { getRoutePathById } = useRoutes()
+  const screens = Grid.useBreakpoint()
 
-  useEffect(() => {
-    // El componente es autónomo, no necesita configurar el header
-    // El header maneja su propio estado internamente
-  }, [])
+  const clientListPath = getRoutePathById(RouteIds.CLIENT)
 
   return (
-    <div className='not-found-page'>
-      <div className='not-found-page__content'>
-        <div className='not-found-page__error'>
-          <div className='not-found-page__error-icon'>404</div>
-          <h1 className='not-found-page__error-title'>Página No Encontrada</h1>
-          <p className='not-found-page__error-message'>
-            Lo sentimos, la página que buscas no existe o ha sido movida.
-          </p>
-          <div className='not-found-page__actions'>
-            <button
-              onClick={() => window.history.back()}
-              className='not-found-page__button not-found-page__button--secondary'
-            >
-              ← Volver
-            </button>
-            <button
-              onClick={() => {
-                const clientListPath = getRoutePathById(RouteIds.CLIENT)
-                if (clientListPath) {
-                  navigate(clientListPath)
-                }
-              }}
-              className='not-found-page__button not-found-page__button--primary'
-            >
-              Ir a Clientes
-            </button>
-          </div>
-        </div>
+    <PageContent>
+      <div className='not-found-page'>
+        <Result
+          status='404'
+          title='Página No Encontrada'
+          subTitle='Lo sentimos, la página que buscas no existe o ha sido movida.'
+          className='not-found-page__result'
+          extra={
+            <Space size='middle' wrap>
+              <Button
+                onClick={() => window.history.back()}
+                icon={<ArrowLeftOutlined />}
+                size={screens.md ? 'middle' : 'large'}
+                block={!screens.md}
+              >
+                Volver
+              </Button>
+              {clientListPath ? (
+                <Link to={clientListPath}>
+                  <Button
+                    type='primary'
+                    icon={<TeamOutlined />}
+                    size={screens.md ? 'middle' : 'large'}
+                    block={!screens.md}
+                  >
+                    Ir a Clientes
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  type='primary'
+                  onClick={() => {
+                    const path = getRoutePathById(RouteIds.CLIENT)
+                    if (path) {
+                      navigate(path)
+                    }
+                  }}
+                  icon={<TeamOutlined />}
+                  size={screens.md ? 'middle' : 'large'}
+                  block={!screens.md}
+                >
+                  Ir a Clientes
+                </Button>
+              )}
+            </Space>
+          }
+        />
       </div>
-    </div>
+    </PageContent>
   )
 }

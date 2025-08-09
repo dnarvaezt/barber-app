@@ -1,4 +1,24 @@
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Empty,
+  Form,
+  InputNumber,
+  Row,
+  Select,
+  Space,
+  Spin,
+  Statistic,
+  Table,
+  Typography,
+} from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
+import { PageContent } from '../../../components/layout/components'
 import { RouteIds, useRoutes } from '../../../routes'
 import { useStockMovementPage } from './stock-movement-page.hook'
 import './stock-movement-page.scss'
@@ -26,128 +46,241 @@ export const StockMovementPage = () => {
   } = useStockMovementPage()
   const { buildRoutePathWithParams } = useRoutes()
 
+  const columns: ColumnsType<{
+    id: string
+    date: Date
+    type: 'IN' | 'OUT'
+    quantity: number
+    note?: string | null
+  }> = [
+    {
+      title: 'Fecha',
+      dataIndex: 'date',
+      key: 'date',
+      render: (value: Date) => <span>{formatDate(value)}</span>,
+      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    },
+    {
+      title: 'Tipo',
+      dataIndex: 'type',
+      key: 'type',
+      render: (value: 'IN' | 'OUT') => (value === 'IN' ? 'Entrada' : 'Salida'),
+      width: 110,
+      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    },
+    {
+      title: 'Cantidad',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      width: 110,
+      align: 'right',
+      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    },
+    {
+      title: 'Nota',
+      dataIndex: 'note',
+      key: 'note',
+      render: (value?: string | null) => value || '-',
+      responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    },
+  ]
+
   return (
-    <div className='stock-movement'>
-      <div className='stock-movement__container'>
-        <div className='stock-movement__header-row'>
-          <h1 className='stock-movement__title'>
-            Stock de {product?.name ?? 'Producto'}
-          </h1>
-          {product?.id && (
-            <Link
-              to={buildRoutePathWithParams(RouteIds.PRODUCT_DETAIL, {
-                productId: product.id,
-              })}
-              className='btn btn-link'
-            >
-              Ir al detalle del producto →
-            </Link>
+    <PageContent>
+      <div className='stock-movement'>
+        <Space
+          direction='vertical'
+          size='middle'
+          className='stock-movement__stack'
+        >
+          <Card>
+            <div className='stock-movement__header-row'>
+              <div>
+                <Typography.Title level={3} className='stock-movement__title'>
+                  Stock de {product?.name ?? 'Producto'}
+                </Typography.Title>
+                <Statistic
+                  title='Stock actual'
+                  value={stock}
+                  className='stock-movement__stat'
+                />
+              </div>
+              {product?.id && (
+                <Link
+                  to={buildRoutePathWithParams(RouteIds.PRODUCT_DETAIL, {
+                    productId: product.id,
+                  })}
+                >
+                  <Button type='link'>Ir al detalle del producto →</Button>
+                </Link>
+              )}
+            </div>
+          </Card>
+
+          <Card size='small' title='Filtros'>
+            <Form layout='vertical' component={false}>
+              <Row gutter={[12, 12]}>
+                <Col xs={24} sm={12} md={8}>
+                  <Form.Item label='Desde'>
+                    <DatePicker
+                      className='stock-movement__control'
+                      value={filters.dateFrom ? dayjs(filters.dateFrom) : null}
+                      onChange={d =>
+                        setFilters({
+                          dateFrom: d ? d.format('YYYY-MM-DD') : '',
+                        })
+                      }
+                      allowClear
+                      inputReadOnly
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} md={8}>
+                  <Form.Item label='Hasta'>
+                    <DatePicker
+                      className='stock-movement__control'
+                      value={filters.dateTo ? dayjs(filters.dateTo) : null}
+                      onChange={d =>
+                        setFilters({ dateTo: d ? d.format('YYYY-MM-DD') : '' })
+                      }
+                      allowClear
+                      inputReadOnly
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} md={8}>
+                  <Form.Item label='Tipo'>
+                    <Select
+                      placeholder='Todos'
+                      className='stock-movement__control'
+                      value={filters.type || undefined}
+                      onChange={value =>
+                        setFilters({ type: (value ?? '') as any })
+                      }
+                      allowClear
+                      options={[
+                        { label: 'Entrada', value: 'IN' },
+                        { label: 'Salida', value: 'OUT' },
+                      ]}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          </Card>
+
+          <Card size='small' title='Registrar movimiento'>
+            <Row gutter={[16, 16]}>
+              <Col xs={24} md={12}>
+                <Space direction='vertical' className='stock-movement__full'>
+                  <Typography.Text strong>Registrar entrada</Typography.Text>
+                  <Form layout='vertical' component={false}>
+                    <Form.Item label='Cantidad'>
+                      <InputNumber
+                        min={1}
+                        placeholder='Cantidad'
+                        className='stock-movement__control'
+                        value={
+                          entryQuantity !== ''
+                            ? Number.isNaN(Number(entryQuantity))
+                              ? undefined
+                              : Number(entryQuantity)
+                            : undefined
+                        }
+                        onChange={value =>
+                          setEntryQuantity(
+                            value !== null && value !== undefined
+                              ? String(value)
+                              : ''
+                          )
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item label='Fecha'>
+                      <DatePicker
+                        className='stock-movement__control'
+                        value={entryDate ? dayjs(entryDate) : null}
+                        onChange={d =>
+                          setEntryDate(d ? d.format('YYYY-MM-DD') : '')
+                        }
+                        allowClear
+                        inputReadOnly
+                      />
+                    </Form.Item>
+                    <Button type='primary' onClick={registerEntry} block>
+                      Guardar entrada
+                    </Button>
+                  </Form>
+                </Space>
+              </Col>
+              <Col xs={24} md={12}>
+                <Space direction='vertical' className='stock-movement__full'>
+                  <Typography.Text strong>Registrar salida</Typography.Text>
+                  <Form layout='vertical' component={false}>
+                    <Form.Item label='Cantidad'>
+                      <InputNumber
+                        min={1}
+                        placeholder='Cantidad'
+                        className='stock-movement__control'
+                        value={
+                          exitQuantity !== ''
+                            ? Number.isNaN(Number(exitQuantity))
+                              ? undefined
+                              : Number(exitQuantity)
+                            : undefined
+                        }
+                        onChange={value =>
+                          setExitQuantity(
+                            value !== null && value !== undefined
+                              ? String(value)
+                              : ''
+                          )
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item label='Fecha'>
+                      <DatePicker
+                        className='stock-movement__control'
+                        value={exitDate ? dayjs(exitDate) : null}
+                        onChange={d =>
+                          setExitDate(d ? d.format('YYYY-MM-DD') : '')
+                        }
+                        allowClear
+                        inputReadOnly
+                      />
+                    </Form.Item>
+                    <Button onClick={registerExit} danger block>
+                      Guardar salida
+                    </Button>
+                  </Form>
+                </Space>
+              </Col>
+            </Row>
+          </Card>
+
+          {loading ? (
+            <Card>
+              <Spin tip='Cargando movimientos...' spinning>
+                <div className='stock-movement__spinner' />
+              </Spin>
+            </Card>
+          ) : error ? (
+            <Alert type='error' showIcon message={error} />
+          ) : (
+            <Card size='small'>
+              <Table
+                size='small'
+                dataSource={movements}
+                columns={columns}
+                rowKey='id'
+                pagination={false}
+                scroll={{ x: true }}
+                locale={{ emptyText: <Empty description='Sin movimientos' /> }}
+              />
+            </Card>
           )}
-        </div>
-        <div className='stock-movement__summary'>Stock actual: {stock}</div>
-
-        {/* Filtros */}
-        <div className='stock-movement__filters'>
-          <div>
-            <label>Desde</label>
-            <input
-              type='date'
-              value={filters.dateFrom || ''}
-              onChange={e => setFilters({ dateFrom: e.target.value })}
-            />
-          </div>
-          <div>
-            <label>Hasta</label>
-            <input
-              type='date'
-              value={filters.dateTo || ''}
-              onChange={e => setFilters({ dateTo: e.target.value })}
-            />
-          </div>
-          <div>
-            <label>Tipo</label>
-            <select
-              value={filters.type || ''}
-              onChange={e => setFilters({ type: e.target.value as any })}
-            >
-              <option value=''>Todos</option>
-              <option value='IN'>Entrada</option>
-              <option value='OUT'>Salida</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Formularios simples de registro */}
-        <div className='stock-movement__actions'>
-          <div>
-            <strong>Registrar entrada</strong>
-            <div>
-              <input
-                type='number'
-                min={1}
-                placeholder='Cantidad'
-                value={entryQuantity}
-                onChange={e => setEntryQuantity(e.target.value)}
-              />
-              <input
-                type='date'
-                value={entryDate}
-                onChange={e => setEntryDate(e.target.value)}
-              />
-              <button onClick={registerEntry} className='btn btn-primary'>
-                Guardar entrada
-              </button>
-            </div>
-          </div>
-          <div>
-            <strong>Registrar salida</strong>
-            <div>
-              <input
-                type='number'
-                min={1}
-                placeholder='Cantidad'
-                value={exitQuantity}
-                onChange={e => setExitQuantity(e.target.value)}
-              />
-              <input
-                type='date'
-                value={exitDate}
-                onChange={e => setExitDate(e.target.value)}
-              />
-              <button onClick={registerExit} className='btn btn-secondary'>
-                Guardar salida
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className='stock-movement__loading'>Cargando...</div>
-        ) : error ? (
-          <div className='stock-movement__error'>{error}</div>
-        ) : (
-          <table className='stock-movement__table'>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Tipo</th>
-                <th>Cantidad</th>
-                <th>Nota</th>
-              </tr>
-            </thead>
-            <tbody>
-              {movements.map(m => (
-                <tr key={m.id}>
-                  <td>{formatDate(m.date)}</td>
-                  <td>{m.type === 'IN' ? 'Entrada' : 'Salida'}</td>
-                  <td>{m.quantity}</td>
-                  <td>{m.note || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        </Space>
       </div>
-    </div>
+    </PageContent>
   )
 }

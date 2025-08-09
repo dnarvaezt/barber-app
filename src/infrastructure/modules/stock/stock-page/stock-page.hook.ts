@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { productService } from '../../../../application/domain/product/product.provider'
 import {
   stockService,
@@ -111,6 +111,34 @@ export const useStockPage = () => {
     []
   )
 
+  // Cargar productos para mapear id -> nombre (para mostrar en la lista)
+  const [productIdToName, setProductIdToName] = useState<
+    Record<string, { id: string; name: string }>
+  >({})
+
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const all = await productService.getAllProducts({
+          page: 1,
+          limit: 1000,
+        })
+        if (!mounted) return
+        const map: Record<string, { id: string; name: string }> = {}
+        for (const p of all.data) {
+          map[p.id] = { id: p.id, name: p.name }
+        }
+        setProductIdToName(map)
+      } catch {
+        // Silenciar error para no bloquear la vista; se mostrará el id si falla
+      }
+    })()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   return {
     movements: listState.data,
     loading: listState.loading,
@@ -121,6 +149,7 @@ export const useStockPage = () => {
     filters: urlState.filters,
     setFilters: urlState.updateFilters,
     productsMap,
+    productIdToName,
     formatDate,
   }
 }
