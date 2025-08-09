@@ -1,3 +1,19 @@
+import {
+  Alert,
+  Pagination as AntPagination,
+  Button,
+  Card,
+  DatePicker,
+  Empty,
+  Grid,
+  List,
+  Select,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+} from 'antd'
+import dayjs from 'dayjs'
 import { useCallback, useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { PaginationParams } from '../../../../application/domain/common'
@@ -6,7 +22,7 @@ import type {
   Invoice,
 } from '../../../../application/domain/invoice/invoice.model'
 import { invoiceService } from '../../../../application/domain/invoice/invoice.provider'
-import { Pagination } from '../../../components/pagination/pagination'
+import { PageContent } from '../../../components/layout/components/page-content'
 import { usePaginatedList } from '../../../hooks/use-paginated-list.hook'
 import { useUtils } from '../../../hooks/use-utils.hook'
 import { RouteIds, useRoutes } from '../../../routes'
@@ -23,6 +39,7 @@ export const ClientInvoicesPage = () => {
   const clientId = params.clientId as string
   const { formatDateTime, formatCurrency } = useUtils()
   const { buildRoutePathWithParams } = useRoutes()
+  const screens = Grid.useBreakpoint()
 
   const load = useCallback(
     async (pagination: PaginationParams, filters: Partial<Filters>) => {
@@ -99,149 +116,213 @@ export const ClientInvoicesPage = () => {
   }
 
   return (
-    <div className='client-invoices-page'>
-      <div className='client-invoices-page__header'>
-        <h1 className='client-invoices-page__title'>Facturas del Cliente</h1>
-        <div className='client-invoices-page__actions'>
+    <PageContent>
+      <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+        <Space
+          align='center'
+          style={{ width: '100%', justifyContent: 'space-between' }}
+        >
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Facturas del Cliente
+          </Typography.Title>
           <Link
             to={buildRoutePathWithParams(RouteIds.CLIENT_DETAIL, { clientId })}
-            className='client-invoices-page__btn'
           >
-            ← Volver al detalle
+            <Button type='default'>← Volver al detalle</Button>
           </Link>
-        </div>
-      </div>
+        </Space>
 
-      <div className='client-invoices-page__filters'>
-        <div className='client-invoices-page__filter'>
-          <label>Desde</label>
-          <input
-            type='date'
-            value={list.filters.dateFrom || ''}
-            onChange={e => list.updateFilters({ dateFrom: e.target.value })}
-          />
-        </div>
-        <div className='client-invoices-page__filter'>
-          <label>Hasta</label>
-          <input
-            type='date'
-            value={list.filters.dateTo || ''}
-            onChange={e => list.updateFilters({ dateTo: e.target.value })}
-          />
-        </div>
-        <div className='client-invoices-page__filter'>
-          <label>Estado</label>
-          <select
-            value={(list.filters.status as Filters['status']) || 'ALL'}
-            onChange={e =>
-              list.updateFilters({
-                status: e.target.value as Filters['status'],
-              })
-            }
+        <Card>
+          <Space
+            direction={screens.md ? 'horizontal' : 'vertical'}
+            style={{ width: '100%' }}
           >
-            <option value='ALL'>Todos</option>
-            <option value='PENDING'>Pendiente</option>
-            <option value='FINALIZED'>Finalizada</option>
-            <option value='CANCELED'>Cancelada</option>
-          </select>
-        </div>
-        <button
-          className='client-invoices-page__btn client-invoices-page__btn--secondary'
-          onClick={() => {
-            const toISO = (d: Date) => d.toISOString().slice(0, 10)
-            const today = toISO(new Date())
-            list.updateFilters({ dateFrom: today, dateTo: today })
-          }}
-        >
-          Hoy
-        </button>
-        <button
-          className='client-invoices-page__btn client-invoices-page__btn--secondary'
-          onClick={() => {
-            const toISO = (d: Date) => d.toISOString().slice(0, 10)
-            const end = new Date()
-            const start = new Date()
-            start.setDate(end.getDate() - 6)
-            list.updateFilters({ dateFrom: toISO(start), dateTo: toISO(end) })
-          }}
-        >
-          Últimos 7 días
-        </button>
-        <button
-          className='client-invoices-page__btn client-invoices-page__btn--secondary'
-          onClick={handleClearFilters}
-        >
-          Limpiar filtros
-        </button>
-      </div>
-
-      <div className='client-invoices-page__summary'>
-        <span>Facturas: {totals.count}</span>
-        <span>Total facturado: {formatCurrency(totals.totalAmount)}</span>
-      </div>
-
-      {list.loading && (
-        <div className='client-invoices-page__loading'>Cargando...</div>
-      )}
-      {list.error && (
-        <div className='client-invoices-page__error'>Error: {list.error}</div>
-      )}
-      {!list.loading && !list.error && list.data.length === 0 && (
-        <div className='client-invoices-page__empty'>
-          No hay facturas para el período seleccionado.
-        </div>
-      )}
-
-      {!list.loading && !list.error && list.data.length > 0 && (
-        <ul className='client-invoices-page__list'>
-          {list.data.map(inv => (
-            <li
-              key={inv.id}
-              className={`client-invoices-page__item client-invoices-page__item--${inv.status.toLowerCase()}`}
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 240 : '100%' }}
             >
-              <div className='client-invoices-page__item-main'>
-                <div>
-                  <strong>ID:</strong> {inv.id}
-                </div>
-                <div>
-                  <strong>Fecha:</strong> {formatDateTime(inv.createdAt)}
-                </div>
-                <div>
-                  <strong>Estado:</strong> {inv.status}
-                </div>
-                <div>
-                  <strong>Método de pago:</strong> {inv.payment.method}
-                </div>
-              </div>
-              <div className='client-invoices-page__item-totals'>
-                <div>Servicios: {formatCurrency(inv.totals.servicesTotal)}</div>
-                <div>Productos: {formatCurrency(inv.totals.productsTotal)}</div>
-                <div className='client-invoices-page__item-grand'>
-                  Total: {formatCurrency(inv.totals.grandTotal)}
-                </div>
-              </div>
-              <div className='client-invoices-page__item-actions'>
-                <Link
-                  to={buildRoutePathWithParams(RouteIds.INVOICE_DETAIL, {
-                    invoiceId: inv.id,
-                  })}
-                  className='client-invoices-page__btn'
-                >
-                  Ver detalle
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              <Typography.Text type='secondary'>Desde</Typography.Text>
+              <DatePicker
+                style={{ width: '100%' }}
+                value={
+                  list.filters.dateFrom
+                    ? dayjs(list.filters.dateFrom)
+                    : undefined
+                }
+                onChange={value => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  list.updateFilters({
+                    dateFrom: value ? toISO(value.toDate()) : '',
+                  })
+                }}
+              />
+            </Space>
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 240 : '100%' }}
+            >
+              <Typography.Text type='secondary'>Hasta</Typography.Text>
+              <DatePicker
+                style={{ width: '100%' }}
+                value={
+                  list.filters.dateTo ? dayjs(list.filters.dateTo) : undefined
+                }
+                onChange={value => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  list.updateFilters({
+                    dateTo: value ? toISO(value.toDate()) : '',
+                  })
+                }}
+              />
+            </Space>
+            <Space
+              direction='vertical'
+              style={{ width: screens.md ? 200 : '100%' }}
+            >
+              <Typography.Text type='secondary'>Estado</Typography.Text>
+              <Select
+                value={(list.filters.status as Filters['status']) || 'ALL'}
+                onChange={value =>
+                  list.updateFilters({ status: value as Filters['status'] })
+                }
+                options={[
+                  { value: 'ALL', label: 'Todos' },
+                  { value: 'PENDING', label: 'Pendiente' },
+                  { value: 'FINALIZED', label: 'Finalizada' },
+                  { value: 'CANCELED', label: 'Cancelada' },
+                ]}
+              />
+            </Space>
+            <Space wrap>
+              <Button
+                onClick={() => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  const today = toISO(new Date())
+                  list.updateFilters({ dateFrom: today, dateTo: today })
+                }}
+              >
+                Hoy
+              </Button>
+              <Button
+                onClick={() => {
+                  const toISO = (d: Date) => d.toISOString().slice(0, 10)
+                  const end = new Date()
+                  const start = new Date()
+                  start.setDate(end.getDate() - 6)
+                  list.updateFilters({
+                    dateFrom: toISO(start),
+                    dateTo: toISO(end),
+                  })
+                }}
+              >
+                Últimos 7 días
+              </Button>
+              <Button onClick={handleClearFilters}>Limpiar filtros</Button>
+            </Space>
+          </Space>
+        </Card>
 
-      <Pagination
-        meta={list.meta}
-        onPageChange={page => list.updatePagination({ page })}
-        onLimitChange={limit => list.updatePagination({ limit })}
-        showLimitSelector
-      />
-    </div>
+        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Typography.Text>Facturas: {totals.count}</Typography.Text>
+          <Typography.Text>
+            Total facturado: {formatCurrency(totals.totalAmount)}
+          </Typography.Text>
+        </Space>
+
+        {list.loading && (
+          <Card>
+            <Spin tip='Cargando...'>
+              <div style={{ minHeight: 80 }} />
+            </Spin>
+          </Card>
+        )}
+
+        {list.error && <Alert type='error' message={list.error} showIcon />}
+
+        {!list.loading && !list.error && list.data.length === 0 && (
+          <Card>
+            <Empty description='No hay facturas para el período seleccionado.' />
+          </Card>
+        )}
+
+        {!list.loading && !list.error && list.data.length > 0 && (
+          <Card>
+            <List
+              itemLayout={screens.md ? 'horizontal' : 'vertical'}
+              dataSource={list.data}
+              renderItem={inv => (
+                <List.Item
+                  key={inv.id}
+                  actions={[
+                    <Link
+                      key='detail'
+                      to={buildRoutePathWithParams(RouteIds.INVOICE_DETAIL, {
+                        invoiceId: inv.id,
+                      })}
+                    >
+                      <Button type='link'>Ver detalle</Button>
+                    </Link>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    title={
+                      <Space wrap>
+                        <Typography.Text strong>ID:</Typography.Text>
+                        <Typography.Text code>{inv.id}</Typography.Text>
+                        <Tag
+                          color={
+                            inv.status === 'FINALIZED'
+                              ? 'green'
+                              : inv.status === 'PENDING'
+                                ? 'blue'
+                                : 'red'
+                          }
+                        >
+                          {inv.status}
+                        </Tag>
+                      </Space>
+                    }
+                    description={
+                      <Space direction='vertical' size={4}>
+                        <Typography.Text>
+                          <strong>Fecha:</strong>{' '}
+                          {formatDateTime(inv.createdAt)}
+                        </Typography.Text>
+                        <Typography.Text>
+                          <strong>Método de pago:</strong> {inv.payment.method}
+                        </Typography.Text>
+                      </Space>
+                    }
+                  />
+                  <Space direction='vertical' style={{ minWidth: 200 }}>
+                    <Typography.Text>
+                      Servicios: {formatCurrency(inv.totals.servicesTotal)}
+                    </Typography.Text>
+                    <Typography.Text>
+                      Productos: {formatCurrency(inv.totals.productsTotal)}
+                    </Typography.Text>
+                    <Typography.Text strong>
+                      Total: {formatCurrency(inv.totals.grandTotal)}
+                    </Typography.Text>
+                  </Space>
+                </List.Item>
+              )}
+            />
+          </Card>
+        )}
+
+        <AntPagination
+          current={list.meta.page}
+          pageSize={list.meta.limit}
+          total={list.meta.total}
+          showSizeChanger
+          responsive
+          onChange={(page, pageSize) =>
+            list.updatePagination({ page, limit: pageSize })
+          }
+        />
+      </Space>
+    </PageContent>
   )
 }
 

@@ -1,4 +1,17 @@
+import {
+  Alert,
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Space,
+  Spin,
+  Typography,
+} from 'antd'
+import dayjs from 'dayjs'
 import { useEffect } from 'react'
+import { PageContent } from '../../../components/layout/components'
 import { useClientForm } from './client-form.hook'
 import './client-form.scss'
 
@@ -24,14 +37,19 @@ export const ClientForm = () => {
   // Mostrar loading mientras valida el clientId
   if (isValidating) {
     return (
-      <div className='client-form'>
-        <div className='client-form__container'>
-          <div className='client-form__loading'>
-            <div className='client-form__loading-spinner'></div>
-            <p className='client-form__loading-text'>Validando cliente...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '24px',
+            }}
+          >
+            <Spin tip='Validando cliente...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
@@ -42,131 +60,120 @@ export const ClientForm = () => {
 
   if (loading && isEditing) {
     return (
-      <div className='client-form'>
-        <div className='client-form__container'>
-          <div className='client-form__loading'>
-            <div className='client-form__loading-spinner'></div>
-            <p className='client-form__loading-text'>Cargando cliente...</p>
+      <PageContent>
+        <Card style={{ width: '100%' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '24px',
+            }}
+          >
+            <Spin tip='Cargando cliente...' />
           </div>
-        </div>
-      </div>
+        </Card>
+      </PageContent>
     )
   }
 
   return (
-    <div className='client-form'>
-      <div className='client-form__container'>
-        <div className='client-form__header'>
-          <h1 className='client-form__title'>
-            {isEditing ? 'Editar Cliente' : 'Nuevo Cliente'}
-          </h1>
-          <p className='client-form__subtitle'>
-            {isEditing
-              ? 'Actualiza la información del cliente'
-              : 'Completa la información para crear un nuevo cliente'}
-          </p>
-        </div>
+    <PageContent>
+      <Card
+        style={{ width: '100%' }}
+        title={isEditing ? 'Editar Cliente' : 'Nuevo Cliente'}
+      >
+        <Typography.Paragraph type='secondary' style={{ marginTop: -8 }}>
+          {isEditing
+            ? 'Actualiza la información del cliente'
+            : 'Completa la información para crear un nuevo cliente'}
+        </Typography.Paragraph>
 
-        <div className='client-form__form'>
-          {/* Mensaje de éxito */}
+        <Space direction='vertical' size='large' style={{ width: '100%' }}>
           {showSuccessMessage && (
-            <div className='client-form__success-message'>
-              <div className='client-form__success-icon'>✅</div>
-              <p className='client-form__success-text'>
-                {isEditing
+            <Alert
+              showIcon
+              type='success'
+              message={
+                isEditing
                   ? '¡Cliente actualizado exitosamente!'
-                  : '¡Cliente creado exitosamente!'}
-              </p>
-            </div>
+                  : '¡Cliente creado exitosamente!'
+              }
+            />
           )}
 
-          {/* Mensaje de error general */}
           {errors.general && (
-            <div className='client-form__error-message'>
-              <div className='client-form__error-icon'>❌</div>
-              <p className='client-form__error-text'>{errors.general}</p>
-            </div>
+            <Alert showIcon type='error' message={errors.general} />
           )}
 
-          <form onSubmit={handleSubmit} className='client-form__form-content'>
-            {/* Campo Nombre */}
-            <div className='client-form__field'>
-              <label htmlFor='name' className='client-form__label'>
-                Nombre completo *
-              </label>
-              <input
-                type='text'
-                id='name'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                className={`client-form__input ${
-                  formData.name ? 'client-form__input--filled' : ''
-                }`}
-                placeholder='Ingresa el nombre completo'
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit}>
+            <Form layout='vertical' component={false}>
+              <Form.Item label='Nombre completo' required htmlFor='name'>
+                <Input
+                  id='name'
+                  size='large'
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='Ingresa el nombre completo'
+                  allowClear
+                  required
+                />
+              </Form.Item>
 
-            {/* Campo Teléfono */}
-            <div className='client-form__field'>
-              <label htmlFor='phoneNumber' className='client-form__label'>
-                Número de teléfono *
-              </label>
-              <input
-                type='tel'
-                id='phoneNumber'
-                value={formData.phoneNumber}
-                onChange={e => handleInputChange('phoneNumber', e.target.value)}
-                className={`client-form__input ${
-                  formData.phoneNumber ? 'client-form__input--filled' : ''
-                }`}
-                placeholder='Ej: +57 300 123 4567'
+              <Form.Item
+                label='Número de teléfono'
                 required
-              />
-            </div>
-
-            {/* Campo Fecha de Nacimiento */}
-            <div className='client-form__field'>
-              <label htmlFor='birthDate' className='client-form__label'>
-                Fecha de nacimiento *
-              </label>
-              <input
-                type='date'
-                id='birthDate'
-                value={formData.birthDate}
-                onChange={e => handleInputChange('birthDate', e.target.value)}
-                className={`client-form__input ${
-                  formData.birthDate ? 'client-form__input--filled' : ''
-                }`}
-                required
-              />
-            </div>
-
-            {/* Botones de acción */}
-            <div className='client-form__actions'>
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='client-form__button client-form__button--secondary'
+                htmlFor='phoneNumber'
               >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                disabled={loading}
-                className='client-form__button client-form__button--primary'
+                <Input
+                  id='phoneNumber'
+                  size='large'
+                  type='tel'
+                  value={formData.phoneNumber}
+                  onChange={e =>
+                    handleInputChange('phoneNumber', e.target.value)
+                  }
+                  placeholder='Ej: +57 300 123 4567'
+                  allowClear
+                  required
+                />
+              </Form.Item>
+
+              <Form.Item
+                label='Fecha de nacimiento'
+                required
+                htmlFor='birthDate'
               >
-                {loading && (
-                  <div className='client-form__loading-spinner client-form__loading-spinner--small'></div>
-                )}
-                <span className='client-form__button-text'>
+                <DatePicker
+                  id='birthDate'
+                  size='large'
+                  style={{ width: '100%' }}
+                  value={
+                    formData.birthDate
+                      ? dayjs(formData.birthDate, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={d =>
+                    handleInputChange(
+                      'birthDate',
+                      d ? d.format('YYYY-MM-DD') : ''
+                    )
+                  }
+                  placeholder='Selecciona una fecha'
+                  allowClear
+                  inputReadOnly
+                />
+              </Form.Item>
+
+              <Space style={{ width: '100%' }} wrap>
+                <Button onClick={handleCancel}>Cancelar</Button>
+                <Button htmlType='submit' type='primary' loading={loading}>
                   {isEditing ? 'Actualizar' : 'Crear'} Cliente
-                </span>
-              </button>
-            </div>
+                </Button>
+              </Space>
+            </Form>
           </form>
-        </div>
-      </div>
-    </div>
+        </Space>
+      </Card>
+    </PageContent>
   )
 }
